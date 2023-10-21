@@ -30,5 +30,6 @@ jobs:
           ECR_REPOSITORY: my_images
           IMAGE_TAG: scuffed_metar_image
         run: |
+          docker rmi $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

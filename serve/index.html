@@ -43,7 +43,7 @@
         Current Time: <span class="dimgrey" id="gmtTime"></span>
         Last Update: <span class="dimgrey"> {{ .LastUpdate.Format "15:04:05 GMT" }} </span>
     </div>
-    <div class="dimgrey">Data is refreshed at 30-second intervals, refresh page to see changes.</div>
+    <div class="dimgrey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
 </div>
 {{ range .MetarData }}
     <h3>{{ .AirportCode }} {{ .AirportName }} </h3>
