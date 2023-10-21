@@ -54,8 +54,8 @@
 </body>
 <script>
     function updateTime() {
-        const now = new Date().toISOString().slice(11,19)+ ' GMT'; // The timezone is always zero UTC offset
-        document.getElementById('gmtTime').innerText = now
+        // The timezone is always zero UTC offset
+        document.getElementById('gmtTime').innerText = new Date().toISOString().slice(11, 19) + ' GMT'
     }
     updateTime();
     setInterval(updateTime, 1000);
