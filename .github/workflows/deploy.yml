@@ -2,7 +2,7 @@ name: Deploy To ECR
 
 on:
   push:
-    branches: [master, test/ci-stuff]
+    branches: [master, feat/add-images]
 
 jobs:
   build:
