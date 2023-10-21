@@ -30,6 +30,6 @@ jobs:
           ECR_REPOSITORY: my_images
           IMAGE_TAG: scuffed_metar_image
         run: |
-          aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids $IMAGE_TAG
+          aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
