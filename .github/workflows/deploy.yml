@@ -32,3 +32,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Restart ECS
+        run: |
+          aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb  --force-new-deployment --region us-east-1 
