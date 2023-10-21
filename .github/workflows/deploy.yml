@@ -2,7 +2,7 @@ name: Deploy To ECR
 
 on:
   push:
-    branches: [master, feat/add-images]
+    branches: [master, test/cd]
 
 jobs:
   build:
@@ -36,4 +36,4 @@ jobs:
 
       - name: Restart ECS
         run: |
-          aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb  --force-new-deployment --region us-east-1 
+          aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb --region us-east-1 
