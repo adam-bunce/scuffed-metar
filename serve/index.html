@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scuffed Metar</title>
+    <style>
+        h3 {
+            font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+        body {
+            font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 14px;
+            line-height: 1.2;
+            margin: 0 10% 5%;
+        }
+        .dimgrey {
+           color: dimgrey;
+        }
+        .dib {
+            display: inline-block;
+        }
+        .info {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        @media screen and (max-width: 800px) {
+           body {
+              margin: 1%
+           }
+            div {
+                padding-bottom: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="info">
+    <h2>Scuffed METAR</h2>
+    <div class="dib">
+        Current Time: <span class="dimgrey" id="gmtTime"></span>
+        Last Update: <span class="dimgrey"> {{ .LastUpdate.Format "15:04:05 GMT" }} </span>
+    </div>
+    <div class="dimgrey">Data is refreshed at 30-second intervals, refresh page to see changes.</div>
+</div>
+{{ range .MetarData }}
+    <h3>{{ .AirportCode }} {{ .AirportName }} </h3>
+        {{ range .MetarInfo }}
+            <div>{{ . }}</div>
+        {{ end }}
+{{ end }}
+</body>
+<script>
+    function updateTime() {
+        // The timezone is always zero UTC offset
+        document.getElementById('gmtTime').innerText = new Date().toISOString().slice(11, 19) + ' GMT'
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+</script>
+</html>

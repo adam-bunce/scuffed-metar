@@ -2,7 +2,7 @@ FROM golang:1.19 as builder
 
 WORKDIR /app
 
-COPY go.mod ./
+COPY go.mod go.sum ./
 
 COPY . .
 
