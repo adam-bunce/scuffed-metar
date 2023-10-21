@@ -3,7 +3,6 @@ name: Deploy To ECR
 on:
   push:
     branches: [master, test/ci-stuff]
-  workflow_dispatch
 
 jobs:
 
