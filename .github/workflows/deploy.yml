@@ -37,4 +37,3 @@ jobs:
       - name: Restart ECS
         run: |
           aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb --force-new-deployment --region us-east-1 
-          # ecs takes like 10 minutes to kill the old task
