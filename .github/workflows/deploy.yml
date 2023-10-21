@@ -21,7 +21,7 @@ jobs:
           aws-region: us-east-1
 
       - name: ECR Login
-        id: login-erc
+        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build and Push
