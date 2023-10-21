@@ -37,3 +37,4 @@ jobs:
       - name: Restart ECS
         run: |
           aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb --force-new-deployment --region us-east-1 
+          # NOTE the above only works because i have min and max % set to 0 and 100, so the old version gets killed when the new task deploys
