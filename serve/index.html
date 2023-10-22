@@ -22,6 +22,12 @@
             word-break: break-word;
             margin: 0 10% 5%;
         }
+        table, tr, td, th {
+            margin-left: 0;
+            padding-left: 0;
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
 
         .header {
             text-align: center;
@@ -77,8 +83,8 @@
                     <span class="dim-grey" id="gmtTime"></span>
                 </td>
             </tr>
-            <tr>
-                <td>Last Update: </td>
+            <tr style="">
+                <td style="">Last Update: </td>
                 <td>
                     <span class="dim-grey"> {{ .LastUpdate.Format "15:04:05 GMT" }} </span>
 
