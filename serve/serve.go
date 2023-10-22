@@ -78,7 +78,6 @@ func CatchAll(w http.ResponseWriter, r *http.Request) {
 
 func updateData() {
 	// var indexTemplate = GetTemplate()
-
 	globals.Logger.Println("Updating METAR Data")
 	currentData.Lock()
 	defer currentData.Unlock()
@@ -93,6 +92,7 @@ func updateData() {
 
 	globals.Logger.Println("DONE Updating METAR Data")
 
+	cachedTemplate.Reset()
 	err := indexTemplate.Execute(&cachedTemplate, &currentData)
 	if err != nil {
 		globals.Logger.Printf("Failed to execute index template err: %v\n", err)
