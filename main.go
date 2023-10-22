@@ -5,7 +5,6 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/serve"
 	"github.com/adam-bunce/scuffed-metar/stats"
-	"log"
 	"net/http"
 )
 
@@ -14,6 +13,6 @@ func main() {
 
 	go stats.StatResetCycle()
 
-	log.Printf("Server Listening on port: %d\n", globals.ServerPort)
+	globals.Logger.Printf("Server Listening on port: %d\n", globals.ServerPort)
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), nil)
 }

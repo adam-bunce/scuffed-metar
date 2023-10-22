@@ -3,9 +3,9 @@ package pull
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"io"
-	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -28,7 +28,7 @@ func getCamecoData(airportCode string) types.MetarInfo {
 		"application/json; charset=UTF-8",
 		camecoRequestBody)
 	if err != nil {
-		log.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
+		globals.Logger.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
 		return camecoMetarInfo
 	}
 
@@ -36,13 +36,13 @@ func getCamecoData(airportCode string) types.MetarInfo {
 	var resBody types.CamecoResponse
 	resBodyBytes, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Printf("Failed to read cameco body for airport %s err: %v", airportCode, err)
+		globals.Logger.Printf("Failed to read cameco body for airport %s err: %v", airportCode, err)
 		return camecoMetarInfo
 	}
 	defer res.Body.Close()
 	err = json.Unmarshal(resBodyBytes, &resBody)
 	if err != nil {
-		log.Printf("Failed to unmarshall cameco body for airport %s err: %v", airportCode, err)
+		globals.Logger.Printf("Failed to unmarshall cameco body for airport %s err: %v", airportCode, err)
 		return camecoMetarInfo
 	}
 
@@ -84,13 +84,13 @@ func getHighwayData(airportName string) types.MetarInfo {
 
 	res, err := http.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportName))
 	if err != nil {
-		log.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
+		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
 		return highwayData
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Printf("Failed to read highway body for airport code %s err: %v", airportName, err)
+		globals.Logger.Printf("Failed to read highway body for airport code %s err: %v", airportName, err)
 		highwayData.MetarInfo = []string{"Failed to read highway body for airport"}
 		return highwayData
 	}
@@ -126,12 +126,12 @@ func GetPointsNorthMetar() types.MetarInfo {
 	// only one we care about so hard coding it for now
 	res, err := http.Get("https://www.pointsnorthgroup.ca/weather/CYNL_metar.html")
 	if err != nil {
-		log.Printf("Failed to get Point North CYNL Metar err: %v", err)
+		globals.Logger.Printf("Failed to get Point North CYNL Metar err: %v", err)
 		return pointsNorthData
 	}
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Printf("Failed to parse Point North CYNL Metar HTML err: %v", err)
+		globals.Logger.Printf("Failed to parse Point North CYNL Metar HTML err: %v", err)
 		return pointsNorthData
 	}
 

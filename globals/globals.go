@@ -10,10 +10,11 @@ import (
 
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
+var Logger = log.New(os.Stderr, "", log.Lshortfile|log.Lmicroseconds)
 
 func SendWebhook(message string) {
 	_, err := http.Post(webhook, "application/json", strings.NewReader(fmt.Sprintf(`{"content": "%s"}`, message)))
 	if err != nil {
-		log.Printf("Failed to send webhook err: %v\n", err)
+		Logger.Printf("Failed to send webhook err: %v\n", err)
 	}
 }

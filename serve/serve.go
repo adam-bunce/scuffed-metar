@@ -3,11 +3,11 @@ package serve
 import (
 	_ "embed"
 	"fmt"
+	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -28,7 +28,7 @@ func GetTemplate() *template.Template {
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
 	// var indexTemplate = GetTemplate()
 
-	log.Println(fmt.Sprintf("%s %s %s", r.Proto, r.Method, r.RequestURI))
+	globals.Logger.Println(fmt.Sprintf("%s %s %s", r.Proto, r.Method, r.RequestURI))
 
 	if r.URL.Path != "/" {
 		CatchAll(w, r)
@@ -44,7 +44,7 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 
 	err := indexTemplate.Execute(w, &currentData)
 	if err != nil {
-		log.Printf("Failed to execute index template err: %v\n", err)
+		globals.Logger.Printf("Failed to execute index template err: %v\n", err)
 		return
 	}
 }
@@ -54,7 +54,7 @@ func CatchAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateData() {
-	log.Println("Updating METAR Data")
+	globals.Logger.Println("Updating METAR Data")
 	currentData.Lock()
 	defer currentData.Unlock()
 
@@ -65,4 +65,6 @@ func updateData() {
 
 	currentData.MetarData = metarData
 	currentData.LastUpdate = time.Now().UTC()
+
+	globals.Logger.Println("DONE Updating METAR Data")
 }

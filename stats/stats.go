@@ -3,7 +3,6 @@ package stats
 import (
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
-	"log"
 	"sync/atomic"
 	"time"
 )
@@ -23,7 +22,7 @@ func StatResetCycle() {
 
 		nextMidnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, time.UTC)
 		sleepDuration := nextMidnight.Sub(now)
-		log.Printf("StatResetCycle sleeping for %v", sleepDuration)
+		globals.Logger.Printf("StatResetCycle sleeping for %v", sleepDuration)
 		time.Sleep(nextMidnight.Sub(now))
 	}
 }
