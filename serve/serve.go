@@ -1,6 +1,7 @@
 package serve
 
 import (
+	"bytes"
 	_ "embed"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
@@ -9,25 +10,51 @@ import (
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
 	"net/http"
-	"os"
 	"time"
 )
 
 //go:embed index.html
 var indexTemplateString string
+var indexTemplate = GetTemplate()
 
-var indexTemplate = template.Must(template.New("index").Parse(indexTemplateString))
-var currentData = types.IndexData{}
+var cachedTemplate bytes.Buffer
 
-// GetTemplate is used when working locally to avoid having to compile for every html update
+var currentData = types.IndexData{
+	Cameras: wxCamInfo,
+}
+
+var wxCamInfo = []types.WxCam{
+	{"ilealacrosse", "CJF3", 2},
+	{"cumberlandhouse", "CJT4", 2},
+	{"laloche", "CJL4", 2},
+	{"patuanak", "CKB2", 1},
+	{"pelican", "CJW4", 1},
+	{"pinehouse", "CZPO", 2},
+	{"buffalonarrows", "CYVT", 2},
+	{"hudsonbay", "CYHB", 2},
+	{"stonyrapids", "CYSF", 2},
+	{"sandybay", "CJY4", 3},
+	{"meadowlake", "CYLJ", 2},
+	{"uranium", "CYBE", 1},
+}
+
 func GetTemplate() *template.Template {
-	file, _ := os.ReadFile("serve/index.html")
-	return template.Must(template.New("index").Parse(string(file)))
+	// file, _ := os.ReadFile("serve/index.html") for local dev
+	tmplFuncs := template.FuncMap{
+		// makes a slice given a number to iterate over with range
+		"makeSlice": func(start, stop int) []int {
+			var result []int
+			// base 1 intentionally
+			for i := start; i < stop+1; i++ {
+				result = append(result, i)
+			}
+			return result
+		},
+	}
+	return template.Must(template.New("index").Funcs(tmplFuncs).Parse(indexTemplateString))
 }
 
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	// var indexTemplate = GetTemplate()
-
 	globals.Logger.Println(fmt.Sprintf("%s %s %s", r.Proto, r.Method, r.RequestURI))
 
 	if r.URL.Path != "/" {
@@ -42,11 +69,7 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		updateData()
 	}
 
-	err := indexTemplate.Execute(w, &currentData)
-	if err != nil {
-		globals.Logger.Printf("Failed to execute index template err: %v\n", err)
-		return
-	}
+	w.Write(cachedTemplate.Bytes())
 }
 
 func CatchAll(w http.ResponseWriter, r *http.Request) {
@@ -54,17 +77,25 @@ func CatchAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func updateData() {
+	// var indexTemplate = GetTemplate()
+
 	globals.Logger.Println("Updating METAR Data")
 	currentData.Lock()
 	defer currentData.Unlock()
 
 	var metarData []types.MetarInfo
 	metarData = append(metarData, pull.GetAllCamecoData()...)
-	metarData = append(metarData, pull.GetAllHighwayData()...)
 	metarData = append(metarData, pull.GetPointsNorthMetar())
+	metarData = append(metarData, pull.GetAllHighwayData()...)
 
 	currentData.MetarData = metarData
 	currentData.LastUpdate = time.Now().UTC()
 
 	globals.Logger.Println("DONE Updating METAR Data")
+
+	err := indexTemplate.Execute(&cachedTemplate, &currentData)
+	if err != nil {
+		globals.Logger.Printf("Failed to execute index template err: %v\n", err)
+		return
+	}
 }

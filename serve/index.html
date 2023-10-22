@@ -31,22 +31,28 @@
         td {
             padding-right: 5px;
         }
+        img {
+            max-width: 100%;
+        }
+        a {
+            text-decoration: none;
+            color: #3273dc;
+        }
 
+        .images-container {
+            display: grid;
+            gap: 5px;
+            grid-auto-rows: 1fr;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .links-container {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            margin-bottom: 14px;
+        }
         .header {
             text-align: center;
-        }
-        .df {
-            display: -webkit-box;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: -moz-flex;
-            display: -webkit-flex;
-            display: flex;
-
-            flex-direction: row;
-        }
-        .w-50 {
-            width: 50%;
         }
         .dim-grey {
             color: dimgrey;
@@ -61,13 +67,8 @@
             body {
                 margin: 0 2% 5%;
             }
-            .df {
-                flex-direction: column;
-                -ms-flex-direction: column;
-                -webkit-flex-direction: column;
-            }
-            .w-50 {
-                width: 100%;
+            .images-container {
+                grid-template-columns: repeat(1, 1fr);
             }
         }
     </style>
@@ -77,6 +78,16 @@
 <section class="header">
     <h2>Scuffed METAR</h2>
     <div class="dim-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
+    <br>
+    <!-- jump links -->
+    <div class="links-container big-text">
+        {{ range .MetarData }}
+        <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
+        {{ end }}
+        {{ range .Cameras }}
+        <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
+        {{ end }}
+    </div>
     <br>
     <div>
         <table role="presentation" style="text-align: left;" class="big-text">
@@ -96,21 +107,36 @@
     </div>
 </section>
 
+
+<!-- actual data -->
 <section>
 {{ range .MetarData }}
-    <h3>{{ .AirportCode }} {{ .AirportName }} </h3>
+    <h3 id="{{- .AirportCode -}}">{{ .AirportCode }}</h3>
         {{ range .MetarInfo }}
             <div class="metar-info">{{ . }}</div>
         {{ end }}
 
-        {{ if eq .AirportName "Wollaston" "Fonddulac" }}
-            <div class="df">
-                <img class="w-50" src="http://highways.glmobile.com/{{- .AirportName -}}/ptz1.jpg" alt="{{- .AirportName -}} cam pic">
-                <img class="w-50" src="http://highways.glmobile.com/{{- .AirportName -}}/ptz2.jpg" alt="{{- .AirportName -}} cam pic">
+        <!-- only airports with wx cam and METAR -->
+        {{ if eq .AirportName "wollaston" "fonddulac" }}
+            <div class="images-container">
+                <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz1.jpg" alt="{{- .AirportName -}} cam pic">
+                <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz2.jpg" alt="{{- .AirportName -}} cam pic">
             </div>
         {{ end }}
-
 {{ end }}
+    {{ range $camera := .Cameras }}
+        <h3 id="{{- .AirportCode -}}">{{ $camera.AirportCode }}</h3>
+        <div class="images-container">
+            {{ range $index := makeSlice 1 .ImageCount }}
+                {{ if (and (eq $index 1) (eq $camera.AirportName "sandybay" ))}}
+                    <!-- sandy bay has cam 1 as ptz.jpg not ptz1.jpg -->
+                    <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz.jpg" alt="{{- $camera.AirportName }} cam pic">
+                {{ else }}
+                    <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz{{- $index -}}.jpg" alt="{{- $camera.AirportName }} cam pic">
+                {{ end }}
+            {{ end }}
+        </div>
+    {{ end }}
 </section>
 </body>
 <script>

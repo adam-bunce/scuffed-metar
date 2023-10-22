@@ -35,8 +35,16 @@ type MetarInfo struct {
 	MetarInfo   []string
 }
 
+// WxCam only highway airports have cameras so all the links are formatted the same
+type WxCam struct {
+	AirportName string
+	AirportCode string
+	ImageCount  int
+}
+
 type IndexData struct {
 	sync.Mutex
 	MetarData  []MetarInfo
+	Cameras    []WxCam
 	LastUpdate time.Time
 }

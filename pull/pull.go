@@ -77,42 +77,46 @@ func GetAllCamecoData() []types.MetarInfo {
 
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
-func getHighwayData(airportName string) types.MetarInfo {
-	highwayData := types.MetarInfo{
-		AirportName: airportName,
-	}
+func getHighwayData(airportMetarInfo types.MetarInfo) types.MetarInfo {
 
-	res, err := http.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportName))
+	res, err := http.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportMetarInfo.AirportName))
 	if err != nil {
-		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
-		return highwayData
+		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportMetarInfo.AirportName, err)
+		return airportMetarInfo
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		globals.Logger.Printf("Failed to read highway body for airport code %s err: %v", airportName, err)
-		highwayData.MetarInfo = []string{"Failed to read highway body for airport"}
-		return highwayData
+		globals.Logger.Printf("Failed to read highway body for airport code %s err: %v", airportMetarInfo.AirportName, err)
+		airportMetarInfo.MetarInfo = []string{"Failed to read highway body for airport"}
+		return airportMetarInfo
 	}
 
 	matches := highwayMetarPattern.FindStringSubmatch(string(body))
 	if len(matches) > 1 {
 		metarString := strings.Trim(matches[1], "<br>")
 		metarStrings := strings.Split(metarString, "<br>")
-		highwayData.MetarInfo = metarStrings
+		airportMetarInfo.MetarInfo = metarStrings
 
 	} else {
-		highwayData.MetarInfo = []string{"Failed to find METAR RegEx matches"}
-		return highwayData
+		airportMetarInfo.MetarInfo = []string{"Failed to find METAR RegEx matches"}
+		return airportMetarInfo
 	}
 
-	return highwayData
+	return airportMetarInfo
 }
 
 func GetAllHighwayData() []types.MetarInfo {
 	var highwayData []types.MetarInfo
-	highwayAirportNames := []string{"Fonddulac", "Wollaston"}
-	for _, airportName := range highwayAirportNames {
+	// urls are based on name but want to display airport codes
+	highwayAirports := []types.MetarInfo{{
+		AirportCode: "CZFD",
+		AirportName: "fonddulac",
+	}, {
+		AirportCode: "CZWL",
+		AirportName: "wollaston",
+	}}
+	for _, airportName := range highwayAirports {
 		highwayData = append(highwayData, getHighwayData(airportName))
 	}
 
