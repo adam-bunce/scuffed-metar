@@ -10,6 +10,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -39,7 +40,7 @@ var wxCamInfo = []types.WxCam{
 }
 
 func GetTemplate() *template.Template {
-	// file, _ := os.ReadFile("serve/index.html") for local dev
+	// file, _ := os.ReadFile("serve/index.html") // for local dev
 	tmplFuncs := template.FuncMap{
 		// makes a slice given a number to iterate over with range
 		"makeSlice": func(start, stop int) []int {
@@ -49,6 +50,22 @@ func GetTemplate() *template.Template {
 				result = append(result, i)
 			}
 			return result
+		},
+		"nl2br": func(str string) template.HTML {
+			// just to format taf properly
+			hold := strings.ReplaceAll(str, "  ", "&nbsp;&nbsp;")
+			hold = strings.ReplaceAll(hold, "\n", "<br>")
+			// hold = strings.ReplaceAll(hold, "TEMPO", "<br>TEMPO") TODO format tempo properly
+			return template.HTML(hold)
+		},
+		// check if its CYLJ, CYSF if it is do/don't draw
+		"getMetar": func(metars []types.MetarInfo, str string) []string {
+			for _, metar := range metars {
+				if metar.AirportCode == str {
+					return metar.MetarInfo
+				}
+			}
+			return nil
 		},
 	}
 	return template.Must(template.New("index").Funcs(tmplFuncs).Parse(indexTemplateString))
@@ -79,13 +96,22 @@ func CatchAll(w http.ResponseWriter, r *http.Request) {
 func updateData() {
 	// var indexTemplate = GetTemplate()
 	globals.Logger.Println("Updating METAR Data")
+	// handlers get put into go routines so lock data incase
 	currentData.Lock()
 	defer currentData.Unlock()
 
 	var metarData []types.MetarInfo
-	metarData = append(metarData, pull.GetAllCamecoData()...)
-	metarData = append(metarData, pull.GetPointsNorthMetar())
-	metarData = append(metarData, pull.GetAllHighwayData()...)
+
+	// TODO speed test this to see if its actually faster
+	results := make(chan []types.MetarInfo, 4)
+	go func() { results <- pull.GetAllCamecoData() }()
+	go func() { results <- []types.MetarInfo{pull.GetPointsNorthMetar()} }()
+	go func() { results <- pull.GetAllHighwayData() }()
+	go func() { results <- pull.GetNavCanadaMetars() }()
+
+	for i := 0; i < 4; i++ {
+		metarData = append(metarData, <-results...)
+	}
 
 	currentData.MetarData = metarData
 	currentData.LastUpdate = time.Now().UTC()

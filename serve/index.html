@@ -4,7 +4,7 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scuffed Metar</title>
     <style>
-        html {
+        html, pre {
             -webkit-tap-highlight-color: transparent;
             overflow-y: scroll;
             font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -86,10 +86,13 @@
     <!-- jump links -->
     <div class="links-container big-text">
         {{ range .MetarData }}
-        <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
+            {{ if eq .AirportCode "CYLJ" "CYSF" }}
+            {{ else }}
+                <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
+            {{ end }}
         {{ end }}
         {{ range .Cameras }}
-        <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
+                <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
         {{ end }}
         <a href="#charlotRiver">Charlot</a>
     </div>
@@ -116,25 +119,36 @@
 <!-- actual data -->
 <section>
 {{ range .MetarData }}
+    <!--  TEMP check if its CYLJ, CYSF if it is do/don't draw, theyre done in cam section -->
+    {{ if (eq .AirportCode "CYLJ" "CYSF") }}
+    {{ else }}
     <h3 id="{{- .AirportCode -}}">{{ .AirportCode }}</h3>
+
         {{ range .MetarInfo }}
-            <div class="metar-info">{{ . }}</div>
+                <div class="metar-info">{{ nl2br . }}</div>
         {{ end }}
 
-        <!-- only airports with wx cam and METAR -->
+         <!-- only airports with wx cam and METAR -->
         {{ if eq .AirportName "wollaston" "fonddulac" }}
             <div class="images-container">
                 <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz1.jpg" alt="{{- .AirportName -}} cam pic">
                 <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz2.jpg" alt="{{- .AirportName -}} cam pic">
             </div>
         {{ end }}
+    {{ end }}
 {{ end }}
+    {{ $metarData := .MetarData }}
     {{ range $camera := .Cameras }}
         <h3 id="{{- .AirportCode -}}">{{ $camera.AirportCode }}</h3>
+        {{ if (eq .AirportCode "CYLJ" "CYSF") }}
+           {{ range getMetar $metarData .AirportCode }}
+                <div class="metar-info">{{ nl2br . }}</div>
+            {{ end }}
+        {{ end }}
         <div class="images-container">
             {{ range $index := makeSlice 1 .ImageCount }}
                 {{ if (and (eq $index 1) (eq $camera.AirportName "sandybay" ))}}
-                    <!-- sandy bay has cam 1 as ptz.jpg not ptz1.jpg -->
+                     <!-- sandy bay has cam 1 as ptz.jpg not ptz1.jpg -->
                     <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz.jpg" alt="{{- $camera.AirportName }} cam pic">
                 {{ else }}
                     <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz{{- $index -}}.jpg" alt="{{- $camera.AirportName }} cam pic">

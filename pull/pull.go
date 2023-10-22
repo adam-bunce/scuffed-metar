@@ -133,6 +133,7 @@ func GetPointsNorthMetar() types.MetarInfo {
 		globals.Logger.Printf("Failed to get Point North CYNL Metar err: %v", err)
 		return pointsNorthData
 	}
+	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		globals.Logger.Printf("Failed to parse Point North CYNL Metar HTML err: %v", err)
@@ -148,4 +149,54 @@ func GetPointsNorthMetar() types.MetarInfo {
 	}
 
 	return pointsNorthData
+}
+
+// CYLJ, CYSF                        already exist in cams (edited)
+// CYVC CYKJ CYPA         are new
+
+func GetNavCanadaMetars() []types.MetarInfo {
+	var navCanadaMetars []types.MetarInfo
+
+	// actually god api so i can get it all in one request
+	// endpoint := fmt.Sprintf("https://plan.navcanada.ca/weather/api/alpha/?point=%s&alpha=metar&alpha=taf&metar_choice=3&_=1698010681463", point)
+	// &_=1698010681480 is on the end idk what it is used for though so remove dit
+	endpoint := "https://plan.navcanada.ca/weather/api/alpha/?point=CYLJ|site|-108.523,54.125&point=CYSF|site|-105.841,59.250&point=CYVC|site|-105.267,55.151&point=CYKJ|site|-105.617,57.256&point=CYPA|site|-105.673,53.215&alpha=metar&alpha=taf&metar_choice=3"
+	res, err := http.Get(endpoint)
+	if err != nil {
+		globals.Logger.Printf("Failed to get nav canada metar err: %v", err)
+		return navCanadaMetars
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+
+	var navCanadaBodyData types.NavCanadaData
+	err = json.Unmarshal(body, &navCanadaBodyData)
+	if err != nil {
+		globals.Logger.Printf("Failed to unmarshall nav canada metar err: %v", err)
+		return navCanadaMetars
+	}
+
+	for _, data := range navCanadaBodyData.Data {
+		if data.Type == "metar" || data.Type == "taf" {
+			// find matching
+			airportExists := false
+			for i, airport := range navCanadaMetars {
+				if airport.AirportCode == data.Location {
+					// exists already add to data
+					airportExists = true
+					navCanadaMetars[i].MetarInfo = append(airport.MetarInfo, data.Text)
+				}
+			}
+			if !airportExists {
+				// update with airport
+				navCanadaMetars = append(navCanadaMetars, types.MetarInfo{
+					AirportCode: data.Location,
+					MetarInfo:   []string{data.Text},
+				})
+			}
+
+		}
+	}
+
+	return navCanadaMetars
 }
