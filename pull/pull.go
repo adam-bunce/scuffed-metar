@@ -37,11 +37,13 @@ func getCamecoData(airportCode string) types.MetarInfo {
 	resBodyBytes, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Printf("Failed to read cameco body for airport %s err: %v", airportCode, err)
+		return camecoMetarInfo
 	}
 	defer res.Body.Close()
 	err = json.Unmarshal(resBodyBytes, &resBody)
 	if err != nil {
 		log.Printf("Failed to unmarshall cameco body for airport %s err: %v", airportCode, err)
+		return camecoMetarInfo
 	}
 
 	// Easy json processing, take first 5 rows
@@ -130,6 +132,7 @@ func GetPointsNorthMetar() types.MetarInfo {
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Printf("Failed to parse Point North CYNL Metar HTML err: %v", err)
+		return pointsNorthData
 	}
 
 	matches := pointsNorthRegex.FindAllStringSubmatch(string(body), -1)

@@ -12,7 +12,12 @@ FROM alpine:latest
 
 WORKDIR /app
 
+
 COPY --from=builder /app/scuffed_metar .
+
+
+ARG WEBHOOK_URL_ARG
+ENV WEBHOOK_URL=$WEBHOOK_URL_ARG
 
 EXPOSE 80
 

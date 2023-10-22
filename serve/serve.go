@@ -4,10 +4,12 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/pull"
+	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -17,9 +19,22 @@ var indexTemplateString string
 var indexTemplate = template.Must(template.New("index").Parse(indexTemplateString))
 var currentData = types.IndexData{}
 
+// GetTemplate is used when working locally to avoid having to compile for every html update
+func GetTemplate() *template.Template {
+	file, _ := os.ReadFile("serve/index.html")
+	return template.Must(template.New("index").Parse(string(file)))
+}
+
 func HandleIndex(w http.ResponseWriter, r *http.Request) {
+	// var indexTemplate = GetTemplate()
+
 	log.Println(fmt.Sprintf("%s %s %s", r.Proto, r.Method, r.RequestURI))
 
+	if r.URL.Path != "/" {
+		CatchAll(w, r)
+		return
+	}
+	stats.IncServeCount()
 	w.Header().Set("Content-Type", "text/html")
 
 	// update every 30 seconds max
@@ -32,6 +47,10 @@ func HandleIndex(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Failed to execute index template err: %v\n", err)
 		return
 	}
+}
+
+func CatchAll(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
 }
 
 func updateData() {

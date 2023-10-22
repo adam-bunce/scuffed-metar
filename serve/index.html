@@ -1,57 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scuffed Metar</title>
     <style>
-        h3 {
+        html {
+            -webkit-tap-highlight-color: transparent;
+            overflow-y: scroll;
             font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-            padding-bottom: 0;
-            margin-bottom: 0;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        h3, h2 {
+            padding-bottom: 3px;
+            margin-bottom: 3px;
         }
         body {
-            font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
             font-size: 14px;
             line-height: 1.2;
+            word-break: break-word;
             margin: 0 10% 5%;
         }
-        .dimgrey {
-           color: dimgrey;
+
+        .header {
+            text-align: center;
         }
-        .dib {
-            display: inline-block;
-        }
-        .info {
+        .df {
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -moz-flex;
+            display: -webkit-flex;
             display: flex;
-            align-items: center;
-            flex-direction: column;
+
+            flex-direction: row;
+        }
+        .w-50 {
+            width: 50%;
+        }
+        .dim-grey {
+            color: dimgrey;
+        }
+        .metar-info {
+            padding-bottom: 6px;
+        }
+        .big-text {
+            font-size: 16px;
         }
         @media screen and (max-width: 800px) {
-           body {
-              margin: 1%
-           }
-            div {
-                padding-bottom: 6px;
+            body {
+                margin: 0 2% 5%;
+            }
+            .df {
+                flex-direction: column;
+                -ms-flex-direction: column;
+                -webkit-flex-direction: column;
+            }
+            .w-50 {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-<div class="info">
+
+<section class="header">
     <h2>Scuffed METAR</h2>
-    yet another test update
-    <div class="dib">
-        Current Time: <span class="dimgrey" id="gmtTime"></span>
-        Last Update: <span class="dimgrey"> {{ .LastUpdate.Format "15:04:05 GMT" }} </span>
+    <div class="dim-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
+    <br>
+    <div>
+        <table role="presentation" style="text-align: left;" class="big-text">
+            <tr>
+                <td>Current Time: </td>
+                <td>
+                    <span class="dim-grey" id="gmtTime"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Last Update: </td>
+                <td>
+                    <span class="dim-grey"> {{ .LastUpdate.Format "15:04:05 GMT" }} </span>
+
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="dimgrey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
-</div>
+</section>
+
+<section>
 {{ range .MetarData }}
     <h3>{{ .AirportCode }} {{ .AirportName }} </h3>
         {{ range .MetarInfo }}
-            <div>{{ . }}</div>
+            <div class="metar-info">{{ . }}</div>
         {{ end }}
+
+        {{ if eq .AirportName "Wollaston" "Fonddulac" }}
+            <div class="df">
+                <img class="w-50" src="http://highways.glmobile.com/{{- .AirportName -}}/ptz1.jpg" alt="{{- .AirportName -}} cam pic">
+                <img class="w-50" src="http://highways.glmobile.com/{{- .AirportName -}}/ptz2.jpg" alt="{{- .AirportName -}} cam pic">
+            </div>
+        {{ end }}
+
 {{ end }}
+</section>
 </body>
 <script>
     function updateTime() {
