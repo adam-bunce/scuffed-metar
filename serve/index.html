@@ -61,8 +61,9 @@
         .dim-grey {
             color: dimgrey;
         }
-        .metar-info {
-            padding-bottom: 6px;
+        .metar-info{
+            /* use adjacent sibling combinator later */
+            padding-top: 14px;
         }
         .big-text {
             font-size: 16px;
@@ -86,7 +87,7 @@
     <!-- jump links -->
     <div class="links-container big-text">
         {{ range .MetarData }}
-            {{ if eq .AirportCode "CYLJ" "CYSF" }}
+            {{ if eq .AirportCode "CYLJ" "CYSF" "CYVT" }}
             {{ else }}
                 <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
             {{ end }}
@@ -120,7 +121,7 @@
 <section>
 {{ range .MetarData }}
     <!--  TEMP check if its CYLJ, CYSF if it is do/don't draw, theyre done in cam section -->
-    {{ if (eq .AirportCode "CYLJ" "CYSF") }}
+    {{ if (eq .AirportCode "CYLJ" "CYSF" "CYVT") }}
     {{ else }}
     <h3 id="{{- .AirportCode -}}">{{ .AirportCode }}</h3>
 
@@ -140,7 +141,7 @@
     {{ $metarData := .MetarData }}
     {{ range $camera := .Cameras }}
         <h3 id="{{- .AirportCode -}}">{{ $camera.AirportCode }}</h3>
-        {{ if (eq .AirportCode "CYLJ" "CYSF") }}
+        {{ if (eq .AirportCode "CYLJ" "CYSF" "CYVT") }}
            {{ range getMetar $metarData .AirportCode }}
                 <div class="metar-info">{{ nl2br . }}</div>
             {{ end }}
