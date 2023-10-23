@@ -2,6 +2,7 @@ package serve
 
 import (
 	"bytes"
+	"cmp"
 	_ "embed"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
@@ -10,6 +11,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 )
@@ -112,6 +114,11 @@ func updateData() {
 	for i := 0; i < 4; i++ {
 		metarData = append(metarData, <-results...)
 	}
+
+	// prevent order from changing in ui
+	slices.SortFunc(metarData, func(a, b types.MetarInfo) int {
+		return cmp.Compare(strings.ToLower(a.AirportCode), strings.ToLower(b.AirportCode))
+	})
 
 	currentData.MetarData = metarData
 	currentData.LastUpdate = time.Now().UTC()
