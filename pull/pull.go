@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"slices"
 	"strings"
 )
 
@@ -177,6 +178,8 @@ func GetNavCanadaMetars() []types.MetarInfo {
 		return navCanadaMetars
 	}
 
+	// most recent metar is the last for some reason
+	slices.Reverse(navCanadaBodyData.Data)
 	for _, data := range navCanadaBodyData.Data {
 		if data.Type == "metar" || data.Type == "taf" {
 			// find matching
