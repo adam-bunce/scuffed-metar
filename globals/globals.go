@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var ServerPort = 80
+var ServerPort = 8080
 var webhook = os.Getenv("WEBHOOK_URL")
 var Logger = log.New(os.Stderr, "", log.Lshortfile|log.Lmicroseconds)
 

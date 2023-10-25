@@ -3,6 +3,7 @@ package serve
 import (
 	"bytes"
 	"cmp"
+	"embed"
 	_ "embed"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
@@ -10,6 +11,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"slices"
 	"strings"
@@ -23,25 +25,39 @@ var indexTemplate = GetTemplate()
 var cachedTemplate bytes.Buffer
 
 var currentData = types.IndexData{
-	Cameras: wxCamInfo,
+	AirportInformation: map[string]types.AirportInfo{
+		{
+			AirportName:             "",
+			AirportCode:             "CJF3",
+			CameraAirportIdentifier: "ilealacrosse",
+			CameraCount:             2,
+		}},
+	LastUpdate: time.Time{},
 }
 
-var wxCamInfo = []types.WxCam{
-	{"ilealacrosse", "CJF3", 2},
-	{"cumberlandhouse", "CJT4", 2},
-	{"laloche", "CJL4", 2},
-	{"patuanak", "CKB2", 1},
-	{"pelican", "CJW4", 1},
-	{"pinehouse", "CZPO", 2},
-	{"buffalonarrows", "CYVT", 2},
-	{"hudsonbay", "CYHB", 2},
-	{"stonyrapids", "CYSF", 2},
-	{"sandybay", "CJY4", 3},
-	{"meadowlake", "CYLJ", 2},
-	{"uranium", "CYBE", 1},
-}
+//var wxCamInfo = []types.WxCam{
+//	{"ilealacrosse", "CJF3", 2},
+//	{"cumberlandhouse", "CJT4", 2},
+//	{"laloche", "CJL4", 2},
+//	{"patuanak", "CKB2", 1},
+//	{"pelican", "CJW4", 1},
+//	{"pinehouse", "CZPO", 2},
+//	{"buffalonarrows", "CYVT", 2},
+//	{"hudsonbay", "CYHB", 2},
+//	{"stonyrapids", "CYSF", 2},
+//	{"sandybay", "CJY4", 3},
+//	{"meadowlake", "CYLJ", 2},
+//	{"uranium", "CYBE", 1},
+//}
+
+//go:embed static
+var files embed.FS
 
 func GetTemplate() *template.Template {
+	// file serve static
+	fileSystem, _ := fs.Sub(files, "/")
+	http.FileServer(http.FS(fileSystem))
+
 	// file, _ := os.ReadFile("serve/index.html") // for local dev
 	tmplFuncs := template.FuncMap{
 		// makes a slice given a number to iterate over with range

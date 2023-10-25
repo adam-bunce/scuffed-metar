@@ -9,6 +9,9 @@ import (
 )
 
 func main() {
+	// TODO use new go routing to match requests properly to the methods
+	// TODO write logging middleware
+	// TODO write 404 page
 	http.HandleFunc("/", serve.HandleIndex)
 
 	go stats.StatResetCycle()

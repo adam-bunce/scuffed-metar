@@ -29,7 +29,7 @@ type CamecoResponse struct {
 	} `json:"d"`
 }
 
-type NavCanadaData struct {
+type NavCanadaResponse struct {
 	Meta struct {
 		Now   string `json:"now"`
 		Count struct {
@@ -53,22 +53,45 @@ type NavCanadaData struct {
 	} `json:"data"`
 }
 
-type MetarInfo struct {
-	AirportCode string
-	AirportName string
-	MetarInfo   []string
-}
+// ['CYZL'] -> {"CYZL", "Place Airport", "place", 2} 															// http://highways.glmobile.com/ normal cam
+// ['CYZL'] -> {"CYZL", "Goober Airport", "goober", 3} 															// http://highways.glmobile.com/ normal cam
+// ['CYZL'] -> {"CYZL", "Goober Airport", "goober", 3} 															// http://highways.glmobile.com/ normal cam
+// ['CPZL'] -> {"CPZL", "Sandy Bay", "", 0, "http://highways.glmobile.com/",{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}}		// highways outlier cam
+// ['CBJL'] -> {"CBJL", "TEST Airport", "", 0, "saskpopwer.glmobile.com/charlot", {"/runway.jpg", "/hill.jpg"}}  // special cam
+// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
+// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
+// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
+// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
+// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
 
-// WxCam only highway airports have cameras so all the links are formatted the same
-type WxCam struct {
-	AirportName string
+// PULLING DATA:
+// CAMECO: airportCode
+// Highway: airportSpecialName (pass in airportName/Code pairs?)
+// PointsNorth: 1 thing, gonna pass in airport code?
+// NavCanada: pass in query parameters, or just hardcode...
+
+// each functions returns a map of ['CYZL'] -> []string that's used as it's metar info
+// the airports that each function pulls are determine by _some_ input to the function (except points north lol)
+// AirportInfo being bloated is find i think, better to keep logic out of tempaltes supposedly
+
+type AirportInfo struct {
+	AirportName string // lowkey don't need
 	AirportCode string
-	ImageCount  int
+
+	CameraAirportIdentifier string // this is for highways.glmobile.com, pattern is <base>/airportName/ptz{int}.jpg
+	CameraCount             int
+
+	// yo i can maybe make this better and make the above two
+	// not needed anymore because they all follow the same pattern?
+	// kinda getting too extra thouuu
+	CamHarcodedBaseUrl  string
+	CameraUrlsHardCoded []string // CJP9, sandy bay
+
+	MetarInfo []string
 }
 
 type IndexData struct {
 	sync.Mutex
-	MetarData  []MetarInfo // TODO need way to add urls to this so generating tempalte is cleaner
-	Cameras    []WxCam     // cameras are a separate thing rn but shouldnt be
-	LastUpdate time.Time
+	AirportInformation map[string]AirportInfo
+	LastUpdate         time.Time
 }
