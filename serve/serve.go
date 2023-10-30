@@ -2,149 +2,134 @@ package serve
 
 import (
 	"bytes"
-	"cmp"
 	"embed"
 	_ "embed"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/pull"
-	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
-	"io/fs"
 	"net/http"
-	"slices"
+	"os"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
+//go:embed static
+var files embed.FS
+var fileServer = http.FileServer(http.FS(files))
+
 //go:embed index.html
 var indexTemplateString string
-var indexTemplate = GetTemplate()
+
+var indexTemplate *template.Template = LoadTemplate()
 
 var cachedTemplate bytes.Buffer
 
+var hcUrl = "http://highways.glmobile.com"
+
+func hc(num int) []string {
+	var res []string
+	for i := 1; i < num+1; i++ {
+		res = append(res, fmt.Sprintf("/ptz%s.jpg", strconv.Itoa(i)))
+	}
+	return res
+}
+
+// this is the order displayed in the UI
+var airportInfo = []types.AirportInfo{
+	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}},
+	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}},
+	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}},
+	{"Key Lake", "CYKJ", "", nil, types.WeatherInfo{}},
+
+	{"Points North", "CYNL", "", nil, types.WeatherInfo{}},
+
+	{"", "CYPA", "", nil, types.WeatherInfo{}},
+	{"", "CYVC", "", nil, types.WeatherInfo{}},
+
+	{"Fond du Lac", "CZFD", hcUrl + "/fonddulac", hc(2), types.WeatherInfo{}},
+	{"Wollaston", "CZWL", hcUrl + "/wollaston", hc(2), types.WeatherInfo{}},
+	{"Ile A La Crosse", "CJF3", hcUrl + "/ilealacrosse", hc(2), types.WeatherInfo{}},
+	{"Cumberland House", "CJT4", hcUrl + "/cumberlandhouse", hc(2), types.WeatherInfo{}},
+	{"La Loche", "CJL4", hcUrl + "/laloche", hc(2), types.WeatherInfo{}},
+	{"Patuanak", "CKB2", hcUrl + "/patuanak", hc(1), types.WeatherInfo{}},
+	{"Pelican Narrows", "CJW4", hcUrl + "/pelican", hc(1), types.WeatherInfo{}},
+	{"Pinehouse", "CZPO", hcUrl + "/pinehouse", hc(2), types.WeatherInfo{}},
+	{"Buffalo Narrows", "CYVT", hcUrl + "/buffalonarrows", hc(2), types.WeatherInfo{}},
+	{"Hudson Bay", "CYHB", hcUrl + "/hudsonbay", hc(2), types.WeatherInfo{}},
+	{"Stony Rapids", "CYSF", hcUrl + "/stonyrapids", hc(2), types.WeatherInfo{}},
+	{"Sandy Bay", "CJY4", hcUrl + "/sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}},
+	{"Meadow Lake", "CYLJ", hcUrl + "/meadowlake", hc(2), types.WeatherInfo{}},
+	{"Uranium City", "CYBE", hcUrl + "/uranium", hc(1), types.WeatherInfo{}},
+
+	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}},
+}
+
 var currentData = types.IndexData{
-	AirportInformation: map[string]types.AirportInfo{
-		{
-			AirportName:             "",
-			AirportCode:             "CJF3",
-			CameraAirportIdentifier: "ilealacrosse",
-			CameraCount:             2,
-		}},
-	LastUpdate: time.Time{},
+	LastUpdate:         time.Time{},
+	AirportInformation: airportInfo,
 }
 
-//var wxCamInfo = []types.WxCam{
-//	{"ilealacrosse", "CJF3", 2},
-//	{"cumberlandhouse", "CJT4", 2},
-//	{"laloche", "CJL4", 2},
-//	{"patuanak", "CKB2", 1},
-//	{"pelican", "CJW4", 1},
-//	{"pinehouse", "CZPO", 2},
-//	{"buffalonarrows", "CYVT", 2},
-//	{"hudsonbay", "CYHB", 2},
-//	{"stonyrapids", "CYSF", 2},
-//	{"sandybay", "CJY4", 3},
-//	{"meadowlake", "CYLJ", 2},
-//	{"uranium", "CYBE", 1},
-//}
+func LoadTemplate() *template.Template {
+	globals.Logger.Printf("Loading Template")
+	file, err := os.ReadFile("serve/index.html") // for local dev
+	if err != nil {
+		globals.Logger.Printf(err.Error())
+	}
+	indexTemplateString = string(file)
 
-//go:embed static
-var files embed.FS
-
-func GetTemplate() *template.Template {
-	// file serve static
-	fileSystem, _ := fs.Sub(files, "/")
-	http.FileServer(http.FS(fileSystem))
-
-	// file, _ := os.ReadFile("serve/index.html") // for local dev
-	tmplFuncs := template.FuncMap{
-		// makes a slice given a number to iterate over with range
-		"makeSlice": func(start, stop int) []int {
-			var result []int
-			// base 1 intentionally
-			for i := start; i < stop+1; i++ {
-				result = append(result, i)
-			}
-			return result
-		},
-		"nl2br": func(str string) template.HTML {
-			// just to format taf properly
-			hold := strings.ReplaceAll(str, "  ", "&nbsp;&nbsp;")
-			hold = strings.ReplaceAll(hold, "\n", "<br>")
-			// hold = strings.ReplaceAll(hold, "TEMPO", "<br>TEMPO") TODO format tempo properly
-			return template.HTML(hold)
-		},
-		// check if its CYLJ, CYSF if it is do/don't draw
-		"getMetar": func(metars []types.MetarInfo, str string) []string {
-			for _, metar := range metars {
-				if metar.AirportCode == str {
-					return metar.MetarInfo
-				}
-			}
-			return nil
+	templateFunctions := template.FuncMap{
+		"formatTaf": func(taf string) template.HTML {
+			res := strings.Replace(taf, "\n", "<br>", -1)
+			res = strings.Replace(res, " ", "&nbsp;", -1)
+			return template.HTML(res)
 		},
 	}
-	return template.Must(template.New("index").Funcs(tmplFuncs).Parse(indexTemplateString))
+
+	// TODO add formatting function for TAF
+	return template.Must(template.New("index").Funcs(templateFunctions).Parse(indexTemplateString))
+
 }
 
-func HandleIndex(w http.ResponseWriter, r *http.Request) {
-	globals.Logger.Println(fmt.Sprintf("%s %s %s", r.Proto, r.Method, r.RequestURI))
-
-	if r.URL.Path != "/" {
-		CatchAll(w, r)
-		return
-	}
-	stats.IncServeCount()
-	w.Header().Set("Content-Type", "text/html")
-
-	// update every 30 seconds max
-	if currentData.LastUpdate.Before(time.Now().Add(time.Second * -30)) {
-		updateData()
-	}
-
-	w.Write(cachedTemplate.Bytes())
-}
-
-func CatchAll(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
-}
-
-func updateData() {
-	// var indexTemplate = GetTemplate()
-	globals.Logger.Println("Updating METAR Data")
-	// handlers get put into go routines so lock data incase
+func UpdateData() {
+	start := time.Now()
 	currentData.Lock()
 	defer currentData.Unlock()
 
-	var metarData []types.MetarInfo
+	dataChan := make(chan types.WeatherPullInfo)
 
-	// TODO speed test this to see if its actually faster
-	results := make(chan []types.MetarInfo, 4)
-	go func() { results <- pull.GetAllCamecoData() }()
-	go func() { results <- []types.MetarInfo{pull.GetPointsNorthMetar()} }()
-	go func() { results <- pull.GetAllHighwayData() }()
-	go func() { results <- pull.GetNavCanadaMetars() }()
+	var wg sync.WaitGroup
+	wg.Add(4)
+	go pull.GetAllCamecoData(dataChan, &wg)
+	go pull.GetAllHighwayData(dataChan, &wg)
+	go pull.GetPointsNorthMetar(dataChan, &wg)
+	go pull.GetNavCanadaMetars(dataChan, &wg)
 
-	for i := 0; i < 4; i++ {
-		metarData = append(metarData, <-results...)
+	// close chan so read loop doesn't hang
+	go func() {
+		wg.Wait()
+		close(dataChan)
+	}()
+
+	var metarData []types.WeatherPullInfo
+	for metar := range dataChan {
+		metarData = append(metarData, metar)
 	}
 
-	// prevent order from changing in ui
-	slices.SortFunc(metarData, func(a, b types.MetarInfo) int {
-		return cmp.Compare(strings.ToLower(a.AirportCode), strings.ToLower(b.AirportCode))
-	})
-
-	currentData.MetarData = metarData
 	currentData.LastUpdate = time.Now().UTC()
-
-	globals.Logger.Println("DONE Updating METAR Data")
-
-	cachedTemplate.Reset()
-	err := indexTemplate.Execute(&cachedTemplate, &currentData)
-	if err != nil {
-		globals.Logger.Printf("Failed to execute index template err: %v\n", err)
-		return
+	// Update current data w/ new pulled data
+	for _, pulledAirport := range metarData {
+		for j, currentDataAirports := range currentData.AirportInformation {
+			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+				currentData.AirportInformation[j].Metar = pulledAirport.Metar
+				currentData.AirportInformation[j].Taf = pulledAirport.Taf
+			}
+		}
 	}
+
+	end := time.Now()
+	globals.Logger.Printf("Updated METAR data in %s", end.Sub(start))
 }

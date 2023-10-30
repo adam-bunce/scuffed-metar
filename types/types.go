@@ -53,45 +53,29 @@ type NavCanadaResponse struct {
 	} `json:"data"`
 }
 
-// ['CYZL'] -> {"CYZL", "Place Airport", "place", 2} 															// http://highways.glmobile.com/ normal cam
-// ['CYZL'] -> {"CYZL", "Goober Airport", "goober", 3} 															// http://highways.glmobile.com/ normal cam
-// ['CYZL'] -> {"CYZL", "Goober Airport", "goober", 3} 															// http://highways.glmobile.com/ normal cam
-// ['CPZL'] -> {"CPZL", "Sandy Bay", "", 0, "http://highways.glmobile.com/",{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}}		// highways outlier cam
-// ['CBJL'] -> {"CBJL", "TEST Airport", "", 0, "saskpopwer.glmobile.com/charlot", {"/runway.jpg", "/hill.jpg"}}  // special cam
-// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
-// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
-// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
-// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
-// ['CBJL'] -> {"CBJL", "TEST Airport"} 																		// just metar
-
-// PULLING DATA:
-// CAMECO: airportCode
-// Highway: airportSpecialName (pass in airportName/Code pairs?)
-// PointsNorth: 1 thing, gonna pass in airport code?
-// NavCanada: pass in query parameters, or just hardcode...
-
-// each functions returns a map of ['CYZL'] -> []string that's used as it's metar info
-// the airports that each function pulls are determine by _some_ input to the function (except points north lol)
-// AirportInfo being bloated is find i think, better to keep logic out of tempaltes supposedly
+type WeatherInfo struct {
+	Metar []string
+	Taf   []string
+}
 
 type AirportInfo struct {
-	AirportName string // lowkey don't need
+	AirportName string
 	AirportCode string
 
-	CameraAirportIdentifier string // this is for highways.glmobile.com, pattern is <base>/airportName/ptz{int}.jpg
-	CameraCount             int
+	CamBaseUrl string
+	CamPicUrls []string
+	WeatherInfo
+}
 
-	// yo i can maybe make this better and make the above two
-	// not needed anymore because they all follow the same pattern?
-	// kinda getting too extra thouuu
-	CamHarcodedBaseUrl  string
-	CameraUrlsHardCoded []string // CJP9, sandy bay
-
-	MetarInfo []string
+type WeatherPullInfo struct {
+	AirportCode string
+	WeatherInfo
+	Error error
 }
 
 type IndexData struct {
 	sync.Mutex
-	AirportInformation map[string]AirportInfo
+
+	AirportInformation []AirportInfo
 	LastUpdate         time.Time
 }

@@ -10,7 +10,12 @@ import (
 
 var ServerPort = 8080
 var webhook = os.Getenv("WEBHOOK_URL")
+var Env = "prod"
+
+// TODO use log/slog
 var Logger = log.New(os.Stderr, "", log.Lshortfile|log.Lmicroseconds)
+
+var Client = http.Client{}
 
 func SendWebhook(message string) {
 	_, err := http.Post(webhook, "application/json", strings.NewReader(fmt.Sprintf(`{"content": "%s"}`, message)))
