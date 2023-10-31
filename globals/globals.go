@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var ServerPort = 8080
+var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
 
