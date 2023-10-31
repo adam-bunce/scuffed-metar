@@ -75,11 +75,14 @@ var currentData = types.IndexData{
 
 func LoadTemplate() *template.Template {
 	globals.Logger.Printf("Loading Template")
-	file, err := os.ReadFile("serve/index.html") // for local dev
-	if err != nil {
-		globals.Logger.Printf(err.Error())
+	if globals.Env == "local" {
+		globals.Logger.Printf("Getting index.html from disk")
+		file, err := os.ReadFile("serve/index.html")
+		if err != nil {
+			globals.Logger.Printf(err.Error())
+		}
+		indexTemplateString = string(file)
 	}
-	indexTemplateString = string(file)
 
 	templateFunctions := template.FuncMap{
 		"formatTaf": func(taf string) template.HTML {
@@ -89,9 +92,7 @@ func LoadTemplate() *template.Template {
 		},
 	}
 
-	// TODO add formatting function for TAF
 	return template.Must(template.New("index").Funcs(templateFunctions).Parse(indexTemplateString))
-
 }
 
 func UpdateData() {
