@@ -29,7 +29,7 @@ type CamecoResponse struct {
 	} `json:"d"`
 }
 
-type NavCanadaData struct {
+type NavCanadaResponse struct {
 	Meta struct {
 		Now   string `json:"now"`
 		Count struct {
@@ -53,22 +53,29 @@ type NavCanadaData struct {
 	} `json:"data"`
 }
 
-type MetarInfo struct {
-	AirportCode string
-	AirportName string
-	MetarInfo   []string
+type WeatherInfo struct {
+	Metar []string
+	Taf   []string
 }
 
-// WxCam only highway airports have cameras so all the links are formatted the same
-type WxCam struct {
+type AirportInfo struct {
 	AirportName string
 	AirportCode string
-	ImageCount  int
+
+	CamBaseUrl string
+	CamPicUrls []string
+	WeatherInfo
+}
+
+type WeatherPullInfo struct {
+	AirportCode string
+	WeatherInfo
+	Error error
 }
 
 type IndexData struct {
 	sync.Mutex
-	MetarData  []MetarInfo // TODO need way to add urls to this so generating tempalte is cleaner
-	Cameras    []WxCam     // cameras are a separate thing rn but shouldnt be
-	LastUpdate time.Time
+
+	AirportInformation []AirportInfo
+	LastUpdate         time.Time
 }

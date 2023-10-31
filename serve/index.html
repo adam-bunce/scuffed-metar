@@ -3,183 +3,84 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scuffed Metar</title>
-    <style>
-        html, pre {
-            -webkit-tap-highlight-color: transparent;
-            overflow-y: scroll;
-            font-family: BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        h3, h2 {
-            padding-bottom: 3px;
-            margin-bottom: 3px;
-        }
-        body {
-            font-size: 14px;
-            line-height: 1.2;
-            word-break: break-word;
-            margin: 0 10% 5%;
-        }
-        table, tr, td, th {
-            margin-left: 0;
-            padding-left: 0;
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
-        td {
-            padding-right: 5px;
-        }
-        img {
-            max-width: 100%;
-        }
-        a {
-            text-decoration: none;
-            color: #3273dc;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .images-container {
-            display: grid;
-            gap: 5px;
-            grid-auto-rows: 1fr;
-            grid-template-columns: repeat(2, 1fr);
-        }
-        .links-container {
-            text-align: left;
-            display: grid;
-            gap: 10px;
-            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-            margin-bottom: 14px;
-        }
-        .header {
-            text-align: center;
-        }
-        .dim-grey {
-            color: dimgrey;
-        }
-        .metar-info{
-            /* use adjacent sibling combinator later */
-            padding-bottom: 14px;
-        }
-        .big-text {
-            font-size: 16px;
-        }
-        @media screen and (max-width: 800px) {
-            body {
-                margin: 0 2% 5%;
-            }
-            .images-container {
-                grid-template-columns: repeat(1, 1fr);
-            }
-        }
-    </style>
+    <link rel="icon" type="image/x-icon" href="static/favicon.svg">
+    <link rel="stylesheet" href="static/styles.css">
+    <script type="text/javascript" src="static/script.js" defer></script>
 </head>
 <body>
-
 <section class="header">
-    <h2>Scuffed METAR</h2>
-    <div class="dim-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
-    <br>
-    <!-- jump links -->
-    <div class="links-container big-text">
-        {{ range .MetarData }}
-            {{ if eq .AirportCode "CYLJ" "CYSF" "CYVT" }}
-            {{ else }}
-                <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
-            {{ end }}
+    <div class="header-container">
+        <h2 class="sm mono">Scuffed METAR</h2>
+        <div class="version mono" style="font-family: 'Geist Mono', Courier, serif">v1.0.1</div>
+        <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <div class="nav-links mono">
+        {{ range .AirportInformation }}
+        <a class="btn shadow" href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
         {{ end }}
-        {{ range .Cameras }}
-                <a href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
-        {{ end }}
-        <a href="#charlotRiver">CJP9</a>
     </div>
     <br>
     <div>
-        <table role="presentation" style="text-align: left;" class="big-text">
+        <table role="presentation" style="text-align: left;" class="time">
             <tr>
-                <td>Current Time: </td>
-                <td class="dim-grey" id="gmtTime"></td>
+                <td>Current Time:</td>
+                <td id="gmtTime" class="text-grey"></td>
                 <td>&emsp;</td>
-                <td class="dim-grey" id="zuluTime"></td>
+                <td id="zuluTime" class="text-grey"></td>
             </tr>
             <tr style="">
-                <td style="">Last Update: </td>
-                <td class="dim-grey">
+                <td style="">Last Update:</td>
+                <td class="text-grey">
                     {{ .LastUpdate.Format "15:04:05 GMT" }}
                 </td>
             </tr>
         </table>
     </div>
+    <br>
 </section>
-
-
+<!---->
 <!-- actual data -->
-<section>
-{{ range .MetarData }}
-    <!--  TEMP check if its CYLJ, CYSF if it is do/don't draw, theyre done in cam section -->
-    {{ if (eq .AirportCode "CYLJ" "CYSF" "CYVT") }}
-    {{ else }}
-    <h3 id="{{- .AirportCode -}}">{{ .AirportCode }}</h3>
-
-        {{ range .MetarInfo }}
-                <div class="metar-info">{{ nl2br . }}</div>
-        {{ end }}
-
-         <!-- only airports with wx cam and METAR -->
-        {{ if eq .AirportName "wollaston" "fonddulac" }}
-            <div class="images-container">
-                <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz1.jpg" alt="{{- .AirportName -}} cam pic">
-                <img src="http://highways.glmobile.com/{{- .AirportName -}}/ptz2.jpg" alt="{{- .AirportName -}} cam pic">
-            </div>
-        {{ end }}
-    {{ end }}
-{{ end }}
-    {{ $metarData := .MetarData }}
-    {{ range $camera := .Cameras }}
-        <h3 id="{{- .AirportCode -}}">{{ $camera.AirportCode }}</h3>
-        {{ if (eq .AirportCode "CYLJ" "CYSF" "CYVT") }}
-           {{ range getMetar $metarData .AirportCode }}
-                <div class="metar-info">{{ nl2br . }}</div>
+<section class="main">
+    {{ range .AirportInformation }}
+        <div class="airportInfo">
+            <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }} <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i> </h3>
+            <blockquote>
+            {{ range .WeatherInfo.Metar }}
+                <div class="weatherInfo">{{ . }}</div>
             {{ end }}
-        {{ end }}
-        <div class="images-container">
-            {{ range $index := makeSlice 1 .ImageCount }}
-                {{ if (and (eq $index 1) (eq $camera.AirportName "sandybay" ))}}
-                     <!-- sandy bay has cam 1 as ptz.jpg not ptz1.jpg -->
-                    <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz.jpg" alt="{{- $camera.AirportName }} cam pic">
-                {{ else }}
-                    <img src="http://highways.glmobile.com/{{- $camera.AirportName -}}/ptz{{- $index -}}.jpg" alt="{{- $camera.AirportName }} cam pic">
-                {{ end }}
+            {{ range .WeatherInfo.Taf }}
+                <div class="weatherInfo">{{ formatTaf . }}</div>
             {{ end }}
+
+            {{ $picBaseUrl := .CamBaseUrl }}
+            {{ $airportCode := .AirportCode}}
+            {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
+
+            {{ if (eq $hasNoCam false) }}
+                <div class="camera-container">
+                    {{ range .CamPicUrls }}
+                        <img class="camera shadow" src="{{ $picBaseUrl }}{{- . -}}" alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080" referrerpolicy="no-referrer">
+                    {{ end }}
+                </div>
+            {{ end }}
+            </blockquote>
         </div>
+        {{ if (eq $hasNoCam true) }}
+            <div class="divider"></div>
+        {{ else }}
+            <div class="spacing-div"></div>
+        {{ end }}
     {{ end }}
-    <h3 id="charlotRiver">CJP9</h3>
-    <div class="images-container">
-        <img src="http://saskpower.glmobile.com/charlot/runway.jpg" alt="charlot river airport runway cam">
-        <img src="http://saskpower.glmobile.com/charlot/hill.jpg" alt="charlot river airport hill cam">
-    </div>
 </section>
+<footer class="footer">
+    <div class="header-divider"></div>
+    <div class="header-container">
+        <div></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+    </div>
+</footer>
 </body>
-<script>
-    function updateTime() {
-        // The timezone is always zero UTC offset
-        const currentDate = new Date()
-        document.getElementById('gmtTime').innerText = currentDate.toISOString().slice(11, 19) + ' GMT'
-        document.getElementById('zuluTime').innerText = toZuluTimeFormat(currentDate)
-    }
-    function toZuluTimeFormat(date) {
-        const day = String(date.getUTCDate()).padStart(2, '0');
-        const hours = String(date.getUTCHours()).padStart(2, '0');
-        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-
-        return `${day}${hours}${minutes}Z`;
-    }
-
-    updateTime();
-    setInterval(updateTime, 1000);
-</script>
 </html>

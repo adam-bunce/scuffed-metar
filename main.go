@@ -9,10 +9,14 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", serve.HandleIndex)
-
+	// TODO use new go routing to match requests properly to the methods
+	// TODO write logging middleware
+	serve.UpdateData()
 	go stats.StatResetCycle()
 
-	globals.Logger.Printf("Server Listening on port: %d\n", globals.ServerPort)
-	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/static/", serve.HandleStatic)
+	mux.HandleFunc("/", serve.HandleAll)
+
+	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)
 }
