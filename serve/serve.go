@@ -69,6 +69,7 @@ var airportInfo = []types.AirportInfo{
 }
 
 var currentData = types.IndexData{
+	Version:            globals.Version,
 	LastUpdate:         time.Time{},
 	AirportInformation: airportInfo,
 }

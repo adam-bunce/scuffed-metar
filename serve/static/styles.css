@@ -230,6 +230,23 @@ blockquote {
     margin-left: 1em;
 }
 
+
+.jump-to-top {
+    display: none;
+    position: fixed;
+    bottom: 1em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--blue);
+
+    font-size: 16px;
+    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
+    text-align: center;
+    border: 1px solid var(--black);
+    padding: .25em .5em;
+    color: var(--white)
+}
+
 @media screen and (max-width: 1080px) {
     :root {
         --width: 95%;
@@ -238,6 +255,9 @@ blockquote {
 
 /* Media */
 @media screen and (max-width: 800px) {
+    .jump-to-top {
+        display: block;
+    }
     :root {
         --width: 95%;
     }

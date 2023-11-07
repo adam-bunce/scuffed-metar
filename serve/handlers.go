@@ -22,7 +22,7 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 	stats.IncServeCount()
 
 	// update every 30 seconds max
-	if currentData.LastUpdate.Before(time.Now().Add(time.Second * -30)) {
+	if currentData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
 		UpdateData()
 	}
 
@@ -42,7 +42,6 @@ func HandleStatic(w http.ResponseWriter, r *http.Request) {
 
 	if globals.Env == "local" {
 		globals.Logger.Printf("using http.Dir NOT embedded fs")
-		// http.FileServer(http.Dir("serve/static/")).ServeHTTP(w, r)
 		http.FileServer(http.Dir("serve/")).ServeHTTP(w, r)
 	} else {
 		fileServer.ServeHTTP(w, r)

@@ -76,6 +76,7 @@ type WeatherPullInfo struct {
 type IndexData struct {
 	sync.Mutex
 
+	Version            string
 	AirportInformation []AirportInfo
 	LastUpdate         time.Time
 }
