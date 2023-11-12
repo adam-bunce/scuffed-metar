@@ -1,4 +1,4 @@
-FROM golang:1.21 as builder
+FROM golang:1.21 as build-step
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/scuffed_metar .
+COPY --from=build-step /app/scuffed_metar .
 
 ARG WEBHOOK_URL_ARG
 ENV WEBHOOK_URL=$WEBHOOK_URL_ARG

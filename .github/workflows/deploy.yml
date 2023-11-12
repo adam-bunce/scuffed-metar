@@ -31,9 +31,10 @@ jobs:
           IMAGE_TAG: scuffed_metar_image
         run: |
           aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg WEBHOOK_URL_ARG=${{ secrets.WEBHOOK_URL }} .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg WEBHOOK_URL_ARG=${{ secrets.WEBHOOK_URL }} -f main.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Restart ECS
+      - name: Update Container Image
         run: |
-          aws ecs update-service --cluster scuffed_metar --service scuffed_metar_with_alb --force-new-deployment --region us-east-1 
+          curl -H "Authorization: Bearer ${{ secrets.BEARER }}" ${{ secrets.URL }}
+
