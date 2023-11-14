@@ -47,6 +47,7 @@ var airportInfo = []types.AirportInfo{
 
 	{"Points North", "CYNL", "", nil, types.WeatherInfo{}},
 
+	{"", "CYXE", "", nil, types.WeatherInfo{}},
 	{"", "CYPA", "", nil, types.WeatherInfo{}},
 	{"", "CYVC", "", nil, types.WeatherInfo{}},
 
