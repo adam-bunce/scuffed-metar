@@ -92,7 +92,7 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 		wg.Add(1)
 		go func(i int) { getHighwayData(airportInfo[i+1], airportInfo[i], dataChan); wg.Done() }(i)
 	}
-	specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche"}
+	specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse"}
 	for i := 0; i < len(specialAirportInfo); i += 2 {
 		wg.Add(1)
 		go func(i int) {

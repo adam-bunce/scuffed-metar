@@ -236,7 +236,6 @@ blockquote {
 
 
 .jump-to-top {
-    display: none;
     position: fixed;
     bottom: 1em;
     left: 50%;
@@ -259,9 +258,6 @@ blockquote {
 
 /* Media */
 @media screen and (max-width: 800px) {
-    .jump-to-top {
-        display: block;
-    }
     :root {
         --width: 95%;
     }
