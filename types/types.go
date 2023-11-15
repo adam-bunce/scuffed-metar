@@ -56,6 +56,7 @@ type NavCanadaResponse struct {
 type WeatherInfo struct {
 	Metar []string
 	Taf   []string
+	Error error
 }
 
 type AirportInfo struct {
@@ -70,7 +71,6 @@ type AirportInfo struct {
 type WeatherPullInfo struct {
 	AirportCode string
 	WeatherInfo
-	Error error
 }
 
 type IndexData struct {

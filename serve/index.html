@@ -47,6 +47,7 @@
     {{ range .AirportInformation }}
         <div class="airportInfo">
             <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }} <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i> </h3>
+            {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>
             {{ range .WeatherInfo.Metar }}
                 <div class="weatherInfo">{{ . }}</div>

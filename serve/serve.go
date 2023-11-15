@@ -129,10 +129,10 @@ func UpdateData() {
 			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
 				currentData.AirportInformation[j].Metar = pulledAirport.Metar
 				currentData.AirportInformation[j].Taf = pulledAirport.Taf
+				currentData.AirportInformation[j].Error = pulledAirport.Error
 			}
 		}
 	}
 
-	end := time.Now()
-	globals.Logger.Printf("Updated METAR data in %s", end.Sub(start))
+	globals.Logger.Printf("Updated METAR data in %d ms", time.Since(start).Milliseconds())
 }

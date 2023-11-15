@@ -122,6 +122,10 @@ blockquote .weatherInfo:not(:last-of-type) {
 .text-grey {
     color: var(--grey);
 }
+.error{
+    color: var(--red);
+    text-transform: uppercase;
+}
 .text-smaller {
     font-size: .9em;
 }

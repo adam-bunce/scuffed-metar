@@ -80,6 +80,10 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	dataChan <- weatherInfo
 }
 
+// NOTE: this will probably change once the metar testing is done
+var specialHighwayMetarPattern = regexp.MustCompile(`(?s)</h2>.*<p>(.*?)<br>(.*)<b></b>(.*)</p>`) // this is horrible
+var specialHighwayTestWarning = regexp.MustCompile(`<h2>(.*?)</h2>`)                              // temp for warning
+
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
@@ -88,7 +92,61 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 		wg.Add(1)
 		go func(i int) { getHighwayData(airportInfo[i+1], airportInfo[i], dataChan); wg.Done() }(i)
 	}
+	specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche"}
+	for i := 0; i < len(specialAirportInfo); i += 2 {
+		wg.Add(1)
+		go func(i int) {
+			getSpecialHighwayData(specialAirportInfo[i+1], specialAirportInfo[i], dataChan)
+			wg.Done()
+		}(i)
+	}
 	wg.Done()
+}
+
+func getSpecialHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	weatherInfo := types.WeatherPullInfo{
+		AirportCode: airportCode,
+	}
+
+	res, err := globals.Client.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportName))
+	if err != nil {
+		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		globals.Logger.Printf("Failed to read highway body for airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+
+	warningMessageMatches := specialHighwayTestWarning.FindStringSubmatch(string(body))
+	if len(warningMessageMatches) > 1 {
+		weatherInfo.Error = fmt.Errorf(warningMessageMatches[1])
+	}
+
+	metarMatches := specialHighwayMetarPattern.FindStringSubmatch(string(body))
+	if len(metarMatches) != 0 {
+		linesInH2Para := strings.Split(metarMatches[0], "\n")
+		var metarSpeciMatches []string
+
+		for _, item := range linesInH2Para {
+			if strings.Contains(item, "METAR") || strings.Contains(item, "SPECI") {
+				metarSpeciMatches = append(metarSpeciMatches, item)
+			}
+		}
+
+		weatherInfo.Metar = metarSpeciMatches
+	} else {
+		weatherInfo.Error = fmt.Errorf("failed to find metar matches")
+	}
+
+	dataChan <- weatherInfo
 }
 
 func getHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
@@ -119,7 +177,7 @@ func getHighwayData(airportName, airportCode string, dataChan chan<- types.Weath
 		metarStrings := strings.Split(metarString, "<br>")
 		weatherInfo.Metar = metarStrings
 	} else {
-		weatherInfo.Error = fmt.Errorf("failed to find matches")
+		weatherInfo.Error = fmt.Errorf("failed to find metar matches")
 	}
 
 	dataChan <- weatherInfo
