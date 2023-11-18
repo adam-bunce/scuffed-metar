@@ -23,6 +23,9 @@ const App = {
       .camera-container {
         display: block;
       }
+      .main {
+        width: 80%;
+      }
     
     ${targetIds} {
       padding-top: 10px;
