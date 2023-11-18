@@ -226,6 +226,15 @@ blockquote .weatherInfo:not(:last-of-type) {
     background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
     background-size: 10px 10px;
 
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+}
+
+.gafpic {
+    background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
+    background-size: 10px 10px;
+
     height: auto;
     max-width: 100%;
 }
