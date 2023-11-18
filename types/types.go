@@ -53,6 +53,55 @@ type NavCanadaResponse struct {
 	} `json:"data"`
 }
 
+type GfaImageIds struct {
+	CloudsWeather     []string
+	IcingTurbFreezing []string
+}
+
+type ParsedText struct {
+	Product      string `json:"product"`
+	SubProduct   string `json:"sub_product"`
+	Geography    string `json:"geography"`
+	SubGeography string `json:"sub_geography"`
+	FrameLists   []struct {
+		Id     int    `json:"id"`
+		Sv     string `json:"sv"`
+		Ev     string `json:"ev"`
+		Frames []struct {
+			Id     int    `json:"id"`
+			Sv     string `json:"sv"`
+			Ev     string `json:"ev"`
+			Images []struct {
+				Id      int    `json:"id"`
+				Created string `json:"created"`
+			} `json:"images"`
+		} `json:"frames"`
+	} `json:"frame_lists"`
+}
+
+type NavCanadaImageResponse struct {
+	Meta struct {
+		Now   string `json:"now"`
+		Count struct {
+			Image int `json:"image"`
+		} `json:"count"`
+		Messages []interface{} `json:"messages"`
+	} `json:"meta"`
+	Data []struct {
+		Type          string      `json:"type"`
+		Pk            string      `json:"pk"`
+		Location      string      `json:"location"`
+		StartValidity string      `json:"startValidity"`
+		EndValidity   interface{} `json:"endValidity"`
+		Text          string      `json:"text"`
+		HasError      bool        `json:"hasError"`
+		Position      struct {
+			PointReference string `json:"pointReference"`
+			RadialDistance int    `json:"radialDistance"`
+		} `json:"position"`
+	} `json:"data"`
+}
+
 type WeatherInfo struct {
 	Metar []string
 	Taf   []string
@@ -79,4 +128,14 @@ type IndexData struct {
 	Version            string
 	AirportInformation []AirportInfo
 	LastUpdate         time.Time
+}
+
+type GfaPageData struct {
+	sync.Mutex
+
+	Version string
+	GfaImageIds
+	LastUpdate time.Time
+
+	Error error
 }

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scuffed Metar</title>
+    <title>METAR | Scuffed Metar</title>
     <link rel="icon" type="image/x-icon" href="static/favicon.svg">
     <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
     <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
@@ -17,7 +17,16 @@
 
     <div class="header-divider"></div>
 
-    <div class="nav-links mono">
+    <div class="site-nav-links mono">
+        <a class="btn shadow current-page" href="/">METAR</a>
+        <a class="btn shadow" href="/gfa">GFA</a>
+    </div>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+    <div class="subnav-links mono">
         {{ range .AirportInformation }}
         <a class="btn shadow" href="#{{- .AirportCode -}}">{{ .AirportCode }}</a>
         {{ end }}

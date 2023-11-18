@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFA | Scuffed Metar</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.svg">
+    <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
+    <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
+</head>
+<body>
+<section class="header">
+    <div class="header-container">
+        <h2 class="sm mono" id="top">Scuffed METAR</h2>
+        <div class="version mono" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
+        <div class="reload-info text-grey">TESTING IN PROD</div>
+    </div>
+
+    <div class="header-divider"></div>
+
+    <div class="site-nav-links mono">
+        <a class="btn shadow" href="/">METAR</a>
+        <a class="btn shadow current-page" href="/gfa">GFA</a>
+    </div>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+    <div>
+        <table role="presentation" style="text-align: left;" class="time">
+            <tr>
+                <td>Current Time:</td>
+                <td id="gmtTime" class="text-grey"></td>
+                <td>&emsp;</td>
+                <td id="zuluTime" class="text-grey"></td>
+            </tr>
+            <tr style="">
+                <td style="">Last Update:</td>
+                <td class="text-grey">
+                    {{ .LastUpdate.Format "15:04:05 GMT" }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</section>
+
+<section class="main">
+
+    <h3 class="mono">Clouds and Weather Forecasts</h3>
+    <blockquote>
+        <div class="camera-container">
+            {{ range .CloudsWeather }}
+                <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.}}.image" alt="FAILED TO LOAD: {{ . }} IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+            {{ end }}
+        </div>
+    </blockquote>
+
+    <div class="spacing-div"></div>
+
+    <h3 class="mono"> Turbulence, Icing and Freezing Level Forecasts</h3>
+    <blockquote>
+        <div class="camera-container">
+            {{ range .IcingTurbFreezing }}
+            <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.}}.image" alt="FAILED TO LOAD: {{ . }} IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+            {{ end }}
+        </div>
+    </blockquote>
+</section>
+
+<footer class="footer">
+    <div class="header-divider"></div>
+    <div class="header-container">
+        <div class="mono"></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+    </div>
+</footer>
+</body>
+</html>

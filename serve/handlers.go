@@ -16,23 +16,48 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if globals.Env == "local" {
-		indexTemplate = LoadTemplate()
+		indexTemplate = LoadTemplate("serve/index.html", "index")
 	}
 
 	stats.IncServeCount()
 
 	// update every 30 seconds max
-	if currentData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
-		UpdateData()
+	if indexData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
+		UpdateIndexData()
 	}
 
-	cachedTemplate.Reset()
-	err := indexTemplate.Execute(&cachedTemplate, &currentData)
+	// this looks like an unnecesscary execute? cant we just send the bytes?
+	cachedIndexTemplate.Reset()
+	err := indexTemplate.Execute(&cachedIndexTemplate, &indexData)
 	if err != nil {
 		globals.Logger.Printf(err.Error())
 	}
 
-	w.Write(cachedTemplate.Bytes())
+	w.Write(cachedIndexTemplate.Bytes())
+}
+
+func HandleGfa(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	if globals.Env == "local" {
+		gfaTemplate = LoadTemplate("serve/gfa.html", "gfa")
+	}
+
+	stats.IncServeCount()
+
+	// update every 30 seconds max
+	if gfaData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
+		UpdateGfaData()
+	}
+
+	// update template
+	cachedGfaTemplate.Reset()
+	err := gfaTemplate.Execute(&cachedGfaTemplate, &gfaData)
+	if err != nil {
+		globals.Logger.Printf(err.Error())
+	}
+
+	w.Write(cachedGfaTemplate.Bytes())
 }
 
 func HandleStatic(w http.ResponseWriter, r *http.Request) {

@@ -95,10 +95,16 @@ img::before {
     min-height: var(--header-height)
 }
 
-.nav-links {
+.subnav-links {
    display: grid;
    gap: 10px;
    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+}
+
+.site-nav-links {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
 }
 
 .main {
@@ -197,15 +203,17 @@ blockquote .weatherInfo:not(:last-of-type) {
     box-shadow: 2px 2px var(--grey);
 }
 
-
 .divider {
     border-bottom: 2px dotted var(--black);
     margin: 0 0 2em 0;
 }
 
-
 .divider:last-of-type {
     border-bottom: none;
+}
+
+.site-nav-divider {
+    border-bottom: 2px dotted var(--black);
 }
 
 .camera-container {
@@ -228,6 +236,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     margin: 1em 0 1em 0;
     display: inline-block;
 }
+
 blockquote {
     margin-right: 1em;
     margin-top: .25em;
@@ -261,8 +270,11 @@ blockquote {
     :root {
         --width: 95%;
     }
-    .nav-links {
+    .subnav-links {
         grid-template-columns: repeat(4, 1fr);
+    }
+    .site-nav-links {
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .camera-container {
@@ -287,4 +299,10 @@ blockquote {
     }
     .version {
     }
+}
+
+
+.current-page {
+    background-color: var(--blue);
+    color: var(--white);
 }

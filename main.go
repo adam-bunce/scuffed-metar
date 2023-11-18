@@ -11,11 +11,14 @@ import (
 func main() {
 	// TODO use new go routing to match requests properly to the methods
 	// TODO write logging middleware
-	serve.UpdateData()
+	serve.UpdateGfaData()
+	serve.UpdateIndexData()
+
 	go stats.StatResetCycle()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/static/", serve.HandleStatic)
+	mux.HandleFunc("/gfa", serve.HandleGfa)
 	mux.HandleFunc("/", serve.HandleAll)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)

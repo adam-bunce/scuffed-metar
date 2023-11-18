@@ -23,10 +23,13 @@ var fileServer = http.FileServer(http.FS(files))
 
 //go:embed index.html
 var indexTemplateString string
+var indexTemplate = LoadTemplate("", "index", indexTemplateString)
+var cachedIndexTemplate bytes.Buffer
 
-var indexTemplate *template.Template = LoadTemplate()
-
-var cachedTemplate bytes.Buffer
+//go:embed gfa.html
+var gfaTemplateString string
+var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
+var cachedGfaTemplate bytes.Buffer
 
 var hcUrl = "http://highways.glmobile.com"
 
@@ -69,38 +72,68 @@ var airportInfo = []types.AirportInfo{
 	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}},
 }
 
-var currentData = types.IndexData{
+var indexData = types.IndexData{
 	Version:            globals.Version,
 	LastUpdate:         time.Time{},
 	AirportInformation: airportInfo,
 }
 
-func LoadTemplate() *template.Template {
-	globals.Logger.Printf("Loading Template")
-	if globals.Env == "local" {
-		globals.Logger.Printf("Getting index.html from disk")
-		file, err := os.ReadFile("serve/index.html")
+var gfaData = types.GfaPageData{
+	Version:     globals.Version,
+	GfaImageIds: types.GfaImageIds{},
+}
+
+func LoadTemplate(templatePath string, templateName string, templateStr ...string) *template.Template {
+	var templateString string
+
+	templateFunctions := template.FuncMap{"formatTaf": func(taf string) template.HTML {
+		res := strings.Replace(taf, "\n", "<br>", -1)
+		res = strings.Replace(res, " ", "&nbsp;", -1)
+		return template.HTML(res)
+	},
+	}
+
+	globals.Logger.Printf("Loading %s Template", templateName)
+	if globals.Env == "local" && templatePath != "" {
+		globals.Logger.Printf("Getting %s from disk", templatePath)
+		file, err := os.ReadFile(templatePath)
 		if err != nil {
 			globals.Logger.Printf(err.Error())
 		}
-		indexTemplateString = string(file)
+		templateString = string(file)
+	} else if len(templateStr) > 0 {
+		globals.Logger.Printf("Loading template from templateStr param")
+		return template.Must(template.New(templateName).Funcs(templateFunctions).Parse(templateStr[0]))
 	}
 
-	templateFunctions := template.FuncMap{
-		"formatTaf": func(taf string) template.HTML {
-			res := strings.Replace(taf, "\n", "<br>", -1)
-			res = strings.Replace(res, " ", "&nbsp;", -1)
-			return template.HTML(res)
-		},
-	}
-
-	return template.Must(template.New("index").Funcs(templateFunctions).Parse(indexTemplateString))
+	return template.Must(template.New(templateName).Funcs(templateFunctions).Parse(templateString))
 }
 
-func UpdateData() {
+func UpdateGfaData() {
+	ids, err := pull.GetGFAImageIds()
+	if err != nil {
+		gfaData.Error = err
+		gfaData.GfaImageIds = types.GfaImageIds{}
+		return
+	}
+
+	gfaData.GfaImageIds = ids
+	gfaData.LastUpdate = time.Now().UTC()
+
+	// TODO so if i do it in here, after every update i don't get hot reloads
+	// but if i do, then i don't actually cache the template or anything
+	// update template
+	cachedGfaTemplate.Reset()
+	err = gfaTemplate.Execute(&cachedGfaTemplate, &gfaData)
+	if err != nil {
+		globals.Logger.Printf(err.Error())
+	}
+}
+
+func UpdateIndexData() {
 	start := time.Now()
-	currentData.Lock()
-	defer currentData.Unlock()
+	indexData.Lock()
+	defer indexData.Unlock()
 
 	dataChan := make(chan types.WeatherPullInfo)
 
@@ -122,17 +155,19 @@ func UpdateData() {
 		metarData = append(metarData, metar)
 	}
 
-	currentData.LastUpdate = time.Now().UTC()
+	indexData.LastUpdate = time.Now().UTC()
 	// Update current data w/ new pulled data
 	for _, pulledAirport := range metarData {
-		for j, currentDataAirports := range currentData.AirportInformation {
+		for j, currentDataAirports := range indexData.AirportInformation {
 			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
-				currentData.AirportInformation[j].Metar = pulledAirport.Metar
-				currentData.AirportInformation[j].Taf = pulledAirport.Taf
-				currentData.AirportInformation[j].Error = pulledAirport.Error
+				indexData.AirportInformation[j].Metar = pulledAirport.Metar
+				indexData.AirportInformation[j].Taf = pulledAirport.Taf
+				indexData.AirportInformation[j].Error = pulledAirport.Error
 			}
 		}
 	}
 
 	globals.Logger.Printf("Updated METAR data in %d ms", time.Since(start).Milliseconds())
+
+	// TODO update cached stuff here and just always serve
 }
