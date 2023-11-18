@@ -8,7 +8,7 @@
     <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
 </head>
 <body>
-<section class="header">
+<section id="header" class="header">
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version mono" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
@@ -25,16 +25,64 @@
     <br>
     <div class="site-nav-divider"></div>
     <br>
+    <section>
+        <h3>Print Settings</h3>
+        <br>
 
-    <div class="subnav-links mono">
-        {{ range .CloudsWeather }}
-            <a class="btn shadow" href="/graphic-area-forecast/CLDWX-{{.StartValidity}}">{{ .StartValidity }}</a>
+        <div style="display: flex;gap: 50px">
+            <div>
+        <h4>Clouds & Weather</h4>
+                <blockquote>
+        {{ range .CloudsWeather}}
+            <div style="display: flex; align-items: center;justify-items:center;" class="mono">
+                <button class="checkbox mono" id="{{.Id}}"><strong></strong></button>
+                <div>&nbsp;{{ .StartValidity}}</div>
+                <!-- .Format "15:04:05 GMT"-->
+            </div>
         {{ end }}
+                </blockquote>
+            </div>
 
+            <div>
+        <h4>Icing, Turbulence & Freezing level</h4>
+                <blockquote>
         {{ range .IcingTurbFreezing }}
-        <a class="btn shadow" href="/graphic-area-forecast/TURBC-{{.StartValidity}}">{{ .StartValidity }}</a>
+        <div style="display: flex; align-items: center;justify-items:center;" class="mono">
+            <button class="checkbox mono" id="{{.Id}}"><strong></strong></button>
+            <div>&nbsp;{{ .StartValidity}}</div>
+            <!-- .Format "15:04:05 GMT"-->
+        </div>
         {{ end }}
-    </div>
+                </blockquote>
+            </div>
+        </div>
+
+
+
+
+        <br>
+        <div class="mono">
+            <button class="btn shadow green" id="print-button">Print</button>
+            <button class="btn shadow red" id="reset-button">Reset</button>
+            <button class="btn shadow" id="select-all-button">Select All</button>
+<!--            above is grey b/c its a button not link-->
+            <br>
+        </div>
+    </section>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+<!--    <div class="subnav-links mono">-->
+<!--        {{ range .CloudsWeather }}-->
+<!--            <a class="btn shadow" href="/graphic-area-forecast/CLDWX-{{.StartValidity}}">{{ .StartValidity }}</a>-->
+<!--        {{ end }}-->
+
+<!--        {{ range .IcingTurbFreezing }}-->
+<!--        <a class="btn shadow" href="/graphic-area-forecast/TURBC-{{.StartValidity}}">{{ .StartValidity }}</a>-->
+<!--        {{ end }}-->
+<!--    </div>-->
     <br>
 
     <div>
@@ -63,7 +111,7 @@
     <blockquote>
         <div class="camera-container">
             {{ range .CloudsWeather }}
-                <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                <img id="img-{{.Id}}" class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>
@@ -75,13 +123,13 @@
     <blockquote>
         <div class="camera-container">
             {{ range .IcingTurbFreezing }}
-            <img class="gafpic shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+            <img id=img-{{.Id}} class="gafpic shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>
 </section>
 
-<footer class="footer">
+<footer id="footer" class="footer">
     <div class="header-divider"></div>
     <div class="header-container">
         <div class="mono"></div>
