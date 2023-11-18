@@ -1,7 +1,7 @@
 /* Variables */
 :root {
-    --footer-height: 60px;
-    --header-height: 60px;
+    --footer-height: 30px;
+    --header-height: 200px;
     --width: 70%;
 
     --black: #000000;
@@ -92,7 +92,7 @@ img::before {
 .header {
     width: var(--width);
     margin: auto;
-    min-height: var(--header-height)
+    min-height: var(--header-height) /*OK*/
 }
 
 .subnav-links {
@@ -110,7 +110,7 @@ img::before {
 .main {
     width: var(--width);
     margin: auto;
-    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    min-height: calc(90vh - var(--header-height) - var(--footer-height));
 }
 
 .footer {
@@ -226,8 +226,6 @@ blockquote .weatherInfo:not(:last-of-type) {
     background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
     background-size: 10px 10px;
 
-
-    width: 100%;
     height: auto;
     max-width: 100%;
 }

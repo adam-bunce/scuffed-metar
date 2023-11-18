@@ -53,9 +53,15 @@ type NavCanadaResponse struct {
 	} `json:"data"`
 }
 
-type GfaImageIds struct {
-	CloudsWeather     []string
-	IcingTurbFreezing []string
+type GfaInfo struct {
+	CloudsWeather     []GFAMetadata
+	IcingTurbFreezing []GFAMetadata
+}
+
+type GFAMetadata struct {
+	StartValidity string
+	EndValidity   string
+	Id            string
 }
 
 type ParsedText struct {
@@ -68,10 +74,10 @@ type ParsedText struct {
 		Sv     string `json:"sv"`
 		Ev     string `json:"ev"`
 		Frames []struct {
-			Id     int    `json:"id"`
-			Sv     string `json:"sv"`
-			Ev     string `json:"ev"`
-			Images []struct {
+			Id            int    `json:"id"`
+			StartValidity string `json:"sv"`
+			EndValidity   string `json:"ev"`
+			Images        []struct {
 				Id      int    `json:"id"`
 				Created string `json:"created"`
 			} `json:"images"`
@@ -134,7 +140,7 @@ type GfaPageData struct {
 	sync.Mutex
 
 	Version string
-	GfaImageIds
+	GfaInfo
 	LastUpdate time.Time
 
 	Error error

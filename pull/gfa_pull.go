@@ -15,9 +15,8 @@ import (
 //
 // Data _should_ have a length of 2 the CloudsWeather or IcingTurbFreezing are distinguished by the .Location
 // which can contain CLDWX or TURBC
-func GetGFAImageIds() (types.GfaImageIds, error) {
-	// TODO wait group
-	var imageIds types.GfaImageIds
+func GetGFAImageIds() (types.GfaInfo, error) {
+	var imageIds types.GfaInfo
 
 	response, err := globals.Client.Get("https://plan.navcanada.ca/weather/api/alpha/?point=CYXE|site|-106.700,52.171&image=GFA/CLDWX&image=GFA/TURBC")
 	if err != nil {
@@ -43,9 +42,17 @@ func GetGFAImageIds() (types.GfaImageIds, error) {
 		for _, frame := range parsedText.FrameLists[len(parsedText.FrameLists)-1].Frames {
 			if len(frame.Images) > 0 {
 				if strings.Contains(item.Location, "CLDWX") {
-					imageIds.CloudsWeather = append(imageIds.CloudsWeather, strconv.Itoa(frame.Images[len(frame.Images)-1].Id))
+					imageIds.CloudsWeather = append(imageIds.CloudsWeather, types.GFAMetadata{
+						StartValidity: frame.StartValidity,
+						EndValidity:   frame.EndValidity,
+						Id:            strconv.Itoa(frame.Images[len(frame.Images)-1].Id),
+					})
 				} else {
-					imageIds.IcingTurbFreezing = append(imageIds.IcingTurbFreezing, strconv.Itoa(frame.Images[len(frame.Images)-1].Id))
+					imageIds.IcingTurbFreezing = append(imageIds.IcingTurbFreezing, types.GFAMetadata{
+						StartValidity: frame.StartValidity,
+						EndValidity:   frame.EndValidity,
+						Id:            strconv.Itoa(frame.Images[len(frame.Images)-1].Id),
+					})
 				}
 			}
 

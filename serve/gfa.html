@@ -19,11 +19,22 @@
 
     <div class="site-nav-links mono">
         <a class="btn shadow" href="/">METAR</a>
-        <a class="btn shadow current-page" href="/gfa">GFA</a>
+        <a class="btn shadow current-page" href="/graphic-area-forecast">GFA</a>
     </div>
 
     <br>
     <div class="site-nav-divider"></div>
+    <br>
+
+    <div class="subnav-links mono">
+        {{ range .CloudsWeather }}
+            <a class="btn shadow" href="/graphic-area-forecast/CLDWX-{{.StartValidity}}">{{ .StartValidity }}</a>
+        {{ end }}
+
+        {{ range .IcingTurbFreezing }}
+        <a class="btn shadow" href="/graphic-area-forecast/TURBC-{{.StartValidity}}">{{ .StartValidity }}</a>
+        {{ end }}
+    </div>
     <br>
 
     <div>
@@ -48,10 +59,11 @@
 <section class="main">
 
     <h3 class="mono">Clouds and Weather Forecasts</h3>
+    <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
     <blockquote>
         <div class="camera-container">
             {{ range .CloudsWeather }}
-                <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.}}.image" alt="FAILED TO LOAD: {{ . }} IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>
@@ -59,10 +71,11 @@
     <div class="spacing-div"></div>
 
     <h3 class="mono"> Turbulence, Icing and Freezing Level Forecasts</h3>
+    <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
     <blockquote>
         <div class="camera-container">
             {{ range .IcingTurbFreezing }}
-            <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.}}.image" alt="FAILED TO LOAD: {{ . }} IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+            <img class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>

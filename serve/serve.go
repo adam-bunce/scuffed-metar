@@ -31,6 +31,10 @@ var gfaTemplateString string
 var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
 var cachedGfaTemplate bytes.Buffer
 
+//go:embed gfa_subroute.html
+var gfaSubRouteTemplateString string
+var gfaSubRouteTemplate = LoadTemplate("", "gfa_subroute", gfaSubRouteTemplateString)
+
 var hcUrl = "http://highways.glmobile.com"
 
 func hc(num int) []string {
@@ -79,8 +83,7 @@ var indexData = types.IndexData{
 }
 
 var gfaData = types.GfaPageData{
-	Version:     globals.Version,
-	GfaImageIds: types.GfaImageIds{},
+	Version: globals.Version,
 }
 
 func LoadTemplate(templatePath string, templateName string, templateStr ...string) *template.Template {
@@ -113,11 +116,11 @@ func UpdateGfaData() {
 	ids, err := pull.GetGFAImageIds()
 	if err != nil {
 		gfaData.Error = err
-		gfaData.GfaImageIds = types.GfaImageIds{}
+		gfaData.GfaInfo = types.GfaInfo{}
 		return
 	}
 
-	gfaData.GfaImageIds = ids
+	gfaData.GfaInfo = ids
 	gfaData.LastUpdate = time.Now().UTC()
 
 	// TODO so if i do it in here, after every update i don't get hot reloads
