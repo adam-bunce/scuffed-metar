@@ -86,6 +86,8 @@ const App = {
       width: 100vw !important;
       /* height: 90vh;  */
       /* object-fit: contain; */
+      border-bottom: 2px dotted var(--black);
+      margin: 0 0 2em 0;
     }
   }
 `;
