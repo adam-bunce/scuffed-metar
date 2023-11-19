@@ -35,7 +35,7 @@
                 <blockquote>
         {{ range .CloudsWeather}}
             <div style="display: flex; align-items: center;justify-items:center;" class="mono">
-                <button class="checkbox mono" id="{{.Id}}"><strong></strong></button>
+                <button class="gaf-checkbox mono" id="{{.Id}}"><strong></strong></button>
                 <div>&nbsp;{{ .StartValidity}}</div>
                 <!-- .Format "15:04:05 GMT"-->
             </div>
@@ -48,7 +48,7 @@
                 <blockquote>
         {{ range .IcingTurbFreezing }}
         <div style="display: flex; align-items: center;justify-items:center;" class="mono">
-            <button class="checkbox mono" id="{{.Id}}"><strong></strong></button>
+            <button class="gaf-checkbox mono" id="{{.Id}}"><strong></strong></button>
             <div>&nbsp;{{ .StartValidity}}</div>
             <!-- .Format "15:04:05 GMT"-->
         </div>
@@ -83,6 +83,7 @@
 <!--        <a class="btn shadow" href="/graphic-area-forecast/TURBC-{{.StartValidity}}">{{ .StartValidity }}</a>-->
 <!--        {{ end }}-->
 <!--    </div>-->
+
     <br>
 
     <div>

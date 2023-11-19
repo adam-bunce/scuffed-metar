@@ -10,6 +10,7 @@
     --blue: #418BC3;
     --red: #DD4E3E;
     --green: #499D66;
+    --yellow: #BFAD38;
 }
 
 @font-face {
@@ -211,11 +212,29 @@ blockquote .weatherInfo:not(:last-of-type) {
     color: var(--white);
 }
 
+.yellow {
+    background-color: var(--yellow);
+}
+
 .shadow {
     box-shadow: 2px 2px var(--grey);
 }
 
-.checkbox {
+.gaf-checkbox {
+    height: 1.25em;
+    width: 1.25em;
+
+    font-size: 16px;
+    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
+    border: 1px solid var(--black);
+    background-color: var(--white);
+    color: var(--black);
+    cursor: pointer;
+    padding: 0;
+    margin-top: 3px;
+}
+
+.metar-checkbox {
     height: 1.25em;
     width: 1.25em;
 
@@ -307,7 +326,7 @@ blockquote {
         grid-template-columns: repeat(4, 1fr);
     }
     .site-nav-links {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .camera-container {
@@ -333,7 +352,6 @@ blockquote {
     .version {
     }
 }
-
 
 .current-page {
     background-color: var(--blue);

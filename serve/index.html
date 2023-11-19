@@ -8,7 +8,7 @@
     <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
 </head>
 <body>
-<section class="header">
+<section id="header" class="header">
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version mono" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
@@ -20,7 +20,40 @@
     <div class="site-nav-links mono">
         <a class="btn shadow current-page" href="/">METAR</a>
         <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
+
+   <dialog id="print-dialog">
+       <section>
+            <div style="display: flex;justify-content: space-between ">
+                <div>
+                    <h3>Print Settings</h3>
+                    <div class="text-grey">might not work on mobile/firefox.</div>
+                </div>
+                <button id="print-dialog-close-trigger" class="btn shadow red">Close</button>
+            </div>
+           <br>
+           <div class="subnav-links">
+              {{ range .AirportInformation }}
+               {{ if not (eq (len .Metar) 0) }}
+               <div style="display: flex; align-items: center;justify-items:center;" class="mono">
+                   <button class="metar-checkbox mono" id="{{.AirportCode}}"><strong></strong></button>
+                   <div>&nbsp;{{ .AirportCode }}</div>
+               </div>
+               {{ end }}
+               {{ end }}
+           </div>
+
+           <div style="display: flex;padding-top:10px">
+           <br>
+           <div class="mono">
+               <button class="btn shadow green" id="metar-print-button">Loading...</button>
+               <button class="btn shadow red" id="metar-reset-button">Reset</button>
+               <button class="btn shadow" id="metar-select-all-button">Select All</button>
+               <!--            above is grey b/c its a button not link-->
+           </div>
+       </section>
+   </dialog>
 
     <br>
     <div class="site-nav-divider"></div>
@@ -55,7 +88,7 @@
 <!-- actual data -->
 <section class="main">
     {{ range .AirportInformation }}
-        <div class="airportInfo">
+        <div id="{{.AirportCode}}-section" class="airportInfo">
             <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }} <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i> </h3>
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>
@@ -73,16 +106,16 @@
             {{ if (eq $hasNoCam false) }}
                 <div class="camera-container">
                     {{ range .CamPicUrls }}
-                        <img class="camera shadow" src="{{ $picBaseUrl }}{{- . -}}" alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080" referrerpolicy="no-referrer">
+                        <img class="camera shadow" src="{{ $picBaseUrl }}{{- . -}}" alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080" referrerpolicy="no-referrer" >
                     {{ end }}
                 </div>
             {{ end }}
             </blockquote>
         </div>
         {{ if (eq $hasNoCam true) }}
-            <div class="divider"></div>
+            <div id="{{.AirportCode}}-divider" class="divider"></div>
         {{ else }}
-            <div class="spacing-div"></div>
+            <div class="{{.AirportCode}}-divider"></div>
         {{ end }}
     {{ end }}
 </section>
@@ -93,7 +126,7 @@
     </div>
 </a>
 
-<footer class="footer">
+<footer id="footer" class="footer">
     <div class="header-divider"></div>
     <div class="header-container">
         <div class="mono"></div>
