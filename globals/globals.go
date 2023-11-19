@@ -10,7 +10,7 @@ import (
 
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
-var Env = "local"
+var Env = "prod"
 var Version = "1.3.6" // for cache busting
 
 // TODO use log/slog
