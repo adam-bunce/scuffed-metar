@@ -31,10 +31,6 @@ var gfaTemplateString string
 var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
 var cachedGfaTemplate bytes.Buffer
 
-//go:embed gfa_subroute.html
-var gfaSubRouteTemplateString string
-var gfaSubRouteTemplate = LoadTemplate("", "gfa_subroute", gfaSubRouteTemplateString)
-
 var hcUrl = "http://highways.glmobile.com"
 
 func hc(num int) []string {

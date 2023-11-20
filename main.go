@@ -18,10 +18,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/static/", serve.HandleStatic)
-
 	mux.HandleFunc("/graphic-area-forecast", serve.HandleGfa)
-	mux.HandleFunc("/graphic-area-forecast/", serve.HandleGfaSubRoute)
-
 	mux.HandleFunc("/", serve.HandleAll)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)

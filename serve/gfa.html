@@ -7,85 +7,77 @@
     <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
     <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
 </head>
+
 <body>
+<!-- Header -->
 <section id="header" class="header">
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version mono" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
-        <div class="reload-info text-grey">TESTING IN PROD</div>
+        <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
     </div>
-
     <div class="header-divider"></div>
 
+    <!-- Main Site Nav-->
     <div class="site-nav-links mono">
         <a class="btn shadow" href="/">METAR</a>
         <a class="btn shadow current-page" href="/graphic-area-forecast">GFA</a>
+        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
-
     <br>
     <div class="site-nav-divider"></div>
     <br>
-    <section>
-        <h3>Print Settings</h3>
-        <br>
 
-        <div style="display: flex;gap: 50px">
-            <div>
-        <h4>Clouds & Weather</h4>
-                <blockquote>
-        {{ range .CloudsWeather}}
-            <div style="display: flex; align-items: center;justify-items:center;" class="mono">
-                <button class="gaf-checkbox mono" id="{{.Id}}"><strong></strong></button>
-                <div>&nbsp;{{ .StartValidity}}</div>
-                <!-- .Format "15:04:05 GMT"-->
+    <!-- Print Settings-->
+    <dialog id="print-dialog" class="shadow">
+        <section>
+            <div class="dialog-meta">
+                <div>
+                    <h3>Print Settings</h3>
+                    <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
+                </div>
+                <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
             </div>
-        {{ end }}
-                </blockquote>
-            </div>
-
-            <div>
-        <h4>Icing, Turbulence & Freezing level</h4>
-                <blockquote>
-        {{ range .IcingTurbFreezing }}
-        <div style="display: flex; align-items: center;justify-items:center;" class="mono">
-            <button class="gaf-checkbox mono" id="{{.Id}}"><strong></strong></button>
-            <div>&nbsp;{{ .StartValidity}}</div>
-            <!-- .Format "15:04:05 GMT"-->
-        </div>
-        {{ end }}
-                </blockquote>
-            </div>
-        </div>
-
-
-
-
-        <br>
-        <div class="mono">
-            <button class="btn shadow green" id="print-button">Print</button>
-            <button class="btn shadow red" id="reset-button">Reset</button>
-            <button class="btn shadow" id="select-all-button">Select All</button>
-<!--            above is grey b/c its a button not link-->
             <br>
-        </div>
-    </section>
 
-    <br>
-    <div class="site-nav-divider"></div>
-    <br>
+            <div class="gfa-dialog-content">
+                <div>
+                    <h4>Clouds & Weather</h4>
+                    <blockquote>
+                        {{ range .CloudsWeather}}
+                            <div class="mono gfa-dialog-content-item">
+                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                            </div>
+                        {{ end }}
+                    </blockquote>
+                </div>
 
-<!--    <div class="subnav-links mono">-->
-<!--        {{ range .CloudsWeather }}-->
-<!--            <a class="btn shadow" href="/graphic-area-forecast/CLDWX-{{.StartValidity}}">{{ .StartValidity }}</a>-->
-<!--        {{ end }}-->
+                <div>
+                    <h4>Icing, Turbulence & Freezing level</h4>
+                    <blockquote>
+                        {{ range .IcingTurbFreezing }}
+                            <div class="mono gfa-dialog-content-item">
+                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                            </div>
+                        {{ end }}
+                    </blockquote>
+                </div>
+            </div>
+            <br>
 
-<!--        {{ range .IcingTurbFreezing }}-->
-<!--        <a class="btn shadow" href="/graphic-area-forecast/TURBC-{{.StartValidity}}">{{ .StartValidity }}</a>-->
-<!--        {{ end }}-->
-<!--    </div>-->
+            <div class="mono">
+                <button class="btn shadow green" id="print-button" disabled>Print</button>
+                <button class="btn shadow red" id="reset-button">Reset</button>
+                <button class="btn shadow" id="select-all-button">Select All</button>
+                <br>
+            </div>
+        </section>
+    </dialog>
+    <!-- End Print Settings-->
 
-    <br>
-
+    <!-- Clock -->
     <div>
         <table role="presentation" style="text-align: left;" class="time">
             <tr>
@@ -105,14 +97,15 @@
     <br>
 </section>
 
+<!-- Forecasts -->
 <section class="main">
-
     <h3 class="mono">Clouds and Weather Forecasts</h3>
     <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
     <blockquote>
         <div class="camera-container">
             {{ range .CloudsWeather }}
-                <img id="img-{{.Id}}" class="camera shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                <img id="print-{{.Id}}" class="image shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
+                     alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>
@@ -124,7 +117,8 @@
     <blockquote>
         <div class="camera-container">
             {{ range .IcingTurbFreezing }}
-            <img id=img-{{.Id}} class="gafpic shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image" alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                <img id=print-{{.Id}} class="image shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
+                     alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
             {{ end }}
         </div>
     </blockquote>

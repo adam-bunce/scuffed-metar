@@ -7,65 +7,75 @@
     <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
     <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
 </head>
+
 <body>
+<!-- Header -->
 <section id="header" class="header">
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version mono" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
         <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
     </div>
-
     <div class="header-divider"></div>
 
+    <!-- Main Site Nav-->
     <div class="site-nav-links mono">
         <a class="btn shadow current-page" href="/">METAR</a>
         <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
         <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
 
-   <dialog id="print-dialog">
-       <section>
-            <div style="display: flex;justify-content: space-between ">
+    <!-- Print Modal-->
+    <dialog id="print-dialog">
+        <section>
+            <div style="display: flex;justify-content: space-between">
                 <div>
                     <h3>Print Settings</h3>
-                    <div class="text-grey">might not work on mobile/firefox.</div>
+                    <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
                 </div>
-                <button id="print-dialog-close-trigger" class="btn shadow red">Close</button>
+                <div>
+                    <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
+                </div>
             </div>
-           <br>
-           <div class="subnav-links">
-              {{ range .AirportInformation }}
-               {{ if not (eq (len .Metar) 0) }}
-               <div style="display: flex; align-items: center;justify-items:center;" class="mono">
-                   <button class="metar-checkbox mono" id="{{.AirportCode}}"><strong></strong></button>
-                   <div>&nbsp;{{ .AirportCode }}</div>
-               </div>
-               {{ end }}
-               {{ end }}
-           </div>
+            <br>
+            <div class="metar-dialog-content">
+                {{ range .AirportInformation }}
+                    {{ if not (eq (len .Metar) 0) }}
+                        <div style="display: flex; align-items: center;justify-items:center;" class="mono">
+                            <button class="checkbox mono" id="{{.AirportCode}}-print-checkbox"></button>
+                            <div>&nbsp;{{ .AirportCode }}</div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            </div>
 
-           <div style="display: flex;padding-top:10px"></div>
-           <br>
-           <div class="mono">
-               <button class="btn shadow green" id="metar-print-button">Loading...</button>
-               <button class="btn shadow red" id="metar-reset-button">Reset</button>
-               <button class="btn shadow" id="metar-select-all-button">Select All</button>
-               <!--            above is grey b/c its a button not link-->
-           </div>
-       </section>
-   </dialog>
+            <div style="display: flex;padding-top:10px"></div>
+            <br>
+            <div class="mono">
+                <button class="btn shadow green" id="print-button" disabled >Print</button>
+                <button class="btn shadow red" id="reset-button">Reset</button>
+                <button class="btn shadow" id="select-all-button">Select All</button>
+                <!--            above is grey b/c its a button not link-->
+            </div>
+        </section>
+    </dialog>
 
     <br>
     <div class="site-nav-divider"></div>
     <br>
 
+    <!-- Page Nav-->
     <div class="subnav-links mono">
-        {{ range .AirportInformation }}
-        <a class="btn shadow" href="#{{- .AirportCode -}}-section">{{ .AirportCode }}</a>
+            {{ range .AirportInformation }}
+            <a class="btn shadow" href="#{{- .AirportCode -}}-section">{{ .AirportCode }}</a>
         {{ end }}
     </div>
+    <a class="jump-to-top" href="#top">
+        <div>TOP</div>
+    </a>
     <br>
 
+    <!-- Clock -->
     <div>
         <table role="presentation" style="text-align: left;" class="time">
             <tr>
@@ -84,32 +94,36 @@
     </div>
     <br>
 </section>
-<!---->
-<!-- actual data -->
+
+<!-- Airport METAR/wxCams -->
 <section class="main">
     {{ range .AirportInformation }}
         <div id="{{.AirportCode}}-section" class="airportInfo">
-            <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }} <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i> </h3>
+            <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
+                <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
+            </h3>
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>
-            {{ range .WeatherInfo.Metar }}
-                <div class="weatherInfo">{{ . }}</div>
-            {{ end }}
-            {{ range .WeatherInfo.Taf }}
-                <div class="weatherInfo">{{ formatTaf . }}</div>
-            {{ end }}
+                {{ range .WeatherInfo.Metar }}
+                    <div class="weatherInfo">{{ . }}</div>
+                {{ end }}
+                {{ range .WeatherInfo.Taf }}
+                    <div class="weatherInfo">{{ formatTaf . }}</div>
+                {{ end }}
 
-            {{ $picBaseUrl := .CamBaseUrl }}
-            {{ $airportCode := .AirportCode}}
-            {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
+                {{ $picBaseUrl := .CamBaseUrl }}
+                {{ $airportCode := .AirportCode}}
+                {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
 
-            {{ if (eq $hasNoCam false) }}
+                {{ if (eq $hasNoCam false) }}
                 <div class="camera-container">
                     {{ range .CamPicUrls }}
-                        <img class="camera shadow" src="{{ $picBaseUrl }}{{- . -}}" alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080" referrerpolicy="no-referrer" >
+                        <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
+                             alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
+                             referrerpolicy="no-referrer">
                     {{ end }}
                 </div>
-            {{ end }}
+                {{ end }}
             </blockquote>
         </div>
         {{ if (eq $hasNoCam true) }}
@@ -119,12 +133,6 @@
         {{ end }}
     {{ end }}
 </section>
-
-<a class="jump-to-top" href="#top">
-    <div>
-        TOP
-    </div>
-</a>
 
 <footer id="footer" class="footer">
     <div class="header-divider"></div>

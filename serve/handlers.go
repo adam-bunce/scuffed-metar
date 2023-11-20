@@ -4,7 +4,6 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -59,54 +58,6 @@ func HandleGfa(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write(cachedGfaTemplate.Bytes())
-}
-
-func HandleGfaSubRoute(w http.ResponseWriter, r *http.Request) {
-	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
-
-	URIParts := strings.Split(r.RequestURI, "/")
-	targetGFA := URIParts[len(URIParts)-1]
-
-	if gfaData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
-		UpdateGfaData()
-	}
-
-	executeData := struct {
-		Type          string
-		Version       string
-		Id            string
-		StartValidity string
-		LastUpdate    time.Time
-	}{}
-	// find matching data to send
-	if strings.Contains(targetGFA, "CLDWX") {
-		for _, entry := range gfaData.CloudsWeather {
-			if strings.Replace(targetGFA, "CLDWX-", "", -1) == entry.StartValidity {
-				executeData.Type = "CLDWX"
-				executeData.Id = entry.Id
-				executeData.StartValidity = entry.StartValidity
-				executeData.Version = globals.Version
-				executeData.LastUpdate = gfaData.LastUpdate
-			}
-		}
-	} else {
-		for _, entry := range gfaData.IcingTurbFreezing {
-			if strings.Replace(targetGFA, "TURBC-", "", -1) == entry.StartValidity {
-				executeData.Type = "TURBC"
-				executeData.Id = entry.Id
-				executeData.StartValidity = entry.StartValidity
-				executeData.Version = globals.Version
-				executeData.LastUpdate = gfaData.LastUpdate
-			}
-		}
-	}
-
-	// send stuff
-	err := gfaSubRouteTemplate.Execute(w, &executeData)
-	if err != nil {
-		globals.Logger.Printf(err.Error())
-	}
-
 }
 
 func HandleStatic(w http.ResponseWriter, r *http.Request) {

@@ -1,6 +1,6 @@
 /* Variables */
 :root {
-    --footer-height: 30px;
+    --footer-height: 50px;
     --header-height: 200px;
     --width: 70%;
 
@@ -26,8 +26,6 @@
     font-weight: normal;
     font-style: normal;
 }
-
-
 
 /* Reset */
 * {
@@ -89,21 +87,24 @@ img::before {
     font-family: GeistMono, Courier, serif;
 }
 
+blockquote {
+    margin-right: 1em;
+    margin-top: .25em;
+    margin-left: 1em;
+}
+
+dialog {
+    border: 1px solid var(--black);
+}
 
 /* Formatting */
 .header {
     width: var(--width);
     margin: auto;
-    min-height: var(--header-height) /*OK*/
+    min-height: var(--header-height)
 }
 
-.subnav-links {
-   display: grid;
-   gap: 10px;
-   grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
-}
-
-.site-nav-links {
+.subnav-links, .site-nav-links {
     display: grid;
     gap: 10px;
     grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
@@ -112,7 +113,7 @@ img::before {
 .main {
     width: var(--width);
     margin: auto;
-    min-height: calc(90vh - var(--header-height) - var(--footer-height));
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 .footer {
@@ -122,7 +123,7 @@ img::before {
     min-height: var(--footer-height)
 }
 
- /* Looks */
+/* Looks */
 blockquote .weatherInfo:not(:last-of-type) {
     padding-bottom: 1.2em;
 }
@@ -130,14 +131,15 @@ blockquote .weatherInfo:not(:last-of-type) {
 .text-grey {
     color: var(--grey);
 }
-.error{
+
+.error {
     color: var(--red);
     text-transform: uppercase;
 }
+
 .text-smaller {
     font-size: .9em;
 }
-
 
 .airportInfo .weatherInfo:last-of-type {
     padding-bottom: 0;
@@ -157,18 +159,20 @@ blockquote .weatherInfo:not(:last-of-type) {
 }
 
 .mono {
-    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+/* scuffed metar title */
 .sm {
     min-width: 100%;
     font-size: 26px;
     align-self: end;
 }
+
 .reload-info {
     order: 2;
     flex-basis: 80%;
 }
-
 
 .version {
     order: 3;
@@ -179,6 +183,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     color: var(--white);
     margin-left: auto;
 }
+
 .refresh {
     max-width: 70%;
 }
@@ -189,7 +194,7 @@ blockquote .weatherInfo:not(:last-of-type) {
 
 .btn {
     font-size: 16px;
-    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
+    font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
     text-align: center;
     border: 1px solid var(--black);
     padding: .25em 1em .25em 1em;
@@ -208,38 +213,20 @@ blockquote .weatherInfo:not(:last-of-type) {
 }
 
 .green {
-    background-color: var(--green);
+    background-color: var(--blue);
     color: var(--white);
-}
-
-.yellow {
-    background-color: var(--yellow);
 }
 
 .shadow {
     box-shadow: 2px 2px var(--grey);
 }
 
-.gaf-checkbox {
+.checkbox {
     height: 1.25em;
     width: 1.25em;
 
     font-size: 16px;
-    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
-    border: 1px solid var(--black);
-    background-color: var(--white);
-    color: var(--black);
-    cursor: pointer;
-    padding: 0;
-    margin-top: 3px;
-}
-
-.metar-checkbox {
-    height: 1.25em;
-    width: 1.25em;
-
-    font-size: 16px;
-    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
+    font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
     border: 1px solid var(--black);
     background-color: var(--white);
     color: var(--black);
@@ -267,16 +254,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     grid-template-columns: repeat(2, 1fr);
 }
 
-.camera {
-    background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
-    background-size: 10px 10px;
-
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-}
-
-.gafpic {
+.image {
     background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
     background-size: 10px 10px;
 
@@ -289,12 +267,10 @@ blockquote .weatherInfo:not(:last-of-type) {
     display: inline-block;
 }
 
-blockquote {
-    margin-right: 1em;
-    margin-top: .25em;
-    margin-left: 1em;
+.current-page {
+    background-color: var(--blue);
+    color: var(--white);
 }
-
 
 .jump-to-top {
     position: fixed;
@@ -304,27 +280,57 @@ blockquote {
     background-color: var(--blue);
 
     font-size: 16px;
-    font-family: GeistMono,BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;;
+    font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
     text-align: center;
     border: 1px solid var(--black);
     padding: .25em .5em;
     color: var(--white)
 }
 
+/* Dialogs */
+.dialog-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog-close-btn {
+    align-self: flex-start; /* Aligns the button to the start of the cross axis */
+}
+
+.metar-dialog-content {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+}
+
+.gfa-dialog-content {
+    display: flex;
+    gap: 25px;
+    align-content: space-between;
+}
+
+.gfa-dialog-content-item {
+    display: flex;
+    align-items: center;
+    justify-items:center;
+}
+
+/* Media */
 @media screen and (max-width: 1080px) {
     :root {
         --width: 95%;
     }
 }
 
-/* Media */
 @media screen and (max-width: 800px) {
     :root {
         --width: 95%;
     }
+
     .subnav-links {
         grid-template-columns: repeat(4, 1fr);
     }
+
     .site-nav-links {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -332,9 +338,22 @@ blockquote {
     .camera-container {
         grid-template-columns: repeat(1, 1fr);
     }
+
     blockquote {
         margin-left: 0;
         margin-right: 0;
+    }
+
+    .gfa-dialog-content {
+        display: block;
+    }
+
+    .gfa-dialog-content-item {
+        margin-bottom: 5px;
+    }
+
+    .metar-dialog-content {
+        grid-template-columns: repeat(3, 1fr);
     }
 
 }
@@ -349,11 +368,4 @@ blockquote {
         min-width: auto;
         align-self: start;
     }
-    .version {
-    }
-}
-
-.current-page {
-    background-color: var(--blue);
-    color: var(--white);
 }
