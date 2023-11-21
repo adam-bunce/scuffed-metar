@@ -8,9 +8,7 @@ COPY . .
 
 RUN CGO_ENABLED=0 go build -o scuffed_metar .
 
-# TODO pin versions
-# TODO Distroless Container
-FROM alpine:latest
+FROM alpine:3.18
 
 WORKDIR /app
 
