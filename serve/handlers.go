@@ -4,7 +4,6 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"net/http"
-	"time"
 )
 
 func HandleAll(w http.ResponseWriter, r *http.Request) {
@@ -21,19 +20,9 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 
 	stats.IncServeCount()
 
-	// update every 30 seconds max
-	if indexData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
-		UpdateIndexData()
-	}
+	TryUpdateMETARData()
 
-	// this looks like an unnecesscary execute? cant we just send the bytes?
-	cachedIndexTemplate.Reset()
-	err := indexTemplate.Execute(&cachedIndexTemplate, &indexData)
-	if err != nil {
-		globals.Logger.Printf(err.Error())
-	}
-
-	w.Write(cachedIndexTemplate.Bytes())
+	indexTemplate.Execute(w, &indexData)
 }
 
 func HandleGfa(w http.ResponseWriter, r *http.Request) {
@@ -45,19 +34,9 @@ func HandleGfa(w http.ResponseWriter, r *http.Request) {
 
 	stats.IncServeCount()
 
-	// update every 30 seconds max
-	if gfaData.LastUpdate.Before(time.Now().Add(time.Second*-30)) && globals.Env != "local" {
-		UpdateGfaData()
-	}
+	TryUpdateGFAData()
 
-	// update template
-	cachedGfaTemplate.Reset()
-	err := gfaTemplate.Execute(&cachedGfaTemplate, &gfaData)
-	if err != nil {
-		globals.Logger.Printf(err.Error())
-	}
-
-	w.Write(cachedGfaTemplate.Bytes())
+	gfaTemplate.Execute(w, &gfaData)
 }
 
 func HandleStatic(w http.ResponseWriter, r *http.Request) {

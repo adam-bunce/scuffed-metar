@@ -1,7 +1,6 @@
 package serve
 
 import (
-	"bytes"
 	"embed"
 	_ "embed"
 	"fmt"
@@ -24,12 +23,10 @@ var fileServer = http.FileServer(http.FS(files))
 //go:embed index.html
 var indexTemplateString string
 var indexTemplate = LoadTemplate("", "index", indexTemplateString)
-var cachedIndexTemplate bytes.Buffer
 
 //go:embed gfa.html
 var gfaTemplateString string
 var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
-var cachedGfaTemplate bytes.Buffer
 
 var hcUrl = "http://highways.glmobile.com"
 
@@ -108,7 +105,15 @@ func LoadTemplate(templatePath string, templateName string, templateStr ...strin
 	return template.Must(template.New(templateName).Funcs(templateFunctions).Parse(templateString))
 }
 
-func UpdateGfaData() {
+func TryUpdateGFAData() {
+	start := time.Now()
+	gfaData.Lock()
+	defer gfaData.Unlock()
+
+	if !(time.Since(gfaData.LastUpdate) > 30*time.Second) {
+		return
+	}
+
 	ids, err := pull.GetGFAImageIds()
 	if err != nil {
 		gfaData.Error = err
@@ -119,20 +124,17 @@ func UpdateGfaData() {
 	gfaData.GfaInfo = ids
 	gfaData.LastUpdate = time.Now().UTC()
 
-	// TODO so if i do it in here, after every update i don't get hot reloads
-	// but if i do, then i don't actually cache the template or anything
-	// update template
-	cachedGfaTemplate.Reset()
-	err = gfaTemplate.Execute(&cachedGfaTemplate, &gfaData)
-	if err != nil {
-		globals.Logger.Printf(err.Error())
-	}
+	globals.Logger.Printf("Updated GFA data in %d ms", time.Since(start).Milliseconds())
 }
 
-func UpdateIndexData() {
+func TryUpdateMETARData() {
 	start := time.Now()
 	indexData.Lock()
 	defer indexData.Unlock()
+
+	if !(time.Since(indexData.LastUpdate) > 30*time.Second) {
+		return
+	}
 
 	dataChan := make(chan types.WeatherPullInfo)
 
@@ -167,6 +169,4 @@ func UpdateIndexData() {
 	}
 
 	globals.Logger.Printf("Updated METAR data in %d ms", time.Since(start).Milliseconds())
-
-	// TODO update cached stuff here and just always serve
 }

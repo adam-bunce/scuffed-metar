@@ -9,10 +9,8 @@ import (
 )
 
 func main() {
-	// TODO use new go routing to match requests properly to the methods
-	// TODO write logging middleware
-	serve.UpdateGfaData()
-	serve.UpdateIndexData()
+	serve.TryUpdateGFAData()
+	serve.TryUpdateMETARData()
 
 	go stats.StatResetCycle()
 

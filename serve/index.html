@@ -26,7 +26,7 @@
     </div>
 
     <!-- Print Modal-->
-    <dialog id="print-dialog">
+    <dialog id="print-dialog" class="shadow">
         <section>
             <div style="display: flex;justify-content: space-between">
                 <div>
@@ -129,7 +129,7 @@
         {{ if (eq $hasNoCam true) }}
             <div id="{{.AirportCode}}-divider" class="divider"></div>
         {{ else }}
-            <div class="{{.AirportCode}}-divider"></div>
+            <div id="{{.AirportCode}}-divider" class="spacing-div"></div>
         {{ end }}
     {{ end }}
 </section>
