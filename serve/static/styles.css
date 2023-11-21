@@ -258,6 +258,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     background-image: repeating-radial-gradient(circle, var(--black) 0px, var(--black) 1px, transparent 2px, transparent 100%);
     background-size: 10px 10px;
 
+    width: 100%;
     height: auto;
     max-width: 100%;
 }
@@ -294,7 +295,7 @@ blockquote .weatherInfo:not(:last-of-type) {
 }
 
 .dialog-close-btn {
-    align-self: flex-start; /* Aligns the button to the start of the cross axis */
+    align-self: flex-start;
 }
 
 .metar-dialog-content {
