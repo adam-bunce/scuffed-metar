@@ -2,18 +2,23 @@ const metarPrintSettings = `
 .airportInfo, [id$="-section"], [id$="-divider"], #print-dialog, #header, #footer, img, .camera-container, .jump-to-top {
     display: none;
 } 
-
 .spacing-div {
     margin: 0;
 }
 `
 
 const gfaPrintSettings = `
-dialog, #header, #footer, img {
+dialog, #header, #footer, img, .spacing-div {
     display: none;
 } 
+blockquote {
+    margin: 0px;
+}
 .camera-container {
     display: block;
+}
+h3.mono {
+    display: none;
 }
 .shadow {
     box-shadow: none;
@@ -95,13 +100,16 @@ const App = {
 
         const printStyle = `
 @media print{
+    :root {
+        --width: 100%;
+    }
     ${useMetarSettings ? metarPrintSettings : gfaPrintSettings}
 
     ${selectedElements} {
          padding-top: 10px;
          display: block !important;   
-         width: 100vw !important;
          ${useMetarSettings ? 'border-bottom: 2px dotted var(--black);margin: 0 0 2em 0;' : ''}
+         ${useMetarSettings ? '' : 'width: 75% !important'}
     }
 }`
 

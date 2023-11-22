@@ -6,6 +6,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"io"
+	"net/http"
 	"regexp"
 	"slices"
 	"strings"
@@ -34,9 +35,18 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	   }
 	}`, airportCode))
 
-	res, err := globals.Client.Post("http://smartweb.axys-aps.com/svc/WebDataService.svc/WebData/GetWebDataResponse",
-		"application/json; charset=UTF-8",
-		camecoRequestBody)
+	req, err := http.NewRequest("POST", "http://smartweb.axys-aps.com/svc/WebDataService.svc/WebData/GetWebDataResponse", camecoRequestBody)
+	if err != nil {
+		globals.Logger.Printf("Failed to create cameco request for %s, err: %v", airportCode, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Keep-Alive", "timeout=3")
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
 		weatherInfo.Error = err
@@ -111,7 +121,17 @@ func getSpecialHighwayData(airportName, airportCode string, dataChan chan<- type
 		AirportCode: airportCode,
 	}
 
-	res, err := globals.Client.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportName))
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s", airportName), nil)
+	if err != nil {
+		globals.Logger.Printf("Failed to create highway request for airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Keep-Alive", "timeout=3")
+
+	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
 		weatherInfo.Error = err
@@ -157,7 +177,17 @@ func getHighwayData(airportName, airportCode string, dataChan chan<- types.Weath
 		AirportCode: airportCode,
 	}
 
-	res, err := globals.Client.Get(fmt.Sprintf("http://highways.glmobile.com/%s", airportName))
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s", airportName), nil)
+	if err != nil {
+		globals.Logger.Printf("Failed to create request for highway page, airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Keep-Alive", "timeout=3")
+
+	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
 		weatherInfo.Error = err
