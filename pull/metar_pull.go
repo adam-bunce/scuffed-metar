@@ -254,7 +254,18 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	navCanadaMetars := make(map[string]types.WeatherPullInfo)
 
-	endpoint := "https://plan.navcanada.ca/weather/api/alpha/?point=CYXE|site|-106.700,52.171&point=CYVT|site|-108.418,55.842&point=CYLJ|site|-108.523,54.125&point=CYSF|site|-105.841,59.250&point=CYVC|site|-105.267,55.151&point=CYKJ|site|-105.617,57.256&point=CYPA|site|-105.673,53.215&alpha=metar&alpha=taf&metar_choice=3"
+	endpoint := "https://plan.navcanada.ca/weather/api/alpha/?" +
+		"site=CYXE&" +
+		"site=CYVT&" +
+		"site=CYLJ&" +
+		"site=CYSF&" +
+		"site=CYVC&" +
+		"site=CYKJ&" +
+		"site=CYPA&" +
+		"alpha=metar&" +
+		"alpha=taf&" +
+		"metar_choice=3"
+
 	res, err := globals.Client.Get(endpoint)
 	if err != nil {
 		globals.Logger.Printf("Failed to get nav canada metar err: %v", err)
