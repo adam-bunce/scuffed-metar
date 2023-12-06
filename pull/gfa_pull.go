@@ -18,7 +18,7 @@ import (
 func GetGFAImageIds() (types.GfaInfo, error) {
 	var imageIds types.GfaInfo
 
-	response, err := globals.Client.Get("https://plan.navcanada.ca/weather/api/alpha/?point=CYXE|site|-106.700,52.171&image=GFA/CLDWX&image=GFA/TURBC")
+	response, err := globals.Client.Get("https://plan.navcanada.ca/weather/api/alpha/?site=CYXE&image=GFA/CLDWX&image=GFA/TURBC")
 	if err != nil {
 		return imageIds, fmt.Errorf("failed to get nav canada GFA image data")
 	}
