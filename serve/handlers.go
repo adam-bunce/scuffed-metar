@@ -20,7 +20,9 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 
 	stats.IncServeCount()
 
-	TryUpdateMETARData()
+	if globals.Env != "local" {
+		TryUpdateMETARData()
+	}
 
 	indexTemplate.Execute(w, &indexData)
 }
@@ -34,7 +36,9 @@ func HandleGfa(w http.ResponseWriter, r *http.Request) {
 
 	stats.IncServeCount()
 
-	TryUpdateGFAData()
+	if globals.Env != "local" {
+		TryUpdateGFAData()
+	}
 
 	gfaTemplate.Execute(w, &gfaData)
 }

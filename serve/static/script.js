@@ -25,6 +25,63 @@ h3.mono {
 }
 `
 
+const darkmodeCSS = `
+:root {
+    --black: #D8D8D8;
+    --grey: #9F9F9F;
+    --otherGrey: #D8D8D8;
+    --greyog: #808080;
+    --white: #151515;
+    --blue: #091F58;
+    --red: #DD4E3E;
+}
+
+.red {
+    background-color: var(--red);
+    color: var(--black);
+}
+
+.green {
+    background-color: var(--blue);
+    color: var(--black);
+}
+
+.btn {
+    border: 1px solid var(--greyog) !important;
+    color: var(--otherGrey);
+}
+button {
+    background-color: var(--white);
+    color: var(--black);
+}
+
+.shadow {
+    box-shadow: 2px 2px var(--greyog);
+}
+
+.current-page {
+    background-color: var(--blue);
+    color: var(--otherGrey);
+}
+
+.version {
+    border: 1px solid var(--greyog);
+    background-color: var(--blue);
+    color: var(--otherGrey);
+}
+
+dialog {
+    border: 1px solid var(--greyog);
+    background-color: var(--white);
+    color: var(--black);
+}
+
+.jump-to-top {
+    border: 1px solid var(--greyog);
+    color: var(--black)
+}
+`
+
 const App = {
     $: {
         // time
@@ -43,6 +100,10 @@ const App = {
         printDialogSelectAllButton: document.getElementById("select-all-button"),
         printOptionCheckboxes: null,
         selectedPrintItemIds: [],
+
+        // darkmode
+        isDarkMode: false,
+        darkmodeButton: document.getElementById("darkmodeToggle"),
     },
     toZuluTimeFormat(date) {
         const day = String(date.getUTCDate()).padStart(2, '0')
@@ -102,6 +163,7 @@ const App = {
 @media print{
     :root {
         --width: 100%;
+        --black: #000000;
     }
     ${useMetarSettings ? metarPrintSettings : gfaPrintSettings}
 
@@ -132,6 +194,27 @@ const App = {
     bindClickEvent(element, func) {
         if (element) element.addEventListener('click', func)
     },
+    getCookies() {
+        const cookies = document.cookie.split("=")
+        const themeIndex = cookies.indexOf("theme")
+        if (themeIndex === -1) {
+            App.$.isDarkMode = false
+        } else {
+            App.$.isDarkMode = cookies[themeIndex + 1] === "true";
+        }
+    },
+    setTheme() {
+        if (App.$.isDarkMode) {
+            let darkmodeEl = document.createElement('style')
+            darkmodeEl.id = 'darkmode'
+            darkmodeEl.innerHTML = darkmodeCSS
+            document.head.appendChild(darkmodeEl)
+        } else {
+            const darkmodeEl= document.getElementById("darkmode")
+            if (darkmodeEl) darkmodeEl.remove()
+        }
+        document.cookie = `theme=${App.$.isDarkMode}; path=/; max-age=2630000`;
+    },
     bindEvents() {
         // dialog visibility
         App.bindClickEvent(App.$.printDialogOpenTrigger, () => App.$.printDialog.showModal())
@@ -142,8 +225,14 @@ const App = {
         App.bindClickEvent(App.$.printDialogPrintButton, () => App.printSelectedItem())
         App.bindClickEvent(App.$.printDialogSelectAllButton, () => App.selectAllPrintOptionsCheckbox())
         App.bindClickEvent(App.$.printDialogResetButton, () => App.clearPrintOptionsCheckboxes())
+
+        // darkmode
+        App.bindClickEvent(App.$.darkmodeButton, () => {App.$.isDarkMode = !App.$.isDarkMode; App.setTheme()})
     },
     init() {
+        App.getCookies()
+        App.setTheme()
+
         App.setPrintCheckboxes()
         App.bindEvents()
         App.startTimeCycle()

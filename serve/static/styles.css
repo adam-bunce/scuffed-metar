@@ -42,8 +42,8 @@ body {
     font-size: 14px;
     font-weight: normal;
     overflow-x: hidden;
-    color: #000;
-    background: #fff;
+    color: var(--black);
+    background: var(--white);
     text-rendering: optimizeLegibility;
     line-height: 1.2;
     word-break: break-word;
@@ -95,6 +95,7 @@ blockquote {
 
 dialog {
     border: 1px solid var(--black);
+    background-color: var(--white);
 }
 
 /* Formatting */
@@ -174,8 +175,31 @@ blockquote .weatherInfo:not(:last-of-type) {
     flex-basis: 80%;
 }
 
-.version {
+.version-dark-container {
     order: 3;
+    display: flex;
+    margin-left: auto;
+}
+
+.dark {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--black);
+    margin-left: auto;
+
+    border: 1px solid var(--black);
+    padding: .25em .5em .25em .5em;
+    color: var(--white);
+    cursor: pointer;
+}
+
+.dark:hover {
+    color: var(--black);
+    background-color: var(--white);
+}
+
+.version {
+    display: inline-block;
     text-align: center;
     border: 1px solid var(--black);
     background-color: var(--blue);
@@ -365,7 +389,7 @@ blockquote .weatherInfo:not(:last-of-type) {
         flex-basis: 100%;
     }
 
-    .version, .sm {
+    .version, .sm, .dark {
         min-width: auto;
         align-self: start;
     }

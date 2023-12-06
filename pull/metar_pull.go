@@ -105,14 +105,14 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 			wg.Done()
 		}(i)
 	}
-	specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse"}
-	for i := 0; i < len(specialAirportInfo); i += 2 {
-		wg.Add(1)
-		go func(i int) {
-			getSpecialHighwayData(specialAirportInfo[i+1], specialAirportInfo[i], dataChan)
-			wg.Done()
-		}(i)
-	}
+	//specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse"}
+	//for i := 0; i < len(specialAirportInfo); i += 2 {
+	//	wg.Add(1)
+	//	go func(i int) {
+	//		getSpecialHighwayData(specialAirportInfo[i+1], specialAirportInfo[i], dataChan)
+	//		wg.Done()
+	//	}(i)
+	//}
 	wg.Done()
 }
 
@@ -227,6 +227,7 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 		globals.Logger.Printf("Failed to get Point North CYNL Metar err: %v", err)
 		pointsNorthData.Error = err
 		dataChan <- pointsNorthData
+		return
 	}
 	defer res.Body.Close()
 
@@ -235,6 +236,7 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 		globals.Logger.Printf("Failed to parse Point North CYNL Metar HTML err: %v", err)
 		pointsNorthData.Error = err
 		dataChan <- pointsNorthData
+		return
 	}
 
 	matches := pointsNorthRegex.FindAllStringSubmatch(string(body), -1)
@@ -257,8 +259,11 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 	if err != nil {
 		globals.Logger.Printf("Failed to get nav canada metar err: %v", err)
 		for k := range navCanadaMetars {
+			airport := navCanadaMetars[k]
+			airport.Error = err
 			dataChan <- navCanadaMetars[k]
 		}
+		return
 	}
 	defer res.Body.Close()
 
@@ -272,6 +277,7 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 			airport.Error = err
 			dataChan <- navCanadaMetars[k]
 		}
+		return
 	}
 
 	// most recent metar is the last in order
