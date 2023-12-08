@@ -85,19 +85,24 @@
     <br>
 </section>
 
-<section class="main">
 
+<section class="main">
     <div class="divider"></div>
+    <h3 class="error">
+        Cross-check with Flight Service for other NOTAMs that may apply to your flight but are not filed under the selected airports
+    </h3>
+    <br>
+
     {{ range .notam.NoTamOptions }}
     <div class="metar-dialog-content">
         <div> {{ . }} </div>
         <button id="{{.}}-print-checkbox" class="checkbox mono"></button>
     </div>
     {{ end }}
+    <br>
     <div>
-    <a id="notamredirect" class="btn" href="/notam?airport=CYXE">~GO~</a>
+        <a id="notamredirect" class="btn" href="/notam?airport=CYXE">~GO~</a>
    </div>
-
     <br>
     <div class="divider"></div>
 
