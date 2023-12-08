@@ -145,3 +145,19 @@ type GfaPageData struct {
 
 	Error error
 }
+
+type NotamPageData struct {
+	Version      string
+	NoTamOptions []string
+
+	Raw        string `json:"raw"`
+	English    string `json:"english"`
+	French     string `json:"french"`
+	LastUpdate time.Time
+}
+
+type NotamParsedText struct {
+	Raw     string `json:"raw"`
+	English string `json:"english"`
+	French  string `json:"french"`
+}

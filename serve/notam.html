@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTAM | Scuffed Metar</title>
+    <link rel="icon" type="image/x-icon" href="static/favicon.svg">
+    <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
+    <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
+</head>
+
+<body>
+<!-- Header -->
+<section id="header" class="header">
+    <div class="header-container">
+        <h2 class="sm mono" id="top">Scuffed METAR</h2>
+        <div class="version-dark-container">
+            <button id="darkmodeToggle" class="mono dark">MODE</button>
+            <div>&nbsp;</div>
+            <div class="mono version" style="font-family: GeistMono, Courier, serif">TEST</div>
+        </div>
+
+        <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
+    </div>
+    <div class="header-divider"></div>
+
+    <!-- Main Site Nav-->
+    <div class="site-nav-links mono">
+        <a class="btn shadow current-page" href="/">METAR</a>
+        <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
+    </div>
+
+    <!-- Print Modal-->
+    <dialog id="print-dialog" class="shadow">
+        <section>
+            <div style="display: flex;justify-content: space-between">
+                <div>
+                    <h3>Print Settings</h3>
+                    <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
+                </div>
+                <div>
+                    <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
+                </div>
+            </div>
+            <br>
+            <div class="metar-dialog-content">
+                somthing here?
+            </div>
+
+            <div style="display: flex;padding-top:10px"></div>
+            <br>
+            <div class="mono">
+                <button class="btn shadow green" id="print-button" disabled >Print</button>
+                <button class="btn shadow red" id="reset-button">Reset</button>
+                <button class="btn shadow" id="select-all-button">Select All</button>
+                <!--            above is grey b/c its a button not link-->
+            </div>
+        </section>
+    </dialog>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+    <!-- Page Nav-->
+    <!--    removed-->
+
+    <!-- Clock -->
+    <div>
+        <table role="presentation" style="text-align: left;" class="time">
+            <tr>
+                <td>Current Time:</td>
+                <td id="gmtTime" class="text-grey"></td>
+                <td>&emsp;</td>
+                <td id="zuluTime" class="text-grey"></td>
+            </tr>
+            <tr style="">
+                <td style="">Last Update:</td>
+                <td class="text-grey">
+                    {{ .LastUpdate.Format "15:04:05 GMT" }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</section>
+
+<section class="main">
+
+    <div class="divider"></div>
+    {{ range .notam.NoTamOptions }}
+    <div class="metar-dialog-content">
+        <div> {{ . }} </div>
+        <button id="{{.}}-print-checkbox" class="checkbox mono"></button>
+    </div>
+    {{ end }}
+    <div>
+    <a id="notamredirect" class="btn" href="/notam?airport=CYXE">~GO~</a>
+   </div>
+
+    <br>
+    <div class="divider"></div>
+
+    <div>
+    {{ range $notam, $airports:= .data }}
+        <h3>
+        {{ range $airports }}
+            <span>{{ . }} </span>
+        {{ end }}
+        </h3>
+        <blockquote>
+            {{ formatTaf $notam }}
+        </blockquote>
+        <br>
+        <br>
+        <div class="divider"></div>
+    {{ end }}
+    </div>
+
+    <a class="jump-to-top" href="#top">
+        <div>TOP</div>
+    </a>
+    <br>
+
+</section>
+
+
+<footer id="footer" class="footer">
+    <div class="header-divider"></div>
+    <div class="header-container">
+        <div class="mono"></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+    </div>
+</footer>
+</body>
+</html>

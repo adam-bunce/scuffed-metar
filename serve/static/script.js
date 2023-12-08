@@ -104,6 +104,9 @@ const App = {
         // darkmode
         isDarkMode: false,
         darkmodeButton: document.getElementById("darkmodeToggle"),
+
+        // notam redirect button
+        notamRedirectbutton: document.getElementById("notamredirect")
     },
     toZuluTimeFormat(date) {
         const day = String(date.getUTCDate()).padStart(2, '0')
@@ -145,7 +148,8 @@ const App = {
         App.updateSelectedItemsUI()
     },
     printSelectedItem() {
-        if (App.$.selectedPrintItemIds.length === 0) return
+        // remove so i can print notams
+//         if (App.$.selectedPrintItemIds.length === 0) return
         const useMetarSettings = String(App.$.selectedPrintItemIds[0]).includes("C") // all airport id's will start with a C
 
         let selectedElements = ""
@@ -228,6 +232,19 @@ const App = {
 
         // darkmode
         App.bindClickEvent(App.$.darkmodeButton, () => {App.$.isDarkMode = !App.$.isDarkMode; App.setTheme()})
+
+        /// notam redirect
+        App.bindClickEvent(App.$.notamRedirectbutton, () => {
+            console.log(App.$.selectedPrintItemIds)
+                // selectedElements = App.$.selectedPrintItemIds.reduce((prev, curr, index) => {
+            const queryString = App.$.selectedPrintItemIds.reduce((prev, curr) => {
+                // return index === 0 ? `#print-${curr.replace(/-print-checkbox/g, '')}` : `${prev}, #print-${curr.replace(/-print-checkbox/g, '')}`
+                return `${prev}&airport=${curr.replace(/-print-checkbox/g, '')}`
+            }, "?")
+            console.log(queryString)
+            App.$.notamRedirectbutton.href = "/notam" + queryString
+        })
+
     },
     init() {
         App.getCookies()

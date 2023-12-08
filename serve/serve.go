@@ -28,6 +28,10 @@ var indexTemplate = LoadTemplate("", "index", indexTemplateString)
 var gfaTemplateString string
 var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
 
+//go:embed notam.html
+var notamTemplateString string
+var notamTemplate = LoadTemplate("", "notam", notamTemplateString)
+
 var hcUrl = "http://highways.glmobile.com"
 
 func hc(num int) []string {
@@ -77,6 +81,12 @@ var indexData = types.IndexData{
 
 var gfaData = types.GfaPageData{
 	Version: globals.Version,
+}
+
+var notamData = types.NotamPageData{
+	Version:      globals.Version,
+	NoTamOptions: []string{"CYXE", "CYVT", "CYLJ", "CYSF", "CYVC", "CYKJ", "CYPA"},
+	LastUpdate:   time.Now().UTC(),
 }
 
 func LoadTemplate(templatePath string, templateName string, templateStr ...string) *template.Template {

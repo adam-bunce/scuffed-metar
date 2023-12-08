@@ -2,6 +2,7 @@ package serve
 
 import (
 	"github.com/adam-bunce/scuffed-metar/globals"
+	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"net/http"
 )
@@ -54,6 +55,20 @@ func HandleStatic(w http.ResponseWriter, r *http.Request) {
 	} else {
 		fileServer.ServeHTTP(w, r)
 	}
+}
+
+func HandleNotam(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	airportCodes := r.URL.Query()["airport"]
+
+	if globals.Env == "local" {
+		notamTemplate = LoadTemplate("serve/notam.html", "notam")
+	}
+
+	data, _ := pull.GetNotam(airportCodes)
+
+	notamTemplate.Execute(w, map[string]interface{}{"notam": &notamData, "data": data})
 }
 
 // TODO logging with the status code
