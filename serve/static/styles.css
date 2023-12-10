@@ -6,6 +6,7 @@
 
     --black: #000000;
     --grey: #808080;
+    --light-grey: #b0b0b0;
     --white: #fff;
     --blue: #418BC3;
     --red: #DD4E3E;
@@ -129,6 +130,10 @@ blockquote .weatherInfo:not(:last-of-type) {
     padding-bottom: 1.2em;
 }
 
+.notamInfo {
+    line-height: 1.9em;
+}
+
 .text-grey {
     color: var(--grey);
 }
@@ -208,6 +213,16 @@ blockquote .weatherInfo:not(:last-of-type) {
     margin-left: auto;
 }
 
+.test {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid var(--black);
+    background-color: var(--red);
+    padding: .25em .5em .25em .5em;
+    color: var(--white);
+    margin-left: auto;
+}
+
 .refresh {
     max-width: 70%;
 }
@@ -241,6 +256,11 @@ blockquote .weatherInfo:not(:last-of-type) {
     color: var(--white);
 }
 
+.white {
+    background-color: var(--white);
+    color: var(--black);
+}
+
 .shadow {
     box-shadow: 2px 2px var(--grey);
 }
@@ -257,6 +277,16 @@ blockquote .weatherInfo:not(:last-of-type) {
     cursor: pointer;
     padding: 0;
     margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selected {
+    background-color: rgba(148, 153, 162, 0.2);
+}
+.selected::after {
+   content: "*";
 }
 
 .divider {
@@ -340,6 +370,35 @@ blockquote .weatherInfo:not(:last-of-type) {
     justify-items:center;
 }
 
+/* winds tables */
+.winds-table {
+    width: 100%;
+    border-left: 3px solid var(--light-grey);
+    border-top: 2px dotted var(--light-grey);
+    border-collapse: collapse;
+    box-shadow: 2px 2px var(--light-grey);
+}
+
+.winds-table tr {
+    text-align: left;
+}
+
+.fw {
+   width: 300px;
+}
+
+.fw2 {
+    width: 150px;
+}
+
+.winds-table th, .winds-table td {
+    padding: 10px 5px;
+    white-space: nowrap;
+}
+.winds-table td {
+    border: 1px solid var(--light-grey);
+}
+
 /* Media */
 @media screen and (max-width: 1080px) {
     :root {
@@ -392,5 +451,23 @@ blockquote .weatherInfo:not(:last-of-type) {
     .version, .sm, .dark {
         min-width: auto;
         align-self: start;
+    }
+}
+
+@media print {
+    .jump-to-top {
+        display: none;
+    }
+
+    .winds-table th, .winds-table td {
+        white-space: normal;
+    }
+
+    .fw {
+        width: auto;
+    }
+
+    .fw2 {
+        width: auto;
     }
 }

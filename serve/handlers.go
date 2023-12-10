@@ -1,10 +1,13 @@
 package serve
 
 import (
+	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/stats"
+	"github.com/adam-bunce/scuffed-metar/types"
 	"net/http"
+	"time"
 )
 
 func HandleAll(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +19,7 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if globals.Env == "local" {
-		indexTemplate = LoadTemplate("serve/index.html", "index")
+		indexTemplate = LoadTemplate("serve/pages/index.html", "index")
 	}
 
 	stats.IncServeCount()
@@ -32,7 +35,7 @@ func HandleGfa(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
 
 	if globals.Env == "local" {
-		gfaTemplate = LoadTemplate("serve/gfa.html", "gfa")
+		gfaTemplate = LoadTemplate("serve/pages/gfa.html", "gfa")
 	}
 
 	stats.IncServeCount()
@@ -61,14 +64,40 @@ func HandleNotam(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
 
 	airportCodes := r.URL.Query()["airport"]
+	fmt.Println(airportCodes)
 
 	if globals.Env == "local" {
-		notamTemplate = LoadTemplate("serve/notam.html", "notam")
+		notamTemplate = LoadTemplate("serve/pages/notam.html", "notam")
 	}
 
-	data, _ := pull.GetNotam(airportCodes)
+	var data []types.NotamData
+	if len(airportCodes) > 0 {
+		data, _ = pull.GetNotam(airportCodes)
+	}
+	notamData.LastUpdate = time.Now().UTC()
 
 	notamTemplate.Execute(w, map[string]interface{}{"notam": &notamData, "data": data})
+}
+
+func HandleWinds(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	airportCodes := r.URL.Query()["airport"]
+
+	if globals.Env == "local" {
+		windsTemplate = LoadTemplate("serve/pages/winds.html", "winds")
+	}
+
+	var data []types.WindsData
+	var err error
+	if len(airportCodes) > 0 {
+		data, err = pull.GetWinds(airportCodes)
+		if err != nil {
+			windsData.Error = err
+		}
+	}
+	windsData.LastUpdate = time.Now().UTC()
+	windsTemplate.Execute(w, map[string]interface{}{"winds": &windsData, "data": data})
 }
 
 // TODO logging with the status code

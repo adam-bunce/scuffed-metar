@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTAM | Scuffed Metar</title>
-    <link rel="icon" type="image/x-icon" href="static/favicon.svg">
-    <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
-    <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
+    <title>METAR | Scuffed Metar</title>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
+    <link rel="stylesheet" href="../static/styles.css?v={{- .Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .Version -}}" defer></script>
 </head>
 
 <body>
@@ -14,9 +14,9 @@
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version-dark-container">
-            <button id="darkmodeToggle" class="mono dark">MODE</button>
+            <button id="darkmode-toggle" class="mono dark">MODE</button>
             <div>&nbsp;</div>
-            <div class="mono version" style="font-family: GeistMono, Courier, serif">TEST</div>
+            <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
         </div>
 
         <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
@@ -27,6 +27,8 @@
     <div class="site-nav-links mono">
         <a class="btn shadow current-page" href="/">METAR</a>
         <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+<!--        <a class="btn shadow" href="/notam">NOTAM</a>-->
+<!--        <a class="btn shadow" href="/winds">WINDS</a>-->
         <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
 
@@ -44,7 +46,14 @@
             </div>
             <br>
             <div class="metar-dialog-content">
-                somthing here?
+                {{ range .AirportInformation }}
+                    {{ if not (eq (len .Metar) 0) }}
+                        <div style="display: flex; align-items: center;justify-items:center;" class="mono">
+                            <button class="checkbox mono" id="{{.AirportCode}}-print-checkbox"></button>
+                            <div>&nbsp;{{ .AirportCode }}</div>
+                        </div>
+                    {{ end }}
+                {{ end }}
             </div>
 
             <div style="display: flex;padding-top:10px"></div>
@@ -61,9 +70,6 @@
     <br>
     <div class="site-nav-divider"></div>
     <br>
-
-    <!-- Page Nav-->
-    <!--    removed-->
 
     <!-- Clock -->
     <div>
@@ -83,52 +89,59 @@
         </table>
     </div>
     <br>
-</section>
-
-
-<section class="main">
-    <div class="divider"></div>
-    <h3 class="error">
-        Cross-check with Flight Service for other NOTAMs that may apply to your flight but are not filed under the selected airports
-    </h3>
+    <div class="site-nav-divider"></div>
     <br>
 
-    {{ range .notam.NoTamOptions }}
-    <div class="metar-dialog-content">
-        <div> {{ . }} </div>
-        <button id="{{.}}-print-checkbox" class="checkbox mono"></button>
-    </div>
-    {{ end }}
-    <br>
-    <div>
-        <a id="notamredirect" class="btn" href="/notam?airport=CYXE">SUBMIT</a>
-   </div>
-    <br>
-    <div class="divider"></div>
-
-    <div>
-    {{ range $notam, $airports:= .data }}
-        <h3>
-        {{ range $airports }}
-            <span>{{ . }} </span>
+    <!-- Page Nav-->
+    <div class="subnav-links mono">
+            {{ range .AirportInformation }}
+            <a class="btn shadow" href="#{{- .AirportCode -}}-section">{{ .AirportCode }}</a>
         {{ end }}
-        </h3>
-        <blockquote>
-            {{ formatTaf $notam }}
-        </blockquote>
-        <br>
-        <br>
-        <div class="divider"></div>
-    {{ end }}
     </div>
-
     <a class="jump-to-top" href="#top">
         <div>TOP</div>
     </a>
     <br>
-
 </section>
 
+<!-- Airport METAR/wxCams -->
+<section class="main">
+    {{ range .AirportInformation }}
+        <div id="{{.AirportCode}}-section" class="airportInfo">
+            <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
+                <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
+            </h3>
+            {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
+            <blockquote>
+                {{ range .WeatherInfo.Metar }}
+                    <div class="weatherInfo">{{ . }}</div>
+                {{ end }}
+                {{ range .WeatherInfo.Taf }}
+                    <div class="weatherInfo">{{ formatTaf . }}</div>
+                {{ end }}
+
+                {{ $picBaseUrl := .CamBaseUrl }}
+                {{ $airportCode := .AirportCode}}
+                {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
+
+                {{ if (eq $hasNoCam false) }}
+                <div class="camera-container">
+                    {{ range .CamPicUrls }}
+                        <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
+                             alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
+                             referrerpolicy="no-referrer">
+                    {{ end }}
+                </div>
+                {{ end }}
+            </blockquote>
+        </div>
+        {{ if (eq $hasNoCam true) }}
+            <div id="{{.AirportCode}}-divider" class="divider"></div>
+        {{ else }}
+            <div id="{{.AirportCode}}-divider" class="spacing-div"></div>
+        {{ end }}
+    {{ end }}
+</section>
 
 <footer id="footer" class="footer">
     <div class="header-divider"></div>

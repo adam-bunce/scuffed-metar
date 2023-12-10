@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+const NavCanadaTimeFormat = "2006-01-02T15:04:05"
+const NavCanadaTimeFormatAlt = "2006-01-02T15:04:05+00:00"
+
 type CamecoResponse struct {
 	D struct {
 		Type             string        `json:"__type"`
@@ -39,13 +42,13 @@ type NavCanadaResponse struct {
 		Messages []interface{} `json:"messages"`
 	} `json:"meta"`
 	Data []struct {
-		Type          string  `json:"type"`
-		Pk            string  `json:"pk"`
-		Location      string  `json:"location"`
-		StartValidity string  `json:"startValidity"`
-		EndValidity   *string `json:"endValidity"`
-		Text          string  `json:"text"`
-		HasError      bool    `json:"hasError"`
+		Type          string `json:"type"`
+		Pk            string `json:"pk"`
+		Location      string `json:"location"`
+		StartValidity string `json:"startValidity"`
+		EndValidity   string `json:"endValidity"`
+		Text          string `json:"text"`
+		HasError      bool   `json:"hasError"`
 		Position      struct {
 			PointReference string `json:"pointReference"`
 			RadialDistance int    `json:"radialDistance"`
@@ -85,29 +88,6 @@ type ParsedText struct {
 	} `json:"frame_lists"`
 }
 
-type NavCanadaImageResponse struct {
-	Meta struct {
-		Now   string `json:"now"`
-		Count struct {
-			Image int `json:"image"`
-		} `json:"count"`
-		Messages []interface{} `json:"messages"`
-	} `json:"meta"`
-	Data []struct {
-		Type          string      `json:"type"`
-		Pk            string      `json:"pk"`
-		Location      string      `json:"location"`
-		StartValidity string      `json:"startValidity"`
-		EndValidity   interface{} `json:"endValidity"`
-		Text          string      `json:"text"`
-		HasError      bool        `json:"hasError"`
-		Position      struct {
-			PointReference string `json:"pointReference"`
-			RadialDistance int    `json:"radialDistance"`
-		} `json:"position"`
-	} `json:"data"`
-}
-
 type WeatherInfo struct {
 	Metar []string
 	Taf   []string
@@ -128,36 +108,72 @@ type WeatherPullInfo struct {
 	WeatherInfo
 }
 
+type GenericPageData struct {
+	LastUpdate time.Time
+	Version    string
+}
+
 type IndexData struct {
 	sync.Mutex
 
-	Version            string
 	AirportInformation []AirportInfo
-	LastUpdate         time.Time
+	GenericPageData
 }
 
 type GfaPageData struct {
 	sync.Mutex
 
-	Version string
+	GenericPageData
 	GfaInfo
-	LastUpdate time.Time
 
 	Error error
 }
 
 type NotamPageData struct {
-	Version      string
+	GenericPageData
 	NoTamOptions []string
-
-	Raw        string `json:"raw"`
-	English    string `json:"english"`
-	French     string `json:"french"`
-	LastUpdate time.Time
+	Error        error
 }
 
 type NotamParsedText struct {
 	Raw     string `json:"raw"`
 	English string `json:"english"`
 	French  string `json:"french"`
+}
+
+type NotamData struct {
+	ApplicableAirports []string
+	StartValidity      time.Time
+	EndValidity        time.Time
+	Notam              string
+}
+
+type WindsPageData struct {
+	GenericPageData
+	WindsOptions []string
+	Error        error
+	MaxInt       float64
+}
+
+type WindsData struct {
+	AirportCode string
+
+	High []WindData
+	Low  []WindData
+
+	MaxInt float64
+}
+
+type WindData struct {
+	Data []ElevationValueCombo
+
+	BasedOn     time.Time
+	Valid       time.Time
+	ForUseStart time.Time
+	ForUseEnd   time.Time
+}
+
+type ElevationValueCombo struct {
+	Elevation float64
+	Values    []float64
 }

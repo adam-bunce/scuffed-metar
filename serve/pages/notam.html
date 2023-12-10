@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOTAM | Scuffed Metar</title>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
+    <link rel="stylesheet" href="../static/styles.css?v={{- .notam.Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .notam.Version -}}" defer></script>
+</head>
+
+<body>
+<!-- Header -->
+<section id="header" class="header">
+    <div class="header-container">
+        <h2 class="sm mono" id="top">Scuffed METAR</h2>
+        <div class="version-dark-container">
+            <button id="darkmode-toggle" class="mono dark">MODE</button>
+            <div>&nbsp;</div>
+            <div class="mono test" style="font-family: GeistMono, Courier, serif">TEST</div>
+        </div>
+
+        <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
+    </div>
+    <div class="header-divider"></div>
+
+    <!-- Main Site Nav-->
+    <div class="site-nav-links mono">
+        <a class="btn shadow" href="/">METAR</a>
+        <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+        <a class="btn shadow current-page" href="/notam">NOTAM</a>
+        <a class="btn shadow" href="/winds">WINDS</a>
+        <button id="print-button" class="btn shadow" style="grid-column-end: -1">Print</button>
+    </div>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+    <!-- Clock -->
+
+    <div>
+        <table role="presentation" style="text-align: left;" class="time">
+            <tr>
+                <td>Current Time:</td>
+                <td id="gmtTime" class="text-grey"></td>
+                <td>&emsp;</td>
+                <td id="zuluTime" class="text-grey"></td>
+            </tr>
+            <tr style="">
+                <td style="">Last Update:</td>
+                <td class="text-grey">
+                    {{ .notam.LastUpdate.Format "15:04:05 GMT" }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+    <h3 class="error">
+        Cross-check with Flight Service for other NOTAMs that may apply to your flight but are not filed under the selected airports
+    </h3>
+    <br>
+
+    <!--selection opts-->
+    <div class="subnav-links mono">
+        {{ range .notam.NoTamOptions }}
+        <button class="btn shadow white" id="{{.}}-selection-opt">{{ . }}</button>
+        {{ end }}
+    </div>
+
+    <br>
+    <div class="mono">
+        <a id="submission-redirect-button" class="btn shadow green" href="/notam">SUBMIT</a>
+        <button id="submission-reset-button" class="btn shadow red">RESET</button>
+        <button id="submission-select-all-button" class="btn shadow">SELECT ALL</button>
+    </div>
+</section>
+
+<section class="main">
+    <br>
+    <div>
+        <div class="error">
+            {{ if .notam.Error }} {{ .notam.Error }} {{ end }}
+        </div>
+
+    {{ range .data }}
+        <h3>
+            {{ range .ApplicableAirports }}
+                <span>{{ . }}</span>
+            {{ end }}
+        </h3>
+
+        <blockquote class="notamInfo">
+            <div class="text-grey">
+                {{ .StartValidity.Format "2006-01-02 15:04" }}
+                {{ if not .EndValidity.IsZero }}
+                - {{ .EndValidity.Format "2006-01-02 15:04" }}
+                {{ end }}
+            </div>
+            {{ formatTaf .Notam }}
+        </blockquote>
+        <br>
+        <div class="divider"></div>
+    {{ end }}
+    </div>
+
+    <a class="jump-to-top" href="#top">
+        <div>TOP</div>
+    </a>
+    <br>
+
+</section>
+
+
+<footer id="footer" class="footer">
+    <div class="header-divider"></div>
+    <div class="header-container">
+        <div class="mono"></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+    </div>
+</footer>
+</body>
+</html>

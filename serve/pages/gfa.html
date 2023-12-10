@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GFA | Scuffed Metar</title>
-    <link rel="icon" type="image/x-icon" href="static/favicon.svg">
-    <link rel="stylesheet" href="static/styles.css?v={{- .Version -}}">
-    <script type="text/javascript" src="static/script.js?v={{- .Version -}}" defer></script>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
+    <link rel="stylesheet" href="../static/styles.css?v={{- .Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .Version -}}" defer></script>
 </head>
 
 <body>
@@ -14,7 +14,7 @@
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version-dark-container">
-            <button id="darkmodeToggle" class="mono dark">MODE</button>
+            <button id="darkmode-toggle" class="mono dark">MODE</button>
             <div>&nbsp;</div>
             <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
         </div>
@@ -26,6 +26,8 @@
     <div class="site-nav-links mono">
         <a class="btn shadow" href="/">METAR</a>
         <a class="btn shadow current-page" href="/graphic-area-forecast">GFA</a>
+<!--        <a class="btn shadow" href="/notam">NOTAM</a>-->
+<!--        <a class="btn shadow" href="/winds">WINDS</a>-->
         <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
     <br>
@@ -98,6 +100,8 @@
             </tr>
         </table>
     </div>
+    <br>
+    <div class="site-nav-divider"></div>
     <br>
 </section>
 

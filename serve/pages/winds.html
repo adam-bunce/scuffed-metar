@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WINDS | Scuffed Metar</title>
+  <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
+  <link rel="stylesheet" href="../static/styles.css?v={{- .winds.Version -}}">
+  <script type="text/javascript" src="../static/script.js?v={{- .winds.Version -}}" defer></script>
+</head>
+
+<body>
+<!-- Header -->
+<section id="header" class="header">
+  <div class="header-container">
+    <h2 class="sm mono" id="top">Scuffed METAR</h2>
+    <div class="version-dark-container">
+      <button id="darkmode-toggle" class="mono dark">MODE</button>
+      <div>&nbsp;</div>
+      <div class="mono test" style="font-family: GeistMono, Courier, serif">TEST</div>
+    </div>
+
+    <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
+  </div>
+  <div class="header-divider"></div>
+
+  <!-- Main Site Nav-->
+  <div class="site-nav-links mono">
+    <a class="btn shadow" href="/">METAR</a>
+    <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+    <a class="btn shadow" href="/notam">NOTAM</a>
+    <a class="btn shadow current-page" href="/winds">WINDS</a>
+    <button id="print-button" class="btn shadow" style="grid-column-end: -1">Print</button>
+  </div>
+
+  <br>
+  <div class="site-nav-divider"></div>
+  <br>
+
+  <!-- Clock -->
+
+  <div>
+    <table role="presentation" style="text-align: left;" class="time">
+      <tr>
+        <td>Current Time:</td>
+        <td id="gmtTime" class="text-grey"></td>
+        <td></td>
+        <td id="zuluTime" class="text-grey"></td>
+      </tr>
+      <tr style="">
+        <td style="">Last Update:</td>
+        <td class="text-grey">
+          {{ .winds.LastUpdate.Format "15:04:05 GMT" }}
+        </td>
+      </tr>
+    </table>
+  </div>
+  <br>
+  <div class="site-nav-divider"></div>
+  <br>
+
+
+  <!--selection opts-->
+  <div class="subnav-links mono">
+    {{ range .winds.WindsOptions }}
+    <button class="btn shadow white" id="{{.}}-selection-opt">{{ . }}</button>
+    {{ end }}
+  </div>
+
+  <br>
+
+  <div class="mono">
+    <a id="submission-redirect-button" class="btn shadow green" href="/winds">SUBMIT</a>
+    <button id="submission-reset-button" class="btn shadow red">RESET</button>
+    <button id="submission-select-all-button" class="btn shadow">SELECT ALL</button>
+  </div>
+</section>
+
+<section class="main">
+  <br>
+  {{ if .winds.Error }}
+  <h3 class="error">
+    {{ .winds.Error }} err
+  </h3>
+  <br>
+  {{ end }}
+  <div style="overflow-x: auto; width: 100%;">
+    {{ $maxInt := .winds.MaxInt }}
+    {{ range .data }}
+    {{ $airportCode := .AirportCode }}
+    <h3> {{ .AirportCode }}</h3>
+    <blockquote>
+    <table class="winds-table">
+      <thead>
+      <tr style="text-align: left;">
+        <th>Info</th>
+        <th>Validity Range</th>
+        <th>24000</th>
+        <th>30000</th>
+        <th>34000</th>
+        <th>39000</th>
+        <th>45000</th>
+        <th>53000</th>
+      </tr>
+      </thead>
+
+      {{ range .High}}
+      <tbody>
+      <tr>
+        <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
+        <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
+        {{ range .Data }}
+        <!-- elevation values-->
+        <td>
+          {{ range .Values }}
+          {{ if eq . $maxInt }}
+          _
+          {{ else }}
+          {{ . }}
+          {{ end }}
+          {{ end }}
+        </td>
+
+        {{ end }}
+        {{ end }}
+      </tr>
+      </tbody>
+    </table>
+    <br>
+
+    <table class="winds-table">
+      <thead>
+      <tr>
+        <th>Info</th>
+        <th>Validity Range</th>
+        <th>3000</th>
+        <th>6000</th>
+        <th>9000</th>
+        <th>12000</th>
+        <th>18000</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{ range .Low }}
+      <tr>
+        <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
+        <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
+        {{ range .Data }}
+         <!-- elevation values-->
+        <td>
+          {{ range .Values }}
+            {{ if eq . $maxInt }}
+                _
+            {{ else }}
+              {{ . }}
+            {{ end }}
+          {{ end }}
+        </td>
+        {{ end }}
+      {{ end }}
+      </tr>
+      </tbody>
+    </table>
+    </blockquote>
+    <br>
+    {{ end }}
+  </div>
+  <br>
+
+</section>
+
+
+<footer id="footer" class="footer">
+  <div class="header-divider"></div>
+  <div class="header-container">
+    <div class="mono"></div>
+    <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+  </div>
+</footer>
+</body>
+</html>

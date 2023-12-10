@@ -8,6 +8,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"html/template"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -20,17 +21,21 @@ import (
 var files embed.FS
 var fileServer = http.FileServer(http.FS(files))
 
-//go:embed index.html
+//go:embed pages/index.html
 var indexTemplateString string
 var indexTemplate = LoadTemplate("", "index", indexTemplateString)
 
-//go:embed gfa.html
+//go:embed pages/gfa.html
 var gfaTemplateString string
 var gfaTemplate = LoadTemplate("", "gfa", gfaTemplateString)
 
-//go:embed notam.html
+//go:embed pages/notam.html
 var notamTemplateString string
 var notamTemplate = LoadTemplate("", "notam", notamTemplateString)
+
+//go:embed pages/winds.html
+var windsTemplateString string
+var windsTemplate = LoadTemplate("", "winds", windsTemplateString)
 
 var hcUrl = "http://highways.glmobile.com"
 
@@ -74,19 +79,35 @@ var airportInfo = []types.AirportInfo{
 }
 
 var indexData = types.IndexData{
-	Version:            globals.Version,
-	LastUpdate:         time.Time{},
 	AirportInformation: airportInfo,
+	GenericPageData: types.GenericPageData{
+		LastUpdate: time.Time{},
+		Version:    globals.Version,
+	},
 }
 
 var gfaData = types.GfaPageData{
-	Version: globals.Version,
+	GenericPageData: types.GenericPageData{
+		LastUpdate: time.Time{},
+		Version:    globals.Version,
+	},
 }
 
 var notamData = types.NotamPageData{
-	Version:      globals.Version,
 	NoTamOptions: []string{"CYXE", "CYVT", "CYLJ", "CYSF", "CYVC", "CYKJ", "CYPA"},
-	LastUpdate:   time.Now().UTC(),
+	GenericPageData: types.GenericPageData{
+		LastUpdate: time.Time{},
+		Version:    globals.Version,
+	},
+}
+
+var windsData = types.WindsPageData{
+	WindsOptions: []string{"CYQR", "CYVC", "CYXE", "CYYL"},
+	GenericPageData: types.GenericPageData{
+		LastUpdate: time.Time{},
+		Version:    globals.Version,
+	},
+	MaxInt: math.MaxInt,
 }
 
 func LoadTemplate(templatePath string, templateName string, templateStr ...string) *template.Template {

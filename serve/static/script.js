@@ -101,12 +101,18 @@ const App = {
         printOptionCheckboxes: null,
         selectedPrintItemIds: [],
 
+        // selection items (notam/winds)
+        redirectbutton: document.getElementById("submission-redirect-button"),
+        submissionResetButton: document.getElementById("submission-reset-button"),
+        submissionSelectAllButton: document.getElementById("submission-select-all-button"),
+        selectOpts: null,
+        selectedSelectOptsIds: [],
+
         // darkmode
         isDarkMode: false,
-        darkmodeButton: document.getElementById("darkmodeToggle"),
+        darkmodeButton: document.getElementById("darkmode-toggle"),
 
-        // notam redirect button
-        notamRedirectbutton: document.getElementById("notamredirect")
+        // notam/winds redirect button
     },
     toZuluTimeFormat(date) {
         const day = String(date.getUTCDate()).padStart(2, '0')
@@ -132,7 +138,7 @@ const App = {
     },
     updateSelectedItemsUI() {
         for (let item of App.$.printOptionCheckboxes) {
-            if (App.$.selectedPrintItemIds.includes(item.id)) item.innerHTML = "X"
+            if (App.$.selectedPrintItemIds.includes(item.id)) item.innerHTML = "🞪"
             else item.innerHTML = ""
         }
     },
@@ -148,8 +154,6 @@ const App = {
         App.updateSelectedItemsUI()
     },
     printSelectedItem() {
-        // remove so i can print notams
-//         if (App.$.selectedPrintItemIds.length === 0) return
         const useMetarSettings = String(App.$.selectedPrintItemIds[0]).includes("C") // all airport id's will start with a C
 
         let selectedElements = ""
@@ -190,7 +194,31 @@ const App = {
         let printStyleEl = document.getElementById("print-formatting")
         if (printStyleEl) printStyleEl.remove();
     },
-
+    setSelectionItems() {
+        App.$.selectOpts= document.querySelectorAll("[id$='-selection-opt']")
+    },
+    toggleSelectionOption(id) {
+        if (App.$.selectedSelectOptsIds .includes(id)) App.$.selectedSelectOptsIds = App.$.selectedSelectOptsIds.filter(itemId => itemId !== id )
+        else App.$.selectedSelectOptsIds.push(id)
+        App.updateSelectedSelectionOptionsUI()
+    },
+    updateSelectedSelectionOptionsUI() {
+        for (let item of App.$.selectOpts) {
+            if (App.$.selectedSelectOptsIds.includes(item.id)) item.classList.add("selected")
+            else item.classList.remove("selected")
+        }
+    },
+    selectAllSelectionOptions() {
+        App.$.selectedSelectOptsIds = []
+        for (let item of App.$.selectOpts) {
+            App.$.selectedSelectOptsIds.push(item.id)
+        }
+        App.updateSelectedSelectionOptionsUI()
+    },
+    clearSelectionOptions() {
+        App.$.selectedSelectOptsIds = []
+        App.updateSelectedSelectionOptionsUI()
+    },
     startTimeCycle() {
         App.updateTime()
         setInterval(App.updateTime, 1000)
@@ -230,35 +258,39 @@ const App = {
         App.bindClickEvent(App.$.printDialogSelectAllButton, () => App.selectAllPrintOptionsCheckbox())
         App.bindClickEvent(App.$.printDialogResetButton, () => App.clearPrintOptionsCheckboxes())
 
-        // darkmode
-        App.bindClickEvent(App.$.darkmodeButton, () => {App.$.isDarkMode = !App.$.isDarkMode; App.setTheme()})
-
-        /// notam redirect
-        App.bindClickEvent(App.$.notamRedirectbutton, () => {
-            console.log(App.$.selectedPrintItemIds)
-                // selectedElements = App.$.selectedPrintItemIds.reduce((prev, curr, index) => {
-            const queryString = App.$.selectedPrintItemIds.reduce((prev, curr) => {
-                // return index === 0 ? `#print-${curr.replace(/-print-checkbox/g, '')}` : `${prev}, #print-${curr.replace(/-print-checkbox/g, '')}`
-                return `${prev}&airport=${curr.replace(/-print-checkbox/g, '')}`
+        // selection settings
+        App.$.selectOpts.forEach((el) => {App.bindClickEvent(el, () => App.toggleSelectionOption(el.id))})
+        App.bindClickEvent(App.$.submissionSelectAllButton, () => App.selectAllSelectionOptions())
+        App.bindClickEvent(App.$.submissionResetButton, () => App.clearSelectionOptions())
+        App.bindClickEvent(App.$.redirectbutton, () => {
+            const queryString = App.$.selectedSelectOptsIds.reduce((prev, curr) => {
+                return `${prev}&airport=${curr.replace(/-selection-opt/g, '')}`
             }, "?")
-            console.log(queryString)
-            App.$.notamRedirectbutton.href = "/notam" + queryString
+            App.$.redirectbutton.href = App.$.redirectbutton.href + queryString
         })
 
+        // darkmode
+        App.bindClickEvent(App.$.darkmodeButton, () => {App.$.isDarkMode = !App.$.isDarkMode; App.setTheme()})
     },
     init() {
         App.getCookies()
         App.setTheme()
 
         App.setPrintCheckboxes()
+        App.setSelectionItems()
         App.bindEvents()
+
         App.startTimeCycle()
 
         window.onafterprint = () => App.resetPrintStyles()
         window.onload = () => {
             // can't print until page is fully loaded, after load unlock print button
-            App.$.printDialogPrintButton.disabled = false
-            App.$.printDialogInfoText.innerText = "Can Print."
+            try {
+                App.$.printDialogPrintButton.disabled = false
+                App.$.printDialogInfoText.innerText = "Can Print."
+            } catch (e) {
+               // do nothing :)
+            }
         }
     },
 }
