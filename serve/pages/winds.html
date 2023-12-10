@@ -89,77 +89,74 @@
     {{ $airportCode := .AirportCode }}
     <h3> {{ .AirportCode }}</h3>
     <blockquote>
-    <table class="winds-table">
-      <thead>
-      <tr style="text-align: left;">
-        <th>Info</th>
-        <th>Validity Range</th>
-        <th>24000</th>
-        <th>30000</th>
-        <th>34000</th>
-        <th>39000</th>
-        <th>45000</th>
-        <th>53000</th>
-      </tr>
-      </thead>
-
-      {{ range .High}}
-      <tbody>
-      <tr>
-        <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
-        <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
-        {{ range .Data }}
-        <!-- elevation values-->
-        <td>
-          {{ range .Values }}
-          {{ if eq . $maxInt }}
-          _
-          {{ else }}
-          {{ . }}
-          {{ end }}
-          {{ end }}
-        </td>
-
-        {{ end }}
-        {{ end }}
-      </tr>
-      </tbody>
-    </table>
-    <br>
-
-    <table class="winds-table">
-      <thead>
-      <tr>
-        <th>Info</th>
-        <th>Validity Range</th>
-        <th>3000</th>
-        <th>6000</th>
-        <th>9000</th>
-        <th>12000</th>
-        <th>18000</th>
-      </tr>
-      </thead>
-      <tbody>
-      {{ range .Low }}
-      <tr>
-        <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
-        <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
-        {{ range .Data }}
-         <!-- elevation values-->
-        <td>
-          {{ range .Values }}
+      <table class="winds-table">
+        <thead>
+        <tr>
+          <th>Info</th>
+          <th>Validity Range</th>
+          <th>3000</th>
+          <th>6000</th>
+          <th>9000</th>
+          <th>12000</th>
+          <th>18000</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{ range .Low }}
+        <tr>
+          <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
+          <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
+          {{ range .Data }}
+          <!-- elevation values-->
+          <td>
+            {{ range .Values }}
             {{ if eq . $maxInt }}
-                _
+            _
             {{ else }}
-              {{ . }}
+            {{ . }}
             {{ end }}
+            {{ end }}
+          </td>
           {{ end }}
-        </td>
-        {{ end }}
-      {{ end }}
-      </tr>
-      </tbody>
-    </table>
+          {{ end }}
+        </tr>
+        </tbody>
+      </table>
+    <br>
+      <table class="winds-table">
+        <thead>
+        <tr style="text-align: left;">
+          <th>Info</th>
+          <th>Validity Range</th>
+          <th>24000</th>
+          <th>30000</th>
+          <th>34000</th>
+          <th>39000</th>
+          <th>45000</th>
+          <th>53000</th>
+        </tr>
+        </thead>
+        {{ range .High}}
+        <tbody>
+        <tr>
+          <td class="fw"> {{ $airportCode }} BASED ON {{ .BasedOn.Format "021504Z" }} VALID {{ .Valid.Format "021504Z" }}</td>
+          <td class="fw2">{{ .ForUseStart.Format "021504" }}-{{ .ForUseEnd.Format "021504Z" }}</td>
+          {{ range .Data }}
+          <!-- elevation values-->
+          <td>
+            {{ range .Values }}
+            {{ if eq . $maxInt }}
+            _
+            {{ else }}
+            {{ . }}
+            {{ end }}
+            {{ end }}
+          </td>
+          {{ end }}
+          {{ end }}
+        </tr>
+        </tbody>
+      </table>
     </blockquote>
     <br>
     {{ end }}
