@@ -99,10 +99,10 @@ func GetWinds(airportCodes []string) ([]types.WindsData, error) {
 		}
 		// sort for ui order
 		sort.Slice(resSet[currentAirportCode].Low, func(i, j int) bool {
-			return resSet[currentAirportCode].Low[i].ForUseStart.After(resSet[currentAirportCode].Low[i].ForUseEnd)
+			return resSet[currentAirportCode].Low[i].ForUseStart.Before(resSet[currentAirportCode].Low[j].ForUseStart)
 		})
 		sort.Slice(resSet[currentAirportCode].High, func(i, j int) bool {
-			return resSet[currentAirportCode].High[i].ForUseStart.After(resSet[currentAirportCode].High[i].ForUseEnd)
+			return resSet[currentAirportCode].High[i].ForUseStart.Before(resSet[currentAirportCode].High[j].ForUseStart)
 		})
 	}
 
