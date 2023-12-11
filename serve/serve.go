@@ -94,7 +94,10 @@ var gfaData = types.GfaPageData{
 }
 
 var notamData = types.NotamPageData{
-	NoTamOptions: []string{"CYXE", "CYVT", "CYLJ", "CYSF", "CYVC", "CYKJ", "CYPA"},
+	NoTamOptions: []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
+		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
+		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
+		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9"},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
 		Version:    globals.Version,
