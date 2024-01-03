@@ -220,8 +220,8 @@ var pointsNorthRegex = regexp.MustCompile(`(?i)<TD COLSPAN="3">(.*?)</TD>`)
 
 func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	pointsNorthData := types.WeatherPullInfo{AirportCode: "CYNL"}
+	defer wg.Done()
 
-	// only one we care about so hard coding it for now
 	res, err := globals.Client.Get("https://www.pointsnorthgroup.ca/weather/CYNL_metar.html")
 	if err != nil {
 		globals.Logger.Printf("Failed to get Point North CYNL Metar err: %v", err)
@@ -248,11 +248,11 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 	}
 
 	dataChan <- pointsNorthData
-	wg.Done()
 }
 
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	navCanadaMetars := make(map[string]types.WeatherPullInfo)
+	defer wg.Done()
 
 	endpoint := "https://plan.navcanada.ca/weather/api/alpha/?" +
 		"site=CYXE&" +
@@ -313,5 +313,4 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 	for _, v := range navCanadaMetars {
 		dataChan <- v
 	}
-	wg.Done()
 }
