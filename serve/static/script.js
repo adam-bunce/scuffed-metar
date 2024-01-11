@@ -138,7 +138,7 @@ const App = {
     },
     updateSelectedItemsUI() {
         for (let item of App.$.printOptionCheckboxes) {
-            if (App.$.selectedPrintItemIds.includes(item.id)) item.innerHTML = "🞪"
+            if (App.$.selectedPrintItemIds.includes(item.id)) item.innerHTML = "x"
             else item.innerHTML = ""
         }
     },

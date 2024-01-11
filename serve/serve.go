@@ -158,6 +158,7 @@ func TryUpdateGFAData() {
 	}
 
 	gfaData.GfaInfo = ids
+	gfaData.Error = err
 	gfaData.LastUpdate = time.Now().UTC()
 
 	globals.Logger.Printf("Updated GFA data in %d ms", time.Since(start).Milliseconds())
