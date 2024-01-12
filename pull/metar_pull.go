@@ -113,7 +113,62 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 	//		wg.Done()
 	//	}(i)
 	//}
+
+	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse"}
+	for i := 0; i < len(hiddenAirportInfo); i += 2 {
+		wg.Add(1)
+		go func(i int) {
+			getHiddenHighwayData(hiddenAirportInfo[i+1], hiddenAirportInfo[i], dataChan)
+			wg.Done()
+		}(i)
+	}
 	wg.Done()
+}
+
+var hiddenHigwaysRegex = regexp.MustCompile(`<b>(METAR|SPECI)[\s\S]*?</b>`)
+
+func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	weatherInfo := types.WeatherPullInfo{
+		AirportCode: airportCode,
+	}
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s/index-metar.php", airportName), nil)
+	if err != nil {
+		globals.Logger.Printf("Failed to create request for highway page, airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Keep-Alive", "timeout=3")
+
+	res, err := globals.Client.Do(req)
+	if err != nil {
+		globals.Logger.Printf("Failed to get hidden highway page for airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		globals.Logger.Printf("Failed to read hidden highway body for airport code %s err: %v", airportName, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+
+	metarMatches := hiddenHigwaysRegex.FindAllStringSubmatch(string(body), -1)
+	var metarStrings []string
+
+	for _, match := range metarMatches {
+		metarStrings = append(metarStrings, strings.TrimRight(strings.TrimLeft(match[0], "<br>"), "</br>"))
+	}
+
+	weatherInfo.Metar = metarStrings
+	weatherInfo.Error = fmt.Errorf("Advisory Only")
+	dataChan <- weatherInfo
 }
 
 func getSpecialHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
