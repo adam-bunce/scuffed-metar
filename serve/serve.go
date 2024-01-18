@@ -78,6 +78,7 @@ var airportInfo = []types.AirportInfo{
 	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}},
 
 	{"Flin Flon", "CYFO", "", nil, types.WeatherInfo{}},
+	{"North Battleford", "CYQW", "", nil, types.WeatherInfo{}},
 }
 
 var indexData = types.IndexData{
@@ -99,7 +100,7 @@ var notamData = types.NotamPageData{
 	NoTamOptions: []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
-		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO"},
+		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW"},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
 		Version:    globals.Version,
