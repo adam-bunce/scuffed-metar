@@ -52,7 +52,7 @@ var airportInfo = []types.AirportInfo{
 	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}},
 	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}},
 	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}},
-	{"Key Lake", "CYKJ", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYKJ", []string{"/CYKJ_NE-full-e.jpeg", "/CYKJ_SE-full-e.jpeg", "/CYKJ_SW-full-e.jpeg", "/CYKJ_NW-full-e.jpeg"}, types.WeatherInfo{}},
+	{"Key Lake", "CYKJ", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}},
 
 	{"Points North", "CYNL", "", nil, types.WeatherInfo{}},
 
@@ -78,7 +78,7 @@ var airportInfo = []types.AirportInfo{
 	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}},
 
 	{"Flin Flon", "CYFO", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}},
-	{"North Battleford", "CYQW", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYQW", []string{"/CYQW_N-full-e.jpeg", "/CYQW_E-full-e.jpeg", "/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}},
+	{"North Battleford", "CYQW", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}},
 }
 
 var indexData = types.IndexData{
