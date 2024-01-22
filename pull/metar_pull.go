@@ -97,14 +97,15 @@ var specialHighwayTestWarning = regexp.MustCompile(`<h2>(.*?)</h2>`)            
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	airportInfo := []string{"CZFD", "fonddulac", "CZWL", "wollaston"}
-	for i := 0; i < len(airportInfo); i += 2 {
-		wg.Add(1)
-		go func(i int) {
-			getHighwayData(airportInfo[i+1], airportInfo[i], dataChan)
-			wg.Done()
-		}(i)
-	}
+	// NOTE: these are now using the hidden layout on the main page
+	//airportInfo := []string{"CZFD", "fonddulac", "CZWL", "wollaston"}
+	//for i := 0; i < len(airportInfo); i += 2 {
+	//	wg.Add(1)
+	//	go func(i int) {
+	//		getHighwayData(airportInfo[i+1], airportInfo[i], dataChan)
+	//		wg.Done()
+	//	}(i)
+	//}
 	//specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse"}
 	//for i := 0; i < len(specialAirportInfo); i += 2 {
 	//	wg.Add(1)
@@ -114,7 +115,8 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 	//	}(i)
 	//}
 
-	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse"}
+	// hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse"}
+	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston"}
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
 		wg.Add(1)
 		go func(i int) {
@@ -132,7 +134,7 @@ func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 		AirportCode: airportCode,
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s/index-metar.php", airportName), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s", airportName), nil)
 	if err != nil {
 		globals.Logger.Printf("Failed to create request for highway page, airport code %s err: %v", airportName, err)
 		weatherInfo.Error = err
@@ -167,7 +169,6 @@ func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 	}
 
 	weatherInfo.Metar = metarStrings
-	weatherInfo.Error = fmt.Errorf("Advisory Only")
 	dataChan <- weatherInfo
 }
 
