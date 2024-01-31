@@ -7,6 +7,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"io"
+	"math"
 	"net/http"
 	"regexp"
 	"slices"
@@ -419,6 +420,8 @@ func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullI
 	for _, report := range body.ReportLog {
 		weatherInfo.Metar = append(weatherInfo.Metar, report.Report)
 	}
+
+	weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
 
 	dataChan <- weatherInfo
 
