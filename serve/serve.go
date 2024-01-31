@@ -79,6 +79,9 @@ var airportInfo = []types.AirportInfo{
 
 	{"Flin Flon", "CYFO", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}},
 	{"North Battleford", "CYQW", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}},
+
+	{"Leismer", "CET2", "", nil, types.WeatherInfo{}},
+	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}},
 }
 
 var indexData = types.IndexData{
@@ -177,11 +180,12 @@ func TryUpdateMETARData() {
 	dataChan := make(chan types.WeatherPullInfo)
 
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(5)
 	go pull.GetAllCamecoData(dataChan, &wg)
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
 	go pull.GetNavCanadaMetars(dataChan, &wg)
+	go pull.GetAllMesotech(dataChan, &wg)
 
 	// close chan so read loop doesn't hang
 	go func() {

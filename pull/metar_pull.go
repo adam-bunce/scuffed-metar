@@ -2,6 +2,7 @@ package pull
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
@@ -25,7 +26,6 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	weatherInfo := types.WeatherPullInfo{
 		AirportCode: airportCode,
 	}
-
 	var camecoRequestBody = strings.NewReader(fmt.Sprintf(`{
 	   "request": {
 	       "__type": "WebDataRequest:http://COM.AXYS.COMMON.WEB.CONTRACTS",
@@ -371,4 +371,55 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 	for _, v := range navCanadaMetars {
 		dataChan <- v
 	}
+}
+
+func GetAllMesotech(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
+	airports := []string{"https://cet2.ca/AWA_WEB_EXPORT.xml", "CET2", "https://ccl3.azurewebsites.net/awa_web_export.xml", "CCL3"}
+	for i := 0; i < len(airports); i += 2 {
+		wg.Add(1)
+		go func(i int) { getMesotechData(airports[i], airports[i+1], dataChan); wg.Done() }(i)
+	}
+	wg.Done()
+}
+
+func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	weatherInfo := types.WeatherPullInfo{
+		AirportCode: airportCode,
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		globals.Logger.Printf("Failed to create mesotech request for %s, err: %v", airportCode, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	req.Header.Set("Connection", "keep-alive")
+	req.Header.Set("Keep-Alive", "timeout=3")
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	res, err := globals.Client.Do(req)
+	if err != nil {
+		globals.Logger.Printf("Failed to get mesotech response for %s err: %v", airportCode, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+	defer res.Body.Close()
+
+	var body types.MesotechResponse
+	err = xml.NewDecoder(res.Body).Decode(&body)
+	if err != nil {
+		globals.Logger.Printf("Failed to decode mesotech XML response for %s err: %v", airportCode, err)
+		weatherInfo.Error = err
+		dataChan <- weatherInfo
+		return
+	}
+
+	for _, report := range body.ReportLog {
+		weatherInfo.Metar = append(weatherInfo.Metar, report.Report)
+	}
+
+	dataChan <- weatherInfo
+
 }

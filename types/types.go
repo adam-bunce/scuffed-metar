@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/xml"
 	"sync"
 	"time"
 )
@@ -54,6 +55,19 @@ type NavCanadaResponse struct {
 			RadialDistance int    `json:"radialDistance"`
 		} `json:"position"`
 	} `json:"data"`
+}
+
+type MesotechResponse struct {
+	XMLName   xml.Name    `xml:"AWA"`
+	Copyright string      `xml:"copyright,attr"`
+	SiteName  string      `xml:"SITE_NAME"`
+	Current   interface{} `xml:"CURRENT"`
+	ReportLog []struct {
+		ReportLogId   string `xml:"ReportLogId"`
+		DateTimeStamp string `xml:"DateTimeStamp"`
+		ReportType    string `xml:"ReportType"`
+		Report        string `xml:"Report"`
+	} `xml:"ReportLog>Row"`
 }
 
 type GfaInfo struct {
