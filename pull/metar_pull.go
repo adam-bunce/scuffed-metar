@@ -3,11 +3,13 @@ package pull
 import (
 	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"io"
 	"math"
+	"net"
 	"net/http"
 	"regexp"
 	"slices"
@@ -50,7 +52,12 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
-		weatherInfo.Error = err
+		var netErr net.Error
+		if errors.As(err, &netErr) && netErr.Timeout() {
+			weatherInfo.Error = errors.New("request timed out")
+		} else {
+			weatherInfo.Error = err
+		}
 		dataChan <- weatherInfo
 		return
 	}

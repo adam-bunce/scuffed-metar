@@ -180,8 +180,8 @@ func TryUpdateMETARData() {
 	dataChan := make(chan types.WeatherPullInfo)
 
 	var wg sync.WaitGroup
-	wg.Add(4)
-	// go pull.GetAllCamecoData(dataChan, &wg)
+	wg.Add(5)
+	go pull.GetAllCamecoData(dataChan, &wg)
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
 	go pull.GetNavCanadaMetars(dataChan, &wg)
