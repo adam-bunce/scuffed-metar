@@ -19,6 +19,7 @@ func main() {
 	mux.HandleFunc("/graphic-area-forecast", serve.HandleGfa)
 	mux.HandleFunc("/notam", serve.HandleNotam)
 	mux.HandleFunc("/winds", serve.HandleWinds)
+	mux.HandleFunc("/info", serve.HandleInfo)
 	mux.HandleFunc("/", serve.HandleAll)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)

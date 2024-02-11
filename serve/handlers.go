@@ -7,6 +7,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -64,7 +65,6 @@ func HandleNotam(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
 
 	airportCodes := r.URL.Query()["airport"]
-	fmt.Println(airportCodes)
 
 	if globals.Env == "local" {
 		notamTemplate = LoadTemplate("serve/pages/notam.html", "notam")
@@ -100,11 +100,19 @@ func HandleWinds(w http.ResponseWriter, r *http.Request) {
 	windsTemplate.Execute(w, map[string]interface{}{"winds": &windsData, "data": data})
 }
 
-// TODO logging with the status code
-func WithLogging(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		next.ServeHTTP(w, r)
-		// TODO add status code
-		globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
-	})
+func HandleInfo(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	if r.Method == http.MethodPost {
+		msg := r.PostFormValue("info")
+		if strings.TrimSpace(msg) != "" {
+			globals.SendWebhook(fmt.Sprintf(":pencil: - %s", msg))
+		}
+	}
+
+	if globals.Env == "local" {
+		infoTemplate = LoadTemplate("serve/pages/info.html", "info")
+	}
+
+	infoTemplate.Execute(w, map[string]interface{}{"Version": globals.Version})
 }

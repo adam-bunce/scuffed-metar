@@ -106,6 +106,36 @@ dialog {
     min-height: var(--header-height)
 }
 
+.header-nmh {
+    /* assume there's enough content on page to fill 200px of missing header room*/
+    width: var(--width);
+    margin: auto;
+}
+
+.fifty-fifty {
+    display: flex;
+}
+
+.item {
+    width: 50%;
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    background:  var(--white);
+    outline: var(--grey);
+    color: var(--black)
+}
+
+.bl {
+    width: 2px;
+    /* same calc used for body height */
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    padding: 0 0 0 2em;
+    border-left: 2px dotted var(--black);
+}
+
 .subnav-links, .site-nav-links {
     display: grid;
     gap: 10px;
@@ -149,6 +179,14 @@ blockquote .weatherInfo:not(:last-of-type) {
 
 .airportInfo .weatherInfo:last-of-type {
     padding-bottom: 0;
+}
+
+.source-link {
+    color: var(--black)
+}
+
+.source-link:hover {
+    text-decoration: underline;
 }
 
 .header-divider {
@@ -438,6 +476,22 @@ blockquote .weatherInfo:not(:last-of-type) {
 
     .metar-dialog-content {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    .item {
+        width: 100%;
+    }
+    .fifty-fifty {
+        flex-direction: column-reverse;
+    }
+    .bl {
+        /* same calc used for body height */
+        min-height: 1px;
+        width: 100%;
+        padding: 0 0 0 0;
+        margin: 0 0 2em 0;
+        border-bottom: 2px dotted var(--black);
+        border-left: none;
     }
 
 }

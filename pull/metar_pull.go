@@ -17,6 +17,15 @@ import (
 	"sync"
 )
 
+func setError(err error) error {
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		return errors.New("request timed out (>3sec)")
+	} else {
+		return err
+	}
+}
+
 func GetAllCamecoData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	for _, airportCode := range []string{"CJW7", "CYKC", "CKQ8"} {
 		wg.Add(1)
@@ -52,12 +61,7 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
-		var netErr net.Error
-		if errors.As(err, &netErr) && netErr.Timeout() {
-			weatherInfo.Error = errors.New("request timed out")
-		} else {
-			weatherInfo.Error = err
-		}
+		weatherInfo.Error = setError(err)
 		dataChan <- weatherInfo
 		return
 	}
@@ -155,7 +159,7 @@ func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get hidden highway page for airport code %s err: %v", airportName, err)
-		weatherInfo.Error = err
+		weatherInfo.Error = setError(err)
 		dataChan <- weatherInfo
 		return
 	}
@@ -198,7 +202,7 @@ func getSpecialHighwayData(airportName, airportCode string, dataChan chan<- type
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
-		weatherInfo.Error = err
+		weatherInfo.Error = setError(err)
 		dataChan <- weatherInfo
 		return
 	}
@@ -254,7 +258,7 @@ func getHighwayData(airportName, airportCode string, dataChan chan<- types.Weath
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get highway page for airport code %s err: %v", airportName, err)
-		weatherInfo.Error = err
+		weatherInfo.Error = setError(err)
 		dataChan <- weatherInfo
 		return
 	}
@@ -409,7 +413,7 @@ func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullI
 	res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get mesotech response for %s err: %v", airportCode, err)
-		weatherInfo.Error = err
+		weatherInfo.Error = setError(err)
 		dataChan <- weatherInfo
 		return
 	}

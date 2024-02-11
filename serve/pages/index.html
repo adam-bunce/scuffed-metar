@@ -109,8 +109,16 @@
 <section class="main">
     {{ range .AirportInformation }}
         <div id="{{.AirportCode}}-section" class="airportInfo">
+
             <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
                 <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
+                {{ if .MetarSource }}
+                    <a href="{{.MetarSource}}"
+                       class="source-link text-smaller mono"
+                       style="float:right; font-weight: lighter"
+                       target="_blank"
+                       referrerpolicy="no-referrer">src</a>
+                {{ end }}
             </h3>
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>
@@ -147,8 +155,8 @@
 <footer id="footer" class="footer">
     <div class="header-divider"></div>
     <div class="header-container">
-        <div class="mono"></div>
-        <div class="mono" title="not actually lol" style="cursor: pointer">©2023 Scuffed METAR</div>
+        <div class="mono "><a class="source-link" href="/info">INFO</a></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023-2024 Scuffed METAR</div>
     </div>
 </footer>
 </body>

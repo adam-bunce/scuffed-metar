@@ -124,8 +124,12 @@ const App = {
     updateTime() {
         // The timezone is always zero UTC offset
         const currentDate = new Date()
-        App.$.gmtTime.innerText = currentDate.toISOString().slice(11, 19) + ' GMT'
-        App.$.zuluTime.innerText = App.toZuluTimeFormat(currentDate)
+        try {
+            App.$.gmtTime.innerText = currentDate.toISOString().slice(11, 19) + ' GMT'
+            App.$.zuluTime.innerText = App.toZuluTimeFormat(currentDate)
+        } catch (e) {
+            // page doesn't have a clock (info page)
+        }
     },
 
     setPrintCheckboxes() {

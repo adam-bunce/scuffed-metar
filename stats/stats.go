@@ -17,7 +17,7 @@ func StatResetCycle() {
 	for {
 		now := time.Now().UTC()
 
-		globals.SendWebhook(fmt.Sprintf("%s - %d", now.Format("01-02-2006"), serveCount.Load()))
+		globals.SendWebhook(fmt.Sprintf(":arrows_clockwise: - METAR/GFA pages loaded %d time(s)", serveCount.Load()))
 		serveCount.Store(0)
 
 		nextMidnight := time.Date(now.Year(), now.Month(), now.Day()+1, 0, 0, 0, 0, time.UTC)

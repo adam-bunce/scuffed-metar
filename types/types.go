@@ -115,6 +115,8 @@ type AirportInfo struct {
 	CamBaseUrl string
 	CamPicUrls []string
 	WeatherInfo
+
+	MetarSource string
 }
 
 type WeatherPullInfo struct {

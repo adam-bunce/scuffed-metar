@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFO | Scuffed Metar</title>
+    <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
+    <link rel="stylesheet" href="../static/styles.css?v={{- .Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .Version -}}" defer></script>
+    <script data-goatcounter="https://scuffed-metar.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</head>
+
+<body>
+<!-- Header -->
+<section id="header" class="header-nmh">
+    <div class="header-container">
+        <h2 class="sm mono" id="top">Scuffed METAR</h2>
+        <div class="version-dark-container">
+            <button id="darkmode-toggle" class="mono dark">MODE</button>
+            <div>&nbsp;</div>
+            <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
+        </div>
+        <div class="reload-info text-grey">
+            v1.7.0: Now with an info page
+        </div>
+    </div>
+    <div class="header-divider"></div>
+
+    <!-- Main Site Nav-->
+    <div class="site-nav-links mono">
+        <a class="btn shadow" href="/">METAR</a>
+        <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
+        <a class="btn shadow" href="/notam">NOTAM</a>
+        <a class="btn shadow" href="/winds">WINDS</a>
+    </div>
+
+    <br>
+    <div class="site-nav-divider"></div>
+    <br>
+
+</section>
+
+<section class="main">
+    <div class="fifty-fifty">
+        <div class="item">
+            <h3>Version History</h3>
+            <br>
+            <ul>
+                <li><strong>v1.7.0</strong> <blockquote>added info page & metar src url's</blockquote></li>
+                <li><strong>v1.6.7</strong> <blockquote>added request timeout</blockquote></li>
+                <li><strong>v1.6.6</strong> <blockquote>fix hanging requests killing metar page</blockquote></li>
+                <li><strong>v1.6.5</strong> <blockquote>limited cet2/ccl3 readouts to 5</blockquote></li>
+                <li><strong>v1.6.4</strong> <blockquote>added cet2/ccl3</blockquote></li>
+            </ul>
+
+            <pre class="text-smaller mono">
+           _
+         -=\`\
+     |\ ____\_\__
+   -=\c`""""""" "`)
+      `~~~~~/ /~~`
+        -==/ /
+          '-'
+            </pre>
+
+        </div>
+        <div class="bl"></div>
+        <div class="item">
+            <h3>Contact</h3>
+            <br>
+            <form action="/info" method="post">
+                <label for="info">
+                </label>
+                <textarea id="info" name="info" class="textarea" placeholder="bug reports, feature requests, tell me something broke, etc"></textarea>
+                <button type="submit" class="btn shadow text-smaller">SUBMIT</button>
+            </form>
+            <br>
+        </div>
+    </div>
+</section>
+
+<footer id="footer" class="footer">
+    <div class="header-divider"></div>
+    <div class="header-container">
+        <div class="mono "><a class="source-link" href="/info">INFO</a></div>
+        <div class="mono" title="not actually lol" style="cursor: pointer">©2023-2024 Scuffed METAR</div>
+    </div>
+</footer>
+</body>
+</html>
