@@ -89,12 +89,8 @@ func HandleWinds(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var data []types.WindsData
-	var err error
 	if len(airportCodes) > 0 {
-		data, err = pull.GetWinds(airportCodes)
-		if err != nil {
-			windsData.Error = err
-		}
+		data, windsData.Error = pull.GetWinds(airportCodes)
 	}
 	windsData.LastUpdate = time.Now().UTC()
 	windsTemplate.Execute(w, map[string]interface{}{"winds": &windsData, "data": data})

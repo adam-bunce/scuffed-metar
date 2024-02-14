@@ -39,8 +39,9 @@ func GetWinds(airportCodes []string) ([]types.WindsData, error) {
 	response, err := globals.Client.Get(endpoint)
 	if err != nil {
 		globals.Logger.Printf("failed to get winds %v", err)
-		return res, fmt.Errorf("failed to get winds")
+		return res, fmt.Errorf("failed to get winds for %v", airportCodes)
 	}
+	defer response.Body.Close()
 	var bodyValue types.NavCanadaResponse
 	err = json.NewDecoder(response.Body).Decode(&bodyValue)
 	if err != nil {
