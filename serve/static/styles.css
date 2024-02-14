@@ -456,7 +456,6 @@ blockquote .weatherInfo:not(:last-of-type) {
 
     .site-nav-links {
         grid-template-columns: repeat(3, 1fr);
-        overflow: clip;
         text-wrap: none;
     }
 

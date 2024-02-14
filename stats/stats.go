@@ -18,7 +18,7 @@ func StatResetCycle() {
 		now := time.Now().UTC()
 
 		if serveCount.Load() == 0 {
-			globals.SendWebhook(fmt.Sprintf("Deployed v%s", globals.Version))
+			globals.SendWebhook(fmt.Sprintf("Deployed v%s: %s", globals.Version, globals.VersionHistory[0].Change))
 		} else {
 			globals.SendWebhook(fmt.Sprintf(":arrows_clockwise: - METAR/GFA pages loaded %d time(s)", serveCount.Load()))
 		}

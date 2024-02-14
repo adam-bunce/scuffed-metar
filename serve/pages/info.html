@@ -45,14 +45,9 @@
             <h3>Version History</h3>
             <br>
             <ul>
-                <li><strong>v1.7.3</strong> <blockquote>fix winds error not resetting</blockquote></li>
-                <li><strong>v1.7.2</strong> <blockquote>fix buttons jankyness</blockquote></li>
-                <li><strong>v1.7.1</strong> <blockquote>update cameco, rename upper winds link</blockquote></li>
-                <li><strong>v1.7.0</strong> <blockquote>added info page & metar src url's</blockquote></li>
-                <li><strong>v1.6.7</strong> <blockquote>added request timeout</blockquote></li>
-                <li><strong>v1.6.6</strong> <blockquote>fix hanging requests killing metar page</blockquote></li>
-                <li><strong>v1.6.5</strong> <blockquote>limited cet2/ccl3 readouts to 5</blockquote></li>
-                <li><strong>v1.6.4</strong> <blockquote>added cet2/ccl3</blockquote></li>
+                {{ range  .VersionHistory }}
+                    <li><strong>{{ .SemVer }}</strong> <blockquote>{{ .Change }}</blockquote></li>
+                {{ end }}
             </ul>
 
             <pre class="text-smaller mono">

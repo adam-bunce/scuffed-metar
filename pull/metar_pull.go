@@ -1,6 +1,7 @@
 package pull
 
 import (
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -19,7 +20,7 @@ import (
 
 func setError(err error) error {
 	var netErr net.Error
-	if errors.As(err, &netErr) && netErr.Timeout() {
+	if errors.As(err, &netErr) && netErr.Timeout() || errors.Is(context.DeadlineExceeded, err) {
 		return errors.New(fmt.Sprintf("request timed out (>%v)", globals.Timeout))
 	} else {
 		return err
@@ -332,6 +333,7 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 		"site=CYPA&" +
 		"site=CYFO&" +
 		"site=CYQW&" +
+		"site=CYQR&" +
 		"alpha=metar&" +
 		"alpha=taf&" +
 		"metar_choice=3"

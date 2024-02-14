@@ -91,6 +91,8 @@ var airportInfo = []types.AirportInfo{
 
 	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar"},
 	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/"},
+
+	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda},
 }
 
 var indexData = types.IndexData{

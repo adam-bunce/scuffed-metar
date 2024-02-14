@@ -110,5 +110,5 @@ func HandleInfo(w http.ResponseWriter, r *http.Request) {
 		infoTemplate = LoadTemplate("serve/pages/info.html", "info")
 	}
 
-	infoTemplate.Execute(w, map[string]interface{}{"Version": globals.Version})
+	infoTemplate.Execute(w, map[string]interface{}{"Version": globals.Version, "VersionHistory": globals.VersionHistory})
 }
