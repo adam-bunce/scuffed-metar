@@ -20,14 +20,14 @@ import (
 func setError(err error) error {
 	var netErr net.Error
 	if errors.As(err, &netErr) && netErr.Timeout() {
-		return errors.New("request timed out (>3sec)")
+		return errors.New(fmt.Sprintf("request timed out (>%v)", globals.Timeout))
 	} else {
 		return err
 	}
 }
 
 func GetAllCamecoData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	for _, airportCode := range []string{"CJW7", "CYKC"} { // NOTE: CKQ8 temporarily removed as their AWOS is not broadcasting, done to reduce load time
+	for _, airportCode := range []string{"CJW7", "CYKC", "CKQ8"} {
 		wg.Add(1)
 		go func(ac string) { getCamecoData(ac, dataChan); wg.Done() }(airportCode)
 	}
@@ -43,7 +43,7 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	       "__type": "WebDataRequest:http://COM.AXYS.COMMON.WEB.CONTRACTS",
 	       "Key": "METAR",
 	       "DataSourceKey": "7e7dbc35-1d26-4b85-8f7e-077ad7bad794",
-	       "Query": "SELECT * FROM avWX_%s_METAR WHERE DataTimeStamp >= DATEADD(DAY, -1, GETUTCDATE()) ORDER BY DataTimeStamp DESC"
+	       "Query": "SELECT TOP 100 PERCENT * FROM (SELECT TOP 1000 * FROM avWX_%s_METAR ORDER BY DataTimeStamp DESC) a WHERE DataTimeStamp >= DATEADD(DAY, -1, GETUTCDATE()) ORDER BY DataTimeStamp DESC"
 	   }
 	}`, airportCode))
 
