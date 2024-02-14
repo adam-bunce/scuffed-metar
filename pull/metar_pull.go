@@ -27,7 +27,7 @@ func setError(err error) error {
 }
 
 func GetAllCamecoData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	for _, airportCode := range []string{"CJW7", "CYKC", "CKQ8"} {
+	for _, airportCode := range []string{"CJW7", "CYKC"} { // NOTE: CKQ8 temporarily removed as their AWOS is not broadcasting, done to reduce load time
 		wg.Add(1)
 		go func(ac string) { getCamecoData(ac, dataChan); wg.Done() }(airportCode)
 	}
