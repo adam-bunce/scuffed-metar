@@ -274,7 +274,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
     text-align: center;
     border: 1px solid var(--black);
-    padding: .25em 1em .25em 1em;
+    padding: .25em .8em .25em .8em;
     color: var(--black);
     cursor: pointer;
 }
@@ -393,7 +393,7 @@ blockquote .weatherInfo:not(:last-of-type) {
 .metar-dialog-content {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
 }
 
 .gfa-dialog-content {
@@ -442,6 +442,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     :root {
         --width: 95%;
     }
+
 }
 
 @media screen and (max-width: 800px) {
@@ -455,6 +456,8 @@ blockquote .weatherInfo:not(:last-of-type) {
 
     .site-nav-links {
         grid-template-columns: repeat(3, 1fr);
+        overflow: clip;
+        text-wrap: none;
     }
 
     .camera-container {
