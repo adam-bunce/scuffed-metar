@@ -11,7 +11,7 @@ import (
 
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
-var Env = "local"
+var Env = "prod"
 var Version = "1.7.5" // for cache busting
 
 var VersionHistory = []struct {
