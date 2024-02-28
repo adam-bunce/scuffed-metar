@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	globals.SendWebhook(fmt.Sprintf("Deployed v%s: %s",
+	globals.SendWebhook(fmt.Sprintf("Deployed %s: %s",
 		globals.VersionHistory[0].SemVer,
 		globals.VersionHistory[0].Change))
 
