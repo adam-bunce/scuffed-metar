@@ -179,6 +179,43 @@ func TryUpdateGFAData() {
 	globals.Logger.Printf("Updated GFA data in %d ms", time.Since(start).Milliseconds())
 }
 
+// cameco is like 5->50 seconds to update so im just gonna update that every 2 minutes instead of users see errors all the time
+func TryCamecoUpdate() {
+	start := time.Now()
+	dataChan := make(chan types.WeatherPullInfo)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	pull.GetAllCamecoData(dataChan, &wg)
+
+	// close chan so read loop doesn't hang
+	go func() {
+		wg.Wait()
+		close(dataChan)
+	}()
+
+	var metarData []types.WeatherPullInfo
+	for metar := range dataChan {
+		metarData = append(metarData, metar)
+	}
+
+	indexData.Lock()
+	defer indexData.Unlock()
+
+	// Update current data w/ new pulled data
+	for _, pulledAirport := range metarData {
+		for j, currentDataAirports := range indexData.AirportInformation {
+			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+				indexData.AirportInformation[j].Metar = pulledAirport.Metar
+				indexData.AirportInformation[j].Taf = pulledAirport.Taf
+				indexData.AirportInformation[j].Error = pulledAirport.Error
+			}
+		}
+	}
+
+	indexData.CamecoLastUpdated = time.Now().UTC()
+	globals.Logger.Printf("Updated Cameco METAR data in %d ms", time.Since(start).Milliseconds())
+}
+
 func TryUpdateMETARData() {
 	start := time.Now()
 	indexData.Lock()
@@ -191,8 +228,8 @@ func TryUpdateMETARData() {
 	dataChan := make(chan types.WeatherPullInfo)
 
 	var wg sync.WaitGroup
-	wg.Add(5)
-	go pull.GetAllCamecoData(dataChan, &wg)
+	wg.Add(4)
+	// go pull.GetAllCamecoData(dataChan, &wg)
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
 	go pull.GetNavCanadaMetars(dataChan, &wg)

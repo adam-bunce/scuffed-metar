@@ -15,9 +15,9 @@
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version-dark-container">
-            <button id="darkmode-toggle" class="mono dark">MODE</button>
+            <div id="darkmode-toggle" class="mono dark">MODE</div>
             <div>&nbsp;</div>
-            <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{ .notam.Version }}</div>
+            <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .notam.Version -}}</div>
         </div>
 
         <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>

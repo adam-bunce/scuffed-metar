@@ -134,6 +134,7 @@ type IndexData struct {
 
 	AirportInformation []AirportInfo
 	GenericPageData
+	CamecoLastUpdated time.Time
 }
 
 type GfaPageData struct {

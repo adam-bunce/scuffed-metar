@@ -15,7 +15,7 @@
     <div class="header-container">
         <h2 class="sm mono" id="top">Scuffed METAR</h2>
         <div class="version-dark-container">
-            <button id="darkmode-toggle" class="mono dark">MODE</button>
+            <div id="darkmode-toggle" class="mono dark">MODE</div>
             <div>&nbsp;</div>
             <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
         </div>
@@ -71,7 +71,29 @@
                 <textarea id="info" name="info" class="textarea" placeholder="bug reports, feature requests, tell me something broke, etc"></textarea>
                 <button type="submit" class="btn shadow text-smaller">SUBMIT</button>
             </form>
+
             <br>
+            <div class="site-nav-divider"></div>
+            <br>
+
+            <h3>F.A.Q</h3>
+            <blockquote>
+                <details>
+                    <summary>How often is METAR data updated?</summary>
+                    <blockquote class="text-grey" style="line-height: 1.3em">
+                        Data is refreshed on page load if it hasn't already been fetched within the last 30 seconds, in which case it's served from a cache.
+                        Cameco data is refreshed every 2 minutes as it sometimes takes too long to be updated on demand without compromising page load times.
+                    </blockquote>
+                </details>
+
+                <br>
+                <details>
+                    <summary>How do I get something to be changed/improved/fixed?</summary>
+                    <blockquote class="text-grey" style="line-height: 1.3em">
+                        Either submit a message through the above contact form, or get the message to Bryan
+                    </blockquote>
+                </details>
+            </blockquote>
         </div>
     </div>
 </section>

@@ -99,6 +99,14 @@ dialog {
     background-color: var(--white);
 }
 
+summary {
+    cursor: pointer;
+}
+
+summary:hover {
+    text-decoration: underline;
+}
+
 /* Formatting */
 .header {
     width: var(--width);

@@ -59,7 +59,8 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	req.Header.Set("Keep-Alive", "timeout=3")
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
-	res, err := globals.Client.Do(req)
+	res, err := http.DefaultClient.Do(req) // cant have a timeout because sometimes we get like 50sec response times
+	// res, err := globals.Client.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get cameco response for %s err: %v", airportCode, err)
 		weatherInfo.Error = setError(err)

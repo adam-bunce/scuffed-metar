@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/pull"
-	"github.com/adam-bunce/scuffed-metar/stats"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"net/http"
 	"strings"
@@ -23,8 +22,6 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 		indexTemplate = LoadTemplate("serve/pages/index.html", "index")
 	}
 
-	stats.IncServeCount()
-
 	if globals.Env != "local" {
 		TryUpdateMETARData()
 	}
@@ -38,8 +35,6 @@ func HandleGfa(w http.ResponseWriter, r *http.Request) {
 	if globals.Env == "local" {
 		gfaTemplate = LoadTemplate("serve/pages/gfa.html", "gfa")
 	}
-
-	stats.IncServeCount()
 
 	if globals.Env != "local" {
 		TryUpdateGFAData()
