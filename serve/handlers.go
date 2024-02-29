@@ -2,6 +2,7 @@ package serve
 
 import (
 	"fmt"
+	"github.com/adam-bunce/scuffed-metar/cycles"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/types"
@@ -12,11 +13,12 @@ import (
 
 func HandleAll(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
-
 	if r.Method != http.MethodGet || r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
+
+	cycles.IncServeCount()
 
 	if globals.Env == "local" {
 		indexTemplate = LoadTemplate("serve/pages/index.html", "index")
@@ -30,6 +32,7 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGfa(w http.ResponseWriter, r *http.Request) {
+	cycles.IncServeCount()
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
 
 	if globals.Env == "local" {

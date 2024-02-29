@@ -16,7 +16,8 @@ func main() {
 	serve.TryUpdateGFAData()
 	serve.TryUpdateMETARData()
 
-	go cycles.CamecoPullCycle()
+	go cycles.EveryTwo(serve.TryCamecoUpdate)
+	go cycles.StatResetCycle()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/static/", serve.HandleStatic)
