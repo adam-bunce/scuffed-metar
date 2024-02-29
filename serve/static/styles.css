@@ -107,12 +107,12 @@ summary:hover {
     text-decoration: underline;
 }
 
-a {
+.faq-link {
     color: var(--blue);
     text-decoration: none;
 }
 
-a:hover {
+.faq-link:hover {
     text-decoration: underline;
 }
 

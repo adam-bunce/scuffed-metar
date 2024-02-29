@@ -54,6 +54,7 @@ const (
 	Cameco      = "http://smartweb.axys-aps.com/sites/1517/"
 	PointsNorth = "https://www.pointsnorthgroup.ca/weather/"
 	Highways    = "http://highways.glmobile.com/"
+	MetCam      = "https://www.metcam.navcanada.ca/dawc_images/wxcam/"
 )
 
 // this is the order displayed in the UI
@@ -61,7 +62,7 @@ var airportInfo = []types.AirportInfo{
 	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/"},
 	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/"},
 	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/"},
-	{"Key Lake", "CYKJ", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
 
 	{"Points North", "CYNL", "", nil, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html"},
 
@@ -86,17 +87,17 @@ var airportInfo = []types.AirportInfo{
 
 	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, ""},
 
-	{"Flin Flon", "CYFO", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
-	{"North Battleford", "CYQW", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"Flin Flon", "CYFO", MetCam + "CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
 
 	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar"},
 	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/"},
 
 	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda},
 
-	{"Fort Mac", "CYMM", "", nil, types.WeatherInfo{}, NavCanda},
+	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
 	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda},
-	{"Fort Chip", "CYPY", "", nil, types.WeatherInfo{}, NavCanda},
+	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
 }
 
 var indexData = types.IndexData{
