@@ -12,13 +12,14 @@ import (
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
-var Version = "1.7.5" // for cache busting
+var Version = "1.7.6" // for cache busting
 
 var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "fix cameco timeouts"},
+	{SemVer: "v" + Version, Change: "add CYMM, CYSM, CYPY"},
+	{SemVer: "v1.7.5", Change: "fix cameco timeouts"},
 	{SemVer: "v1.7.4", Change: "add CYQR, fix setError, update version history internals"},
 	{SemVer: "v1.7.3", Change: "fix winds error not resetting"},
 	{SemVer: "v1.7.2", Change: "fix buttons jankyness"},

@@ -93,6 +93,10 @@ var airportInfo = []types.AirportInfo{
 	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/"},
 
 	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda},
+
+	{"Fort Mac", "CYMM", "", nil, types.WeatherInfo{}, NavCanda},
+	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda},
+	{"Fort Chip", "CYPY", "", nil, types.WeatherInfo{}, NavCanda},
 }
 
 var indexData = types.IndexData{
@@ -114,7 +118,10 @@ var notamData = types.NotamPageData{
 	NoTamOptions: []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
-		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW"},
+		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
+		"CET2", "CCL3", "CYQR",
+		"CYMM", "CYSM", "CYPY",
+	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
 		Version:    globals.Version,

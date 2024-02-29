@@ -107,6 +107,23 @@ summary:hover {
     text-decoration: underline;
 }
 
+a {
+    color: var(--blue);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.version-dark-container a {
+    text-decoration: none;
+}
+
+.version-dark-container a {
+    cursor: pointer;
+}
+
 /* Formatting */
 .header {
     width: var(--width);

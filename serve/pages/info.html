@@ -17,7 +17,7 @@
         <div class="version-dark-container">
             <div id="darkmode-toggle" class="mono dark">MODE</div>
             <div>&nbsp;</div>
-            <div class="mono version" style="font-family: GeistMono, Courier, serif">v{{- .Version -}}</div>
+            <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .Version -}}</a>
         </div>
         <div class="reload-info text-grey">
             v1.7.0: Now with an info page
@@ -91,6 +91,15 @@
                     <summary>How do I get something to be changed/improved/fixed?</summary>
                     <blockquote class="text-grey" style="line-height: 1.3em">
                         Either submit a message through the above contact form, or get the message to Bryan
+                    </blockquote>
+                </details>
+
+                <br>
+                <details>
+                    <summary>Why is this site HTTP not HTTPS</summary>
+                    <blockquote class="text-grey" style="line-height: 1.3em">
+                        Because wx-cam images are served over HTTP I can't display them without converting them to HTTPS via a proxy due the
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Mixed_content" class="">mixed content policy</a>, I don't want to run a proxy so it's HTTP
                     </blockquote>
                 </details>
             </blockquote>

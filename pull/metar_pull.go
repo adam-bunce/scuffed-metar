@@ -335,6 +335,9 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 		"site=CYFO&" +
 		"site=CYQW&" +
 		"site=CYQR&" +
+		"site=CYMM&" +
+		"site=CYSM&" +
+		"site=CYPY&" +
 		"alpha=metar&" +
 		"alpha=taf&" +
 		"metar_choice=3"
