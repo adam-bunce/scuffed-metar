@@ -7,6 +7,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/pull"
 	"github.com/adam-bunce/scuffed-metar/types"
 	"net/http"
+	"slices"
 	"strings"
 	"time"
 )
@@ -109,4 +110,32 @@ func HandleInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	infoTemplate.Execute(w, map[string]interface{}{"Version": globals.Version, "VersionHistory": globals.VersionHistory})
+}
+
+func HandleTrip(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	airportCodes := r.URL.Query()["airport"]
+
+	if globals.Env != "local" {
+		TryUpdateMETARData()
+	}
+
+	if globals.Env == "local" {
+		tripTemplate = LoadTemplate("serve/pages/trip.html", "trip")
+	}
+
+	var selectedAirportsInfo []types.AirportInfo
+	for _, airport := range indexData.AirportInformation {
+		if slices.Contains(airportCodes, airport.AirportCode) {
+			selectedAirportsInfo = append(selectedAirportsInfo, airport)
+		}
+	}
+
+	// NOTE: notam data has all airports with notams which matches the airports with metars
+	err := tripTemplate.Execute(w, map[string]any{"airportInfo": selectedAirportsInfo, "options": notamData, "LastUpdate": &indexData.LastUpdate})
+	if err != nil {
+		panic(err)
+		return
+	}
 }

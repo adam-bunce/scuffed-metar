@@ -25,6 +25,7 @@ func main() {
 	mux.HandleFunc("/notam", serve.HandleNotam)
 	mux.HandleFunc("/winds", serve.HandleWinds)
 	mux.HandleFunc("/info", serve.HandleInfo)
+	mux.HandleFunc("/trip", serve.HandleTrip)
 	mux.HandleFunc("/", serve.HandleAll)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)

@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOTAM | Scuffed Metar</title>
+    <title>TRIP | Scuffed Metar</title>
     <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
-    <link rel="stylesheet" href="../static/styles.css?v={{- .notam.Version -}}">
-    <script type="text/javascript" src="../static/script.js?v={{- .notam.Version -}}" defer></script>
+    <link rel="stylesheet" href="../static/styles.css?v={{- .options.Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .options.Version -}}" defer></script>
     <script data-goatcounter="https://scuffed-metar.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
@@ -17,7 +17,7 @@
         <div class="version-dark-container">
             <div id="darkmode-toggle" class="mono dark">MODE</div>
             <div>&nbsp;</div>
-            <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .notam.Version -}}</a>
+            <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .options.Version -}}</a>
         </div>
 
         <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
@@ -28,10 +28,9 @@
     <div class="site-nav-links mono">
         <a class="btn shadow" href="/">METAR</a>
         <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
-        <a class="btn shadow current-page" href="/notam">NOTAM</a>
+        <a class="btn shadow" href="/notam">NOTAM</a>
         <a class="btn shadow" href="/winds">UPR WND</a>
-        <a class="btn shadow" href="/trip">TRIP</a>
-        <button id="print-button" class="btn shadow" style="grid-column-end: -1">Print</button>
+        <a class="btn shadow current-page" href="/trip">TRIP</a>
     </div>
 
     <br>
@@ -51,30 +50,28 @@
             <tr style="">
                 <td style="">Last Update:</td>
                 <td class="text-grey">
-                    {{ .notam.LastUpdate.Format "15:04:05 GMT" }}
+                    {{ .LastUpdate.Format "15:04:05 GMT" }}
                 </td>
             </tr>
         </table>
     </div>
+
     <br>
     <div class="site-nav-divider"></div>
     <br>
 
-    <h3 class="error">
-        For reference use only. Cross-check with Flight Service for other NOTAMs that may apply to your flight but are not filed under the selected airports.
-    </h3>
-    <br>
-
-    <!--selection opts-->
+    <!-- Page Nav-->
     <div class="subnav-links mono">
-        {{ range .notam.NoTamOptions }}
-        <button class="btn shadow white" id="{{.}}-selection-opt">{{ . }}</button>
+        {{ range .options.NoTamOptions }}
+        <a class="btn shadow" id="{{- . -}}-selection-opt">{{ .}}</a>
         {{ end }}
     </div>
-
+    <a class="jump-to-top" href="#top">
+        <div>TOP</div>
+    </a>
     <br>
     <div class="mono">
-        <a id="submission-redirect-button" class="btn shadow green" href="/notam">SUBMIT</a>
+        <a id="submission-redirect-button" class="btn shadow green" href="/trip">SUBMIT</a>
         <button id="submission-reset-button" class="btn shadow red">RESET</button>
         <button id="submission-select-all-button" class="btn shadow">SELECT ALL</button>
     </div>
@@ -82,37 +79,49 @@
 
 <section class="main">
     <br>
-    <div>
-        <div class="error">
-            {{ if .notam.Error }} {{ .notam.Error }} {{ end }}
-        </div>
+    {{ range .airportInfo }}
+    <div id="{{.AirportCode}}-section" class="airportInfo">
 
-    {{ range .data }}
-        <h3>
-            {{ range .ApplicableAirports }}
-                <span>{{ . }}</span>
+        <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
+            <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
+            {{ if .MetarSource }}
+            <a href="{{.MetarSource}}"
+               class="source-link text-smaller mono"
+               style="float:right; font-weight: lighter"
+               target="_blank"
+               referrerpolicy="no-referrer">src</a>
             {{ end }}
         </h3>
+        {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
+        <blockquote>
+            {{ range .WeatherInfo.Metar }}
+            <div class="weatherInfo">{{ . }}</div>
+            {{ end }}
+            {{ range .WeatherInfo.Taf }}
+            <div class="weatherInfo">{{ formatTaf . }}</div>
+            {{ end }}
 
-        <blockquote class="notamInfo">
-            <div class="text-grey">
-                {{ .StartValidity.Format "2006-01-02 15:04" }}
-                {{ if not .EndValidity.IsZero }}
-                - {{ .EndValidity.Format "2006-01-02 15:04" }}
+            {{ $picBaseUrl := .CamBaseUrl }}
+            {{ $airportCode := .AirportCode}}
+            {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
+
+            {{ if (eq $hasNoCam false) }}
+            <div class="camera-container">
+                {{ range .CamPicUrls }}
+                <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
+                     alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
+                     referrerpolicy="no-referrer">
                 {{ end }}
             </div>
-            {{ formatTaf .Notam }}
+            {{ end }}
         </blockquote>
-        <br>
-        <div class="divider"></div>
-    {{ end }}
     </div>
-
-    <a class="jump-to-top" href="#top">
-        <div>TOP</div>
-    </a>
-    <br>
-
+    {{ if (eq $hasNoCam true) }}
+    <div id="{{.AirportCode}}-divider" class="divider"></div>
+    {{ else }}
+    <div id="{{.AirportCode}}-divider" class="spacing-div"></div>
+    {{ end }}
+    {{ end }}
 </section>
 
 

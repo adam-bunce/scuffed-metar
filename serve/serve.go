@@ -17,6 +17,8 @@ import (
 	"time"
 )
 
+// TODO: semantic compression for all these
+
 //go:embed static
 var files embed.FS
 var fileServer = http.FileServer(http.FS(files))
@@ -40,6 +42,10 @@ var windsTemplate = LoadTemplate("", "winds", windsTemplateString)
 //go:embed pages/info.html
 var infoTemplateString string
 var infoTemplate = LoadTemplate("", "info", infoTemplateString)
+
+//go:embed pages/trip.html
+var tripTemplateString string
+var tripTemplate = LoadTemplate("", "trip", tripTemplateString)
 
 func hc(num int) []string {
 	var res []string
