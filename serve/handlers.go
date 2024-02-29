@@ -117,7 +117,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 
 	airportCodes := r.URL.Query()["airport"]
 
-	if globals.Env != "local" {
+	if globals.Env != "local" && len(airportCodes) > 0 {
 		TryUpdateMETARData()
 	}
 
