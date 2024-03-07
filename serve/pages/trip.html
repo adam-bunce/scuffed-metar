@@ -5,7 +5,9 @@
     <title>TRIP | Scuffed Metar</title>
     <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
     <link rel="stylesheet" href="../static/styles.css?v={{- .options.Version -}}">
-    <script type="text/javascript" src="../static/script.js?v={{- .options.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/trip.js?v={{- .options.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/darkmode.js?v={{- .options.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/time.js?v={{- .options.Version -}}" defer></script>
     <script data-goatcounter="https://scuffed-metar.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
@@ -17,7 +19,8 @@
         <div class="version-dark-container">
             <div id="darkmode-toggle" class="mono dark">MODE</div>
             <div>&nbsp;</div>
-            <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .options.Version -}}</a>
+            <a href="/info" class="mono version"
+               style="font-family: GeistMono, Courier, serif;">v{{- .options.Version -}}</a>
         </div>
 
         <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
@@ -31,14 +34,72 @@
         <a class="btn shadow" href="/notam">NOTAM</a>
         <a class="btn shadow" href="/winds">UPR WND</a>
         <a class="btn shadow current-page" href="/trip">TRIP</a>
+        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
 
     <br>
     <div class="site-nav-divider"></div>
     <br>
 
-    <!-- Clock -->
+    <!-- Print Settings-->
+    <dialog id="print-dialog" class="shadow">
+        <section>
+            <div class="dialog-meta">
+                <div>
+                    <h3>Print Settings</h3>
+                    <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
+                </div>
+                <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
+            </div>
+            <br>
 
+            <div class="gfa-dialog-content">
+                <div>
+                    <h4>Clouds & Weather</h4>
+                    <blockquote>
+                        {{ range .gfa.CloudsWeather}}
+                            <div class="mono gfa-dialog-content-item">
+                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                            </div>
+                        {{ end }}
+                    </blockquote>
+                </div>
+
+                <div>
+                    <h4>Icing, Turbulence & Freezing level</h4>
+                    <blockquote>
+                        {{ range .gfa.IcingTurbFreezing }}
+                            <div class="mono gfa-dialog-content-item">
+                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                            </div>
+                        {{ end }}
+                    </blockquote>
+                </div>
+
+                </div>
+
+            <div class="gfa-dialog-content">
+                <div class="mono gfa-dialog-content-item">
+                    <h4>Include NOTAM's&emsp;</h4>
+                    <button class="checkbox mono" id="notam-print-toggle"></button>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="mono">
+                <button class="btn shadow green" id="print-button" disabled>Print</button>
+                <button class="btn shadow red" id="reset-button">Reset</button>
+                <button class="btn shadow" id="select-all-button">Select All</button>
+                <br>
+            </div>
+        </section>
+    </dialog>
+    <!-- End Print Settings-->
+
+    <!-- Clock -->
     <div>
         <table role="presentation" style="text-align: left;" class="time">
             <tr>
@@ -47,10 +108,10 @@
                 <td>&emsp;</td>
                 <td id="zuluTime" class="text-grey"></td>
             </tr>
-            <tr style="">
-                <td style="">Last Update:</td>
+            <tr style="" >
+                <td style="">Requested At:</td>
                 <td class="text-grey">
-                    {{ .LastUpdate.Format "15:04:05 GMT" }}
+                    {{ .RequestedAt.Format "15:04:05 GMT" }}
                 </td>
             </tr>
         </table>
@@ -60,70 +121,141 @@
     <div class="site-nav-divider"></div>
     <br>
 
-    <!-- Page Nav-->
-    <div class="subnav-links mono">
-        {{ range .options.NoTamOptions }}
-        <a class="btn shadow" id="{{- . -}}-selection-opt">{{ .}}</a>
-        {{ end }}
-    </div>
+    <!-- Selection -->
+    <input id="site-input" type="text" placeholder="CJW7 ckq8 ..." class="mono input" autocomplete="off">
+    <a id="submission-redirect-button" class="btn shadow green" href="/trip">SUBMIT</a>
+
     <a class="jump-to-top" href="#top">
         <div>TOP</div>
     </a>
     <br>
-    <div class="mono">
-        <a id="submission-redirect-button" class="btn shadow green" href="/trip">SUBMIT</a>
-        <button id="submission-reset-button" class="btn shadow red">RESET</button>
-        <button id="submission-select-all-button" class="btn shadow">SELECT ALL</button>
-    </div>
 </section>
 
-<section class="main">
+<!--metar-->
+<section class="trip-section">
+    {{/* this is just for printing */}}
+    <h3 class="requested-at error">Requested at {{ .RequestedAt.Format "15:04:05 GMT" }} </h3>
     <br>
     {{ range .airportInfo }}
-    <div id="{{.AirportCode}}-section" class="airportInfo">
+        <div id="{{.AirportCode}}-section" class="airportInfo">
 
-        <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
-            <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
-            {{ if .MetarSource }}
-            <a href="{{.MetarSource}}"
-               class="source-link text-smaller mono"
-               style="float:right; font-weight: lighter"
-               target="_blank"
-               referrerpolicy="no-referrer">src</a>
-            {{ end }}
-        </h3>
-        {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
-        <blockquote>
-            {{ range .WeatherInfo.Metar }}
-            <div class="weatherInfo">{{ . }}</div>
-            {{ end }}
-            {{ range .WeatherInfo.Taf }}
-            <div class="weatherInfo">{{ formatTaf . }}</div>
-            {{ end }}
-
-            {{ $picBaseUrl := .CamBaseUrl }}
-            {{ $airportCode := .AirportCode}}
-            {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
-
-            {{ if (eq $hasNoCam false) }}
-            <div class="camera-container">
-                {{ range .CamPicUrls }}
-                <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
-                     alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
-                     referrerpolicy="no-referrer">
+            <h3 id="{{- .AirportCode -}}" class="mono">{{- .AirportCode }}
+                <i class="text-smaller">{{ if .AirportName }} ( {{- .AirportName -}} ){{ end }}</i>
+                {{ if .MetarSource }}
+                    <a href="{{.MetarSource}}"
+                       class="source-link text-smaller mono"
+                       style="float:right; font-weight: lighter"
+                       target="_blank"
+                       referrerpolicy="no-referrer">src</a>
                 {{ end }}
-            </div>
-            {{ end }}
-        </blockquote>
-    </div>
-    {{ if (eq $hasNoCam true) }}
-    <div id="{{.AirportCode}}-divider" class="divider"></div>
-    {{ else }}
-    <div id="{{.AirportCode}}-divider" class="spacing-div"></div>
-    {{ end }}
+            </h3>
+            {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
+            <blockquote>
+                {{ range .WeatherInfo.Metar }}
+                    <div class="weatherInfo">{{ . }}</div>
+                {{ end }}
+                {{ range .WeatherInfo.Taf }}
+                    <div class="weatherInfo">{{ formatTaf . }}</div>
+                {{ end }}
+
+                {{ $picBaseUrl := .CamBaseUrl }}
+                {{ $airportCode := .AirportCode}}
+                {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
+
+                {{ if (eq $hasNoCam false) }}
+                    <div class="camera-container">
+                        {{ range .CamPicUrls }}
+                            <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
+                                 alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
+                                 referrerpolicy="no-referrer">
+                        {{ end }}
+                    </div>
+                {{ end }}
+            </blockquote>
+        </div>
+        {{ if (eq $hasNoCam true) }}
+            <div id="{{.AirportCode}}-divider" class="divider"></div>
+        {{ else }}
+            <div id="{{.AirportCode}}-divider" class="spacing-div"></div>
+        {{ end }}
     {{ end }}
 </section>
 
+
+<!-- Forecasts (gfa) -->
+{{ if gt (len .airportInfo) 0 }}
+    <section class="trip-section">
+        <div class="divider"></div>
+
+        <h3 class="mono" id="cw-gfa-header">Clouds and Weather Forecasts</h3>
+        <h3 class="error">{{ if .gfa.Error }} {{ .gfa.Error}} {{ end}}</h3>
+        <blockquote>
+            <div class="camera-container">
+                {{ range .gfa.CloudsWeather }}
+                    <img id="print-{{.Id}}" class="image shadow"
+                         src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
+                         alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                {{ end }}
+            </div>
+        </blockquote>
+
+        <div class="spacing-div"></div>
+
+        <h3 class="mono" id="it-gfa-header"> Turbulence, Icing and Freezing Level Forecasts</h3>
+        <h3 class="error">{{ if .gfa.Error }} {{ .gfa.Error}} {{ end}}</h3>
+        <blockquote>
+            <div class="camera-container">
+                {{ range .gfa.IcingTurbFreezing }}
+                    <img id=print-{{.Id}} class="image shadow"
+                         src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
+                         alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+                {{ end }}
+            </div>
+        </blockquote>
+    </section>
+{{ end }}
+
+<!--notam-->
+{{ if gt (len .airportInfo) 0 }}
+    <section class="trip-section" id="notam-section">
+        <br>
+        <div class="divider"></div>
+
+        <h3 class="error">
+            For reference use only. Cross-check with Flight Service for other NOTAMs that may apply to your flight but
+            are not filed under the selected airports.
+        </h3>
+        <br>
+        <br>
+        <div>
+            {{ range .notam }}
+                <h3>
+                    {{ range .ApplicableAirports }}
+                        <span>{{ . }}</span>
+                    {{ end }}
+                </h3>
+
+                <blockquote class="notamInfo">
+                    <div class="text-grey">
+                        {{ .StartValidity.Format "2006-01-02 15:04" }}
+                        {{ if not .EndValidity.IsZero }}
+                            - {{ .EndValidity.Format "2006-01-02 15:04" }}
+                        {{ end }}
+                    </div>
+                    {{ formatTaf .Notam }}
+                </blockquote>
+                <br>
+                <div class="divider"></div>
+            {{ end }}
+        </div>
+    </section>
+{{ end }}
+
+{{ if eq (len .airportInfo) 0 }}
+    <section class="main">
+        <h3>No Airports Selected</h3>
+    </section>
+{{ end }}
 
 <footer id="footer" class="footer">
     <div class="header-divider"></div>

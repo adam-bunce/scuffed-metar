@@ -107,6 +107,18 @@ summary:hover {
     text-decoration: underline;
 }
 
+input {
+    font-size: 16px;
+    font-family: GeistMono, BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;;
+    border: 1px solid var(--black);
+    padding: .25em .8em .25em .8em;
+    color: var(--black);
+}
+
+.requested-at {
+    display: none;
+}
+
 .faq-link {
     color: var(--blue);
     text-decoration: none;
@@ -153,6 +165,12 @@ textarea {
     color: var(--black)
 }
 
+.input {
+    background:  var(--white);
+    outline: var(--grey);
+    color: var(--black)
+}
+
 .bl {
     width: 2px;
     /* same calc used for body height */
@@ -171,6 +189,11 @@ textarea {
     width: var(--width);
     margin: auto;
     min-height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+
+.trip-section {
+    width: var(--width);
+    margin: auto;
 }
 
 .footer {

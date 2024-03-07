@@ -6,6 +6,8 @@
     <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
     <link rel="stylesheet" href="../static/styles.css?v={{- .notam.Version -}}">
     <script type="text/javascript" src="../static/script.js?v={{- .notam.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/darkmode.js?v={{- .notam.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/time.js?v={{- .notam.Version -}}" defer></script>
     <script data-goatcounter="https://scuffed-metar.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 
@@ -20,8 +22,7 @@
             <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .notam.Version -}}</a>
         </div>
 
-        <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
-    </div>
+        <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div> </div>
     <div class="header-divider"></div>
 
     <!-- Main Site Nav-->

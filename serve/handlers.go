@@ -114,28 +114,50 @@ func HandleInfo(w http.ResponseWriter, r *http.Request) {
 
 func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+	validAirports := []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
+		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
+		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
+		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
+		"CET2", "CCL3", "CYQR",
+		"CYMM", "CYSM", "CYPY",
+	}
 
 	airportCodes := r.URL.Query()["airport"]
 
-	if globals.Env != "local" && len(airportCodes) > 0 {
+	// remove sites sent by user that don't exist
+	var filteredValidAirports []string
+	for _, code := range airportCodes {
+		if slices.Contains(validAirports, code) {
+			filteredValidAirports = append(filteredValidAirports, code)
+		}
+	}
+
+	// ik this is bad fyi
+	var notamActualData []types.NotamData
+	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
+		TryUpdateGFAData()
+		notamActualData, _ = pull.GetNotam(filteredValidAirports) // TODO: move up
 	}
 
 	if globals.Env == "local" {
 		tripTemplate = LoadTemplate("serve/pages/trip.html", "trip")
 	}
 
-	var selectedAirportsInfo []types.AirportInfo
+	var selectedAirportsMetar []types.AirportInfo
 	for _, airport := range indexData.AirportInformation {
-		if slices.Contains(airportCodes, airport.AirportCode) {
-			selectedAirportsInfo = append(selectedAirportsInfo, airport)
+		if slices.Contains(filteredValidAirports, airport.AirportCode) {
+			selectedAirportsMetar = append(selectedAirportsMetar, airport)
 		}
 	}
 
 	// NOTE: notam data has all airports with notams which matches the airports with metars
-	err := tripTemplate.Execute(w, map[string]any{"airportInfo": selectedAirportsInfo, "options": notamData, "LastUpdate": &indexData.LastUpdate})
-	if err != nil {
-		panic(err)
-		return
-	}
+	tripTemplate.Execute(w, map[string]any{
+		"airportInfo": selectedAirportsMetar,
+		"options":     notamData,
+		"RequestedAt": time.Now(),
+		"gfa":         &gfaData,
+		"notam":       &notamActualData,
+	})
+
 }
