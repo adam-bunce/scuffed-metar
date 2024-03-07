@@ -575,3 +575,7 @@ blockquote .weatherInfo:not(:last-of-type) {
         width: auto;
     }
 }
+
+.usage-info {
+    padding-bottom: .6em;
+}

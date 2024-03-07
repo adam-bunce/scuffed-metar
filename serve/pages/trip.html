@@ -23,7 +23,7 @@
                style="font-family: GeistMono, Courier, serif;">v{{- .options.Version -}}</a>
         </div>
 
-        <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div>
+        <div class="reload-info text-grey">Refreshing page will update the displayed data.</div>
     </div>
     <div class="header-divider"></div>
 
@@ -82,7 +82,7 @@
 
             <div class="gfa-dialog-content">
                 <div class="mono gfa-dialog-content-item">
-                    <h4>Include NOTAM's&emsp;</h4>
+                    <h4>Include NOTAMs&emsp;</h4>
                     <button class="checkbox mono" id="notam-print-toggle"></button>
                 </div>
             </div>
@@ -122,6 +122,9 @@
     <br>
 
     <!-- Selection -->
+    <h4 class="usage-info">
+        Use this like the old Nav can page to get METAR/TAF, GFAs and NOTAMs
+    </h4>
     <input id="site-input" type="text" placeholder="CJW7 ckq8 ..." class="mono input" autocomplete="off">
     <a id="submission-redirect-button" class="btn shadow green" href="/trip">SUBMIT</a>
 
