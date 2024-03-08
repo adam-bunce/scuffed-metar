@@ -3,22 +3,17 @@ const defaultPrintSettings= `
 
 #metars .spacing-div:not(:last-of-type) {
     border-bottom: 2px dotted var(--black);
-    margin: 0 0 2em 0;
     display: block;
+    padding: 0;
 }
-
-dialog, #header, #footer, .spacing-div, img, [id$="-gfa-header"] {
+.source-link, dialog, #header, #footer, .spacing-div, img, [id$="-gfa-header"] {
     display: none;
 } 
 .camera-container {display:block}
-
-body {
-    font-size: 10px;
-}
-
-.notamInfo {
-    line-height: 1.5em;
-}
+.pt {padding-top: 0px;}
+body { font-size: 10px; }
+.notamInfo { line-height: 1.5em;}
+.divider, .spacing-div {margin: 0 0 .5em 0;}
 `
 
 const Trip = {

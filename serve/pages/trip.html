@@ -153,10 +153,10 @@
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>
                 {{ range .WeatherInfo.Metar }}
-                    <div class="weatherInfo">{{ . }}</div>
+                    <p class="weatherInfo">{{ . }}</p>
                 {{ end }}
                 {{ range .WeatherInfo.Taf }}
-                    <div class="weatherInfo">{{ formatTaf . }}</div>
+                    <p class="weatherInfo">{{ formatTaf . }}</p>
                 {{ end }}
 
                 {{ $picBaseUrl := .CamBaseUrl }}
@@ -164,7 +164,7 @@
                 {{ $hasNoCam := (eq (len .CamPicUrls) 0 ) }}
 
                 {{ if (eq $hasNoCam false) }}
-                    <div class="camera-container">
+                    <div class="camera-container pt">
                         {{ range .CamPicUrls }}
                             <img class="image shadow" src="{{ $picBaseUrl }}{{- . -}}"
                                  alt="FAILED TO LOAD: {{ $airportCode }} IMAGE" width="1920" height="1080"
@@ -245,7 +245,6 @@
                     </div>
                     {{ formatTaf .Notam }}
                 </blockquote>
-                <br>
                 <div class="divider"></div>
             {{ end }}
         </div>

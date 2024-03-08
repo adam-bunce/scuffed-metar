@@ -2,12 +2,13 @@ const metarPrintSettings = `
 .airportInfo, [id$="-section"], [id$="-divider"], #print-dialog, #header, #footer, img, .camera-container, .jump-to-top {
     display: none;
 } 
-.spacing-div {
-    margin: 0;
-}
-body {
-    font-size: 10px;
-}
+.source-link, dialog, #header, #footer, .spacing-div, img, [id$="-gfa-header"] {
+    display: none;
+} 
+
+.pt {padding-top: 0px;}
+body { font-size: 10px; }
+.divider, .spacing-div {margin: 0 0 .5em 0;}
 `
 
 const gfaPrintSettings = `
@@ -25,13 +26,6 @@ h3.mono {
 }
 .shadow {
     box-shadow: none;
-}
-body {
-    font-size: 10px;
-}
-
-.notamInfo {
-    line-height: 1.5em;
 }
 `
 
@@ -84,6 +78,7 @@ const App = {
         App.updateSelectedItemsUI()
     },
     printSelectedItem() {
+        console.log(App.$.selectedPrintItemIds)
         const useMetarSettings = String(App.$.selectedPrintItemIds[0]).includes("C") // all airport id's will start with a C
 
         let selectedElements = ""
@@ -106,9 +101,9 @@ const App = {
     ${useMetarSettings ? metarPrintSettings : gfaPrintSettings}
 
     ${selectedElements} {
-         padding-top: 10px;
+         padding-top: .5em;
          display: block !important;   
-         ${useMetarSettings ? 'border-bottom: 2px dotted var(--black);margin: 0 0 2em 0;' : ''}
+         ${useMetarSettings ? 'border-bottom: 2px dotted var(--black);' : ''}
          ${useMetarSettings ? '' : 'width: 75% !important'}
     }
 }`

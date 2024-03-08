@@ -225,7 +225,7 @@ blockquote .weatherInfo:not(:last-of-type) {
     font-size: .9em;
 }
 
-.airportInfo .weatherInfo:last-of-type {
+blockquote .weatherInfo:last-of-type {
     padding-bottom: 0;
 }
 
@@ -392,6 +392,10 @@ blockquote .weatherInfo:not(:last-of-type) {
     display: grid;
     gap: 5px;
     grid-template-columns: repeat(2, 1fr);
+}
+
+.pt {
+    padding-top: 1.2em;
 }
 
 .image {
