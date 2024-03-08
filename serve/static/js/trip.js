@@ -1,9 +1,24 @@
 const defaultPrintSettings= `
 /* obvi stuff*/
+
+#metars .spacing-div:not(:last-of-type) {
+    border-bottom: 2px dotted var(--black);
+    margin: 0 0 2em 0;
+    display: block;
+}
+
 dialog, #header, #footer, .spacing-div, img, [id$="-gfa-header"] {
     display: none;
 } 
 .camera-container {display:block}
+
+body {
+    font-size: 10px;
+}
+
+.notamInfo {
+    line-height: 1.5em;
+}
 `
 
 const Trip = {

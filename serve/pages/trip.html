@@ -113,9 +113,7 @@
                 <td class="text-grey">
                     {{ .RequestedAt.Format "15:04:05 GMT" }}
                 </td>
-            </tr>
-        </table>
-    </div>
+            </tr> </table> </div>
 
     <br>
     <div class="site-nav-divider"></div>
@@ -135,7 +133,7 @@
 </section>
 
 <!--metar-->
-<section class="trip-section">
+<section class="trip-section" id="metars">
     {{/* this is just for printing */}}
     <h3 class="requested-at error">Requested at {{ .RequestedAt.Format "15:04:05 GMT" }} </h3>
     <br>

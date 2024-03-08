@@ -5,6 +5,9 @@ const metarPrintSettings = `
 .spacing-div {
     margin: 0;
 }
+body {
+    font-size: 10px;
+}
 `
 
 const gfaPrintSettings = `
@@ -22,6 +25,13 @@ h3.mono {
 }
 .shadow {
     box-shadow: none;
+}
+body {
+    font-size: 10px;
+}
+
+.notamInfo {
+    line-height: 1.5em;
 }
 `
 
