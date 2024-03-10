@@ -394,7 +394,7 @@ blockquote .weatherInfo:last-of-type {
     grid-template-columns: repeat(2, 1fr);
 }
 
-.pt {
+.weatherInfo + .pt {
     padding-top: 1.2em;
 }
 
