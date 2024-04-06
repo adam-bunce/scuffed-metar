@@ -12,13 +12,14 @@ import (
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
-var Version = "1.9.4" // for cache busting
+var Version = "1.9.5" // for cache busting
 
 var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "fix metar spacing"},
+	{SemVer: "v" + Version, Change: "allow CYOD notam in trips section"},
+	{SemVer: "v1.9.4", Change: "fix metar spacing"},
 	{SemVer: "v1.9.3", Change: "tweak print spacing"},
 	{SemVer: "v1.9.2", Change: "tweaked print typography"},
 	{SemVer: "v1.9.1", Change: "add instructions"},
