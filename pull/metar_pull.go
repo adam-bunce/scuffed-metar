@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"io"
 	"math"
 	"net"
@@ -391,12 +392,64 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 	}
 }
 
-func GetAllMesotech(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	airports := []string{"https://cet2.ca/AWA_WEB_EXPORT.xml", "CET2", "https://ccl3.azurewebsites.net/awa_web_export.xml", "CCL3"}
-	for i := 0; i < len(airports); i += 2 {
-		wg.Add(1)
-		go func(i int) { getMesotechData(airports[i], airports[i+1], dataChan); wg.Done() }(i)
+func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	weatherInfo := types.WeatherPullInfo{
+		AirportCode: airportCode,
 	}
+	opts := MQTT.NewClientOptions().AddBroker(url)
+	opts.SetClientID("hunter2")
+	opts.SetUsername(globals.MqttUser)
+	opts.SetPassword(globals.MqttPass)
+
+	c := MQTT.NewClient(opts)
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
+		globals.Logger.Printf("Failed to connect to MQTT, err: %s", token.Error())
+		weatherInfo.Error = token.Error()
+		dataChan <- weatherInfo
+		return
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	if token := c.Subscribe("AWA/CET2/Archives/ReportLog", 0, func(client MQTT.Client, msg MQTT.Message) {
+		var dest *types.MQTTReportLogTopicMessage
+		defer wg.Done()
+
+		err := json.NewDecoder(strings.NewReader(string(msg.Payload()))).Decode(&dest)
+		if err != nil {
+			globals.Logger.Printf("Failed to decode MQTT ReportLog, err: %s", err)
+			weatherInfo.Error = err
+			dataChan <- weatherInfo
+			return
+		}
+
+		weatherInfo.Metar = dest.History
+		weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
+		dataChan <- weatherInfo
+
+	}); token.Wait() && token.Error() != nil {
+		globals.Logger.Printf("Failed to subscribe to MQTT ReportLog, err: %s", token.Error())
+		weatherInfo.Error = token.Error()
+		dataChan <- weatherInfo
+		wg.Done()
+		return
+	}
+
+	if token := c.Unsubscribe("AWA/CET2/Archives/ReportLog"); token.Wait() && token.Error() != nil {
+		globals.Logger.Printf("Failed to unsubscribe from MQTT ReportLog, err: %s", token.Error())
+		weatherInfo.Error = token.Error()
+		dataChan <- weatherInfo
+		return
+	}
+
+	c.Disconnect(250)
+	wg.Wait()
+	globals.Logger.Printf("Finished MQTT Pull")
+}
+
+func GetAllMesotech(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
+	getMesotechData("https://ccl3.azurewebsites.net/awa_web_export.xml", "CCL3", dataChan)
+	getMesotechMQTT("wss://mqtt.awos.live:8083/", "CET2", dataChan)
 	wg.Done()
 }
 

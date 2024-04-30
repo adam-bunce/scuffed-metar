@@ -1,4 +1,4 @@
-name: Deploy To ECR
+name: Deploy
 
 on:
   push:
@@ -28,6 +28,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: my_images
+          MQTT_USER: ${{ secrets.USER }}
+          MQTT_PASS: ${{ secrets.PASS }}
           IMAGE_TAG: scuffed_metar_image
         run: |
           aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG

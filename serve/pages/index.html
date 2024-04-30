@@ -121,6 +121,13 @@
                        target="_blank"
                        referrerpolicy="no-referrer">src</a>
                 {{ end }}
+
+                {{ if .AwosFrequency }}
+                    <i class="text-smaller">
+                        {{ .AwosFrequency }}
+                    </i>
+                {{ end }}
+
             </h3>
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
             <blockquote>

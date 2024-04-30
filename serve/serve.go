@@ -65,45 +65,45 @@ const (
 
 // this is the order displayed in the UI
 var airportInfo = []types.AirportInfo{
-	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/"},
-	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/"},
-	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/"},
-	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/", ""},
+	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/", ""},
+	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/", ""},
+	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
-	{"Points North", "CYNL", "", nil, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html"},
+	{"Points North", "CYNL", "", nil, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", ""},
 
-	{"", "CYXE", "", nil, types.WeatherInfo{}, NavCanda},
-	{"", "CYPA", "", nil, types.WeatherInfo{}, NavCanda},
-	{"", "CYVC", "", nil, types.WeatherInfo{}, NavCanda},
+	{"", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"", "CYPA", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, ""},
 
-	{"Fond du Lac", "CZFD", Highways + "/fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac"},
-	{"Wollaston", "CZWL", Highways + "/wollaston", hc(2), types.WeatherInfo{}, Highways + "/wollaston"},
-	{"Ile A La Crosse", "CJF3", Highways + "/ilealacrosse", hc(2), types.WeatherInfo{}, Highways + "/ilealacrosse"},
-	{"Cumberland House", "CJT4", Highways + "/cumberlandhouse", hc(2), types.WeatherInfo{}, Highways + "/cumberlandhouse"},
-	{"La Loche", "CJL4", Highways + "/laloche", hc(2), types.WeatherInfo{}, Highways + "/laloche"},
-	{"Patuanak", "CKB2", Highways + "/patuanak", hc(1), types.WeatherInfo{}, ""},
-	{"Pelican Narrows", "CJW4", Highways + "/pelican", hc(1), types.WeatherInfo{}, ""},
-	{"Pinehouse", "CZPO", Highways + "/pinehouse", hc(2), types.WeatherInfo{}, Highways + "/pinehouse"},
-	{"Buffalo Narrows", "CYVT", Highways + "/buffalonarrows", hc(2), types.WeatherInfo{}, NavCanda},
-	{"Hudson Bay", "CYHB", Highways + "/hudsonbay", hc(2), types.WeatherInfo{}, ""},
-	{"Stony Rapids", "CYSF", Highways + "/stonyrapids", hc(2), types.WeatherInfo{}, NavCanda},
-	{"Sandy Bay", "CJY4", Highways + "/sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}, Highways + "/sandybay"},
-	{"Meadow Lake", "CYLJ", Highways + "/meadowlake", hc(2), types.WeatherInfo{}, NavCanda},
-	{"Uranium City", "CYBE", Highways + "/uranium", hc(1), types.WeatherInfo{}, ""},
+	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175"},
+	{"Wollaston", "CZWL", Highways + "wollaston", hc(2), types.WeatherInfo{}, Highways + "/wollaston", "122.075"},
+	{"Ile A La Crosse", "CJF3", Highways + "ilealacrosse", hc(2), types.WeatherInfo{}, Highways + "/ilealacrosse", "122.075"},
+	{"Cumberland House", "CJT4", Highways + "cumberlandhouse", hc(2), types.WeatherInfo{}, Highways + "/cumberlandhouse", "122.975"},
+	{"La Loche", "CJL4", Highways + "laloche", hc(2), types.WeatherInfo{}, Highways + "/laloche", "122.975"},
+	{"Patuanak", "CKB2", Highways + "patuanak", hc(1), types.WeatherInfo{}, "", ""},
+	{"Pelican Narrows", "CJW4", Highways + "pelican", hc(1), types.WeatherInfo{}, "", ""},
+	{"Pinehouse", "CZPO", Highways + "pinehouse", hc(2), types.WeatherInfo{}, Highways + "/pinehouse", "123.175"},
+	{"Buffalo Narrows", "CYVT", Highways + "buffalonarrows", hc(2), types.WeatherInfo{}, NavCanda, ""},
+	{"Hudson Bay", "CYHB", Highways + "hudsonbay", hc(2), types.WeatherInfo{}, "", ""},
+	{"Stony Rapids", "CYSF", Highways + "stonyrapids", hc(2), types.WeatherInfo{}, NavCanda, ""},
+	{"Sandy Bay", "CJY4", Highways + "sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}, Highways + "/sandybay", "122.550"},
+	{"Meadow Lake", "CYLJ", Highways + "meadowlake", hc(2), types.WeatherInfo{}, NavCanda, ""},
+	{"Uranium City", "CYBE", Highways + "uranium", hc(1), types.WeatherInfo{}, "", ""},
 
-	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, ""},
+	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, "", ""},
 
-	{"Flin Flon", "CYFO", MetCam + "CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
-	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"Flin Flon", "CYFO", MetCam + "CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
-	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar"},
-	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/"},
+	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar", ""},
+	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/", ""},
 
-	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda},
+	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda, ""},
 
-	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
-	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda},
-	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda},
+	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 }
 
 var indexData = types.IndexData{

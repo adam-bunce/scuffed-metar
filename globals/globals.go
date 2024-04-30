@@ -12,18 +12,22 @@ import (
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
-var Version = "1.9.5" // for cache busting
+var Version = "1.9.6" // for cache busting
+
+var MqttPass = os.Getenv("MQTT_PASS")
+var MqttUser = os.Getenv("MQTT_USER")
 
 var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "allow CYOD notam in trips section"},
+	{SemVer: "v" + Version, Change: "fix CET2, add AWOS frequencies"},
+	{SemVer: "v1.9.5", Change: "allow CYOD notam in trips section"},
 	{SemVer: "v1.9.4", Change: "fix metar spacing"},
 	{SemVer: "v1.9.3", Change: "tweak print spacing"},
 	{SemVer: "v1.9.2", Change: "tweaked print typography"},
 	{SemVer: "v1.9.1", Change: "add instructions"},
-	{SemVer: "1.9.0", Change: "update trip section"},
+	{SemVer: "v1.9.0", Change: "update trip section"},
 	{SemVer: "v1.8.0", Change: "add trip section"},
 	{SemVer: "v1.7.8", Change: "fix whitescreen, add back load stats"},
 	{SemVer: "v1.7.7", Change: "add cams, fix link underlines"},

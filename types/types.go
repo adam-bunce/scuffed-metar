@@ -116,7 +116,8 @@ type AirportInfo struct {
 	CamPicUrls []string
 	WeatherInfo
 
-	MetarSource string
+	MetarSource   string
+	AwosFrequency string
 }
 
 type WeatherPullInfo struct {
@@ -193,4 +194,8 @@ type WindData struct {
 type ElevationValueCombo struct {
 	Elevation float64
 	Values    []float64
+}
+
+type MQTTReportLogTopicMessage struct {
+	History []string `json:"history"`
 }
