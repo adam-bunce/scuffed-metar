@@ -17,6 +17,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 )
 
 func setError(err error) error {
@@ -400,6 +401,7 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 	opts.SetClientID("hunter2")
 	opts.SetUsername(globals.MqttUser)
 	opts.SetPassword(globals.MqttPass)
+	opts.SetConnectTimeout(3 * time.Second)
 
 	c := MQTT.NewClient(opts)
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
@@ -409,11 +411,11 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 		return
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(1)
+	// var wg sync.WaitGroup
+	// wg.Add(1)
 	if token := c.Subscribe("AWA/CET2/Archives/ReportLog", 0, func(client MQTT.Client, msg MQTT.Message) {
 		var dest *types.MQTTReportLogTopicMessage
-		defer wg.Done()
+		// defer wg.Done()
 
 		err := json.NewDecoder(strings.NewReader(string(msg.Payload()))).Decode(&dest)
 		if err != nil {
@@ -431,7 +433,7 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 		globals.Logger.Printf("Failed to subscribe to MQTT ReportLog, err: %s", token.Error())
 		weatherInfo.Error = token.Error()
 		dataChan <- weatherInfo
-		wg.Done()
+		// wg.Done()
 		return
 	}
 
@@ -443,7 +445,7 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 	}
 
 	c.Disconnect(250)
-	wg.Wait()
+	// wg.Wait()
 	globals.Logger.Printf("Finished MQTT Pull")
 }
 
