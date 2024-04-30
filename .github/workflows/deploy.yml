@@ -31,11 +31,7 @@ jobs:
           IMAGE_TAG: scuffed_metar_image
         run: |
           aws ecr batch-delete-image --repository-name $ECR_REPOSITORY --image-ids imageTag=$IMAGE_TAG
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            --build-arg WEBHOOK_URL_ARG=${{ secrets.WEBHOOK_URL }} \
-            --build-arg MQTT_PASS_ARG=${{ secrets.MQTT_PASS }} \
-            --build-arg MQTT_USER_ARG=${{ secrets.MQTT_USER }} \
-            -f main.Dockerfile .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg WEBHOOK_URL_ARG=${{ secrets.WEBHOOK_URL }} --build-arg MQTT_PASS_ARG=${{ secrets.MQTT_PASS }} --build-arg MQTT_USER_ARG=${{ secrets.MQTT_USER }} -f main.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Update Container Image
