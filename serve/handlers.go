@@ -142,9 +142,8 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
 		TryUpdateGFAData()
+		notamActualData, _ = pull.GetNotam(filteredValidAirports)
 	}
-
-	notamActualData, _ = pull.GetNotam(filteredValidAirports) // TODO: move up
 
 	if globals.Env == "local" {
 		tripTemplate = LoadTemplate("serve/pages/trip.html", "trip")
