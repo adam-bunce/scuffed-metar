@@ -114,14 +114,16 @@ func HandleInfo(w http.ResponseWriter, r *http.Request) {
 
 func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+	// airports that we can pull data from CFPS
 	validAirports := []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CCL3", "CYQR",
 		"CYMM", "CYSM", "CYPY",
-		"CYOD",
+		"CYOD", "CYQD",
 
+		// TODO: people want these but i have to redo stuff to add them
 		// "CYWG", "CYMJ", "CYNN", "CYLL", "CYEG", "CZVL", "CYQF", "CYYC", "CYBW", "CYQL", "CYXH",
 	}
 
@@ -140,8 +142,9 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
 		TryUpdateGFAData()
-		notamActualData, _ = pull.GetNotam(filteredValidAirports) // TODO: move up
 	}
+
+	notamActualData, _ = pull.GetNotam(filteredValidAirports) // TODO: move up
 
 	if globals.Env == "local" {
 		tripTemplate = LoadTemplate("serve/pages/trip.html", "trip")

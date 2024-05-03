@@ -322,6 +322,7 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 	dataChan <- pointsNorthData
 }
 
+// CFPS
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	navCanadaMetars := make(map[string]types.WeatherPullInfo)
 	defer wg.Done()
@@ -340,6 +341,7 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 		"site=CYMM&" +
 		"site=CYSM&" +
 		"site=CYPY&" +
+		"site=CYQD&" +
 		"alpha=metar&" +
 		"alpha=taf&" +
 		"metar_choice=3"

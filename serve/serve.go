@@ -104,6 +104,8 @@ var airportInfo = []types.AirportInfo{
 	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, ""},
 	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+
+	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, ""},
 }
 
 var indexData = types.IndexData{
@@ -127,7 +129,7 @@ var notamData = types.NotamPageData{
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CCL3", "CYQR",
-		"CYMM", "CYSM", "CYPY",
+		"CYMM", "CYSM", "CYPY", "CYQD",
 	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
