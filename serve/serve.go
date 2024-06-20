@@ -106,6 +106,7 @@ var airportInfo = []types.AirportInfo{
 	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
 	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Lloydminster", "CYLL", "", nil, types.WeatherInfo{}, NavCanda, ""},
 }
 
 var indexData = types.IndexData{
@@ -129,7 +130,7 @@ var notamData = types.NotamPageData{
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CCL3", "CYQR",
-		"CYMM", "CYSM", "CYPY", "CYQD",
+		"CYMM", "CYSM", "CYPY", "CYQD", "CYLL",
 	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
