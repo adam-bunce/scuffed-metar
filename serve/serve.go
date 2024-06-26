@@ -107,8 +107,12 @@ var airportInfo = []types.AirportInfo{
 
 	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, ""},
 	{"Lloydminster", "CYLL", "", nil, types.WeatherInfo{}, NavCanda, ""},
-}
 
+	{"Swift Current", "CYYN", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Medicine Hat", "CYXH", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Thompson", "CYTH", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Yorkton", "CYQV", "", nil, types.WeatherInfo{}, NavCanda, ""},
+}
 var indexData = types.IndexData{
 	AirportInformation: airportInfo,
 	GenericPageData: types.GenericPageData{
@@ -131,6 +135,7 @@ var notamData = types.NotamPageData{
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CCL3", "CYQR",
 		"CYMM", "CYSM", "CYPY", "CYQD", "CYLL",
+		"CYYN", "CYXH", "CYTH", "CYQV",
 	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
@@ -152,7 +157,7 @@ func LoadTemplate(templatePath string, templateName string, templateStr ...strin
 
 	templateFunctions := template.FuncMap{"formatTaf": func(taf string) template.HTML {
 		res := strings.Replace(taf, "\n", "<br>", -1)
-		res = strings.Replace(res, " ", "&nbsp;", -1)
+		res = strings.Replace(res, " ", "&nbsp;<wbr>", -1)
 		return template.HTML(res)
 	},
 	}

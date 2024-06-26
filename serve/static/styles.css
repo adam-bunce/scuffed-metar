@@ -47,7 +47,7 @@ body {
     background: var(--white);
     text-rendering: optimizeLegibility;
     line-height: 1.2;
-    word-break: break-word;
+    /*word-break: break-word;  !*disabled this b/c it would mess with METAR readouts*!*/
     background: var(--white)
 }
 
