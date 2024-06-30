@@ -72,9 +72,9 @@ var airportInfo = []types.AirportInfo{
 
 	{"Points North", "CYNL", "", nil, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", ""},
 
-	{"", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"", "CYPA", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Prince Albert (PA)", "CYPA", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"La Ronge", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, ""},
 
 	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175"},
 	{"Wollaston", "CZWL", Highways + "wollaston", hc(2), types.WeatherInfo{}, Highways + "/wollaston", "122.075"},
