@@ -19,7 +19,7 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cycles.IncServeCount()
+	cycles.IncMetarGfaServeCount()
 
 	if globals.Env == "local" {
 		indexTemplate = LoadTemplate("serve/pages/index.html", "index")
@@ -33,8 +33,8 @@ func HandleAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleGfa(w http.ResponseWriter, r *http.Request) {
-	cycles.IncServeCount()
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+	cycles.IncMetarGfaServeCount()
 
 	if globals.Env == "local" {
 		gfaTemplate = LoadTemplate("serve/pages/gfa.html", "gfa")
@@ -62,7 +62,6 @@ func HandleStatic(w http.ResponseWriter, r *http.Request) {
 
 func HandleNotam(w http.ResponseWriter, r *http.Request) {
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
-	cycles.IncServeCount()
 
 	airportCodes := r.URL.Query()["airport"]
 
@@ -80,7 +79,6 @@ func HandleNotam(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleWinds(w http.ResponseWriter, r *http.Request) {
-	cycles.IncServeCount()
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
 
 	airportCodes := r.URL.Query()["airport"]
@@ -115,8 +113,9 @@ func HandleInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func HandleTrip(w http.ResponseWriter, r *http.Request) {
-	cycles.IncServeCount()
 	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+	cycles.IncTripServeCount()
+
 	// airports that we can pull data from CFPS
 	validAirports := []string{"CJW7", "CKQ8", "CYKC", "CYKJ", "CYNL", "CYXE",
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
