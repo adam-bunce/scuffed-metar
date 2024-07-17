@@ -15,7 +15,7 @@ func IncMetarGfaServeCount() {
 }
 
 func IncTripServeCount() {
-	metarGfaServeCount.Add(1)
+	tripServeCount.Add(1)
 }
 
 func StatResetCycle() {

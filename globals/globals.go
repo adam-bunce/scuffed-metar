@@ -12,7 +12,7 @@ import (
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
-var Version = "1.9.10" // for cache busting
+var Version = "1.9.11" // for cache busting
 
 var MqttPass = os.Getenv("MQTT_PASS")
 var MqttUser = os.Getenv("MQTT_USER")
@@ -21,7 +21,8 @@ var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "add site names"},
+	{SemVer: "v" + Version, Change: "tweak stat internals"},
+	{SemVer: "v1.9.10" + Version, Change: "add site names"},
 	{SemVer: "v1.9.9", Change: "add CYYN, CYXH, CYTH, CYQV. (maybe?) Fix METAR Formatting"},
 	{SemVer: "v1.9.8", Change: "add CYLL"},
 	{SemVer: "v1.9.7", Change: "add CYQD"},
