@@ -21,9 +21,8 @@ func IncTripServeCount() {
 func StatResetCycle() {
 	for {
 		now := time.Now().UTC()
-		if metarGfaServeCount.Load() != 0 && tripServeCount.Load() != 0 {
-			globals.SendWebhook(fmt.Sprintf(":arrows_clockwise: - METAR/GFA pages loaded %d time(s)\n", metarGfaServeCount.Load()))
-			globals.SendWebhook(fmt.Sprintf(":arrows_clockwise: - TRIP page loaded %d time(s)\n", tripServeCount.Load()))
+		if metarGfaServeCount.Load() != 0 {
+			globals.SendWebhook(fmt.Sprintf(":arrows_clockwise:   __Page Loads__\\n- METAR/GFA pages loaded %d time(s)\\n- TRIP page loaded %d time(s)", metarGfaServeCount.Load(), tripServeCount.Load()))
 		}
 		metarGfaServeCount.Store(0)
 		tripServeCount.Store(0)
