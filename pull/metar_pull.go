@@ -50,7 +50,7 @@ func getCamecoData(airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	   }
 	}`, airportCode))
 
-	req, err := http.NewRequest("POST", "http://smartweb.axys-aps.com/svc/WebDataService.svc/WebData/GetWebDataResponse", camecoRequestBody)
+	req, err := http.NewRequest("POST", "https://smartweb.axys-aps.com/svc/WebDataService.svc/WebData/GetWebDataResponse", camecoRequestBody)
 	if err != nil {
 		globals.Logger.Printf("Failed to create cameco request for %s, err: %v", airportCode, err)
 		weatherInfo.Error = err
