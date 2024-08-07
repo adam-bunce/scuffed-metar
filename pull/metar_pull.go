@@ -14,7 +14,6 @@ import (
 	"net"
 	"net/http"
 	"regexp"
-	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -322,41 +321,63 @@ func GetPointsNorthMetar(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGro
 	dataChan <- pointsNorthData
 }
 
-// CFPS
+var NavCanSites = []string{
+	"CYXE",
+	"CYVT",
+	"CYLJ",
+	"CYSF",
+	"CYVC",
+	"CYKJ",
+	"CYPA",
+	"CYFO",
+	"CYQW",
+	"CYQR",
+	"CYMM",
+	"CYSM",
+	"CYPY",
+	"CYQD",
+	"CYLL",
+	"CYYN",
+	"CYXH",
+	"CYTH",
+	"CYQV",
+}
+
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	navCanadaMetars := make(map[string]types.WeatherPullInfo)
-	defer wg.Done()
+	// initialize so errors propagate to all sites
+	var endpoint = "https://plan.navcanada.ca/weather/api/alpha/?"
 
-	endpoint := "https://plan.navcanada.ca/weather/api/alpha/?" +
-		"site=CYXE&" +
-		"site=CYVT&" +
-		"site=CYLJ&" +
-		"site=CYSF&" +
-		"site=CYVC&" +
-		"site=CYKJ&" +
-		"site=CYPA&" +
-		"site=CYFO&" +
-		"site=CYQW&" +
-		"site=CYQR&" +
-		"site=CYMM&" +
-		"site=CYSM&" +
-		"site=CYPY&" +
-		"site=CYQD&" +
-		"site=CYLL&" +
-		"site=CYYN&" +
-		"site=CYXH&" +
-		"site=CYTH&" +
-		"site=CYQV&" +
-		"alpha=metar&" +
+	for _, site := range NavCanSites {
+		navCanadaMetars[site] = types.WeatherPullInfo{AirportCode: site}
+		endpoint += "site=" + site + "&"
+	}
+
+	endpoint += "alpha=metar&" +
 		"alpha=taf&" +
 		"metar_choice=3"
+	defer wg.Done()
 
-	res, err := globals.Client.Get(endpoint)
+	// NOTE: nav can taking 5+ sec to get data so timeout, now doing it async
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		globals.Logger.Printf("Failed to create navcan metar request , err: %v", err)
+		for k := range navCanadaMetars {
+			airport := navCanadaMetars[k]
+			airport.Error = setError(err)
+			navCanadaMetars[k] = airport
+			dataChan <- navCanadaMetars[k]
+		}
+		return
+	}
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		globals.Logger.Printf("Failed to get nav canada metar err: %v", err)
 		for k := range navCanadaMetars {
 			airport := navCanadaMetars[k]
-			airport.Error = err
+			airport.Error = setError(err)
+			navCanadaMetars[k] = airport
 			dataChan <- navCanadaMetars[k]
 		}
 		return
@@ -370,14 +391,15 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 		globals.Logger.Printf("Failed to unmarshall nav canada metar err: %v", err)
 		for k := range navCanadaMetars {
 			airport := navCanadaMetars[k]
-			airport.Error = err
+			airport.Error = errors.New("NavCan server failed")
+			navCanadaMetars[k] = airport
 			dataChan <- navCanadaMetars[k]
 		}
 		return
 	}
 
 	// most recent metar is the last in order
-	slices.Reverse(navCanadaResp.Data)
+	// slices.Reverse(navCanadaResp.Data)
 	for _, data := range navCanadaResp.Data {
 		airport, ok := navCanadaMetars[data.Location]
 		if !ok {

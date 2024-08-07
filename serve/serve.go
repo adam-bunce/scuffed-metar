@@ -238,6 +238,41 @@ func TryCamecoUpdate() {
 	globals.Logger.Printf("Updated Cameco METAR data in %d ms", time.Since(start).Milliseconds())
 }
 
+func TryNavCanUpdate() {
+	start := time.Now()
+	dataChan := make(chan types.WeatherPullInfo)
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go pull.GetNavCanadaMetars(dataChan, &wg)
+
+	// close chan so read loop doesn't hang
+	go func() {
+		wg.Wait()
+		close(dataChan)
+	}()
+
+	var metarData []types.WeatherPullInfo
+	for metar := range dataChan {
+		metarData = append(metarData, metar)
+	}
+
+	indexData.Lock()
+	defer indexData.Unlock()
+
+	// Update current data w/ new pulled data
+	for _, pulledAirport := range metarData {
+		for j, currentDataAirports := range indexData.AirportInformation {
+			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+				indexData.AirportInformation[j].Metar = pulledAirport.Metar
+				indexData.AirportInformation[j].Taf = pulledAirport.Taf
+				indexData.AirportInformation[j].Error = pulledAirport.Error
+			}
+		}
+	}
+
+	globals.Logger.Printf("Updated NavCan METAR data in %d ms", time.Since(start).Milliseconds())
+}
+
 func TryUpdateMETARData() {
 	start := time.Now()
 	indexData.Lock()
@@ -250,11 +285,11 @@ func TryUpdateMETARData() {
 	dataChan := make(chan types.WeatherPullInfo)
 
 	var wg sync.WaitGroup
-	wg.Add(4)
+	wg.Add(3)
 	// go pull.GetAllCamecoData(dataChan, &wg)
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
-	go pull.GetNavCanadaMetars(dataChan, &wg)
+	// go pull.GetNavCanadaMetars(dataChan, &wg)
 	go pull.GetAllMesotech(dataChan, &wg)
 
 	// close chan so read loop doesn't hang

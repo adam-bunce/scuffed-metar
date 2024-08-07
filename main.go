@@ -16,6 +16,7 @@ func main() {
 	serve.TryUpdateGFAData()
 	serve.TryUpdateMETARData()
 
+	go cycles.EveryTwo(serve.TryNavCanUpdate)
 	go cycles.EveryTwo(serve.TryCamecoUpdate)
 	go cycles.StatResetCycle()
 
