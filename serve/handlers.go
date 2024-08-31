@@ -71,7 +71,7 @@ func HandleNotam(w http.ResponseWriter, r *http.Request) {
 
 	var data []types.NotamData
 	if len(airportCodes) > 0 {
-		data, _ = pull.GetNotam(airportCodes)
+		data = pull.GetAllNotams(airportCodes)
 	}
 	notamData.LastUpdate = time.Now().UTC()
 
@@ -142,7 +142,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
 		TryUpdateGFAData()
-		notamActualData, _ = pull.GetNotam(filteredValidAirports)
+		notamActualData = pull.GetAllNotams(filteredValidAirports)
 	}
 
 	if globals.Env == "local" {
