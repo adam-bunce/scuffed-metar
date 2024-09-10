@@ -311,6 +311,11 @@ func TryUpdateMETARData() {
 				indexData.AirportInformation[j].Metar = pulledAirport.Metar
 				indexData.AirportInformation[j].Taf = pulledAirport.Taf
 				indexData.AirportInformation[j].Error = pulledAirport.Error
+				// only highways needs this
+				if pulledAirport.UpdatedImageUrls != nil {
+					globals.Logger.Printf("updating image urls for %s to %v", indexData.AirportInformation[j].AirportName, *pulledAirport.UpdatedImageUrls)
+					indexData.AirportInformation[j].CamPicUrls = *pulledAirport.UpdatedImageUrls
+				}
 			}
 		}
 	}

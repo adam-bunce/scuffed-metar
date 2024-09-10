@@ -121,7 +121,8 @@ type AirportInfo struct {
 }
 
 type WeatherPullInfo struct {
-	AirportCode string
+	AirportCode      string
+	UpdatedImageUrls *[]string
 	WeatherInfo
 }
 

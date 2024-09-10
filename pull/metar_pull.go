@@ -9,6 +9,7 @@ import (
 	"github.com/adam-bunce/scuffed-metar/globals"
 	"github.com/adam-bunce/scuffed-metar/types"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"golang.org/x/net/html"
 	"io"
 	"math"
 	"net"
@@ -135,21 +136,23 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
 		wg.Add(1)
 		go func(i int) {
-			getHiddenHighwayData(hiddenAirportInfo[i+1], hiddenAirportInfo[i], dataChan)
+			GetHiddenHighwayData(hiddenAirportInfo[i+1], hiddenAirportInfo[i], dataChan)
 			wg.Done()
 		}(i)
 	}
 	wg.Done()
 }
 
+// when i rewrite this parse and walk the DOM using regexes for this is crazy
 var hiddenHigwaysRegex = regexp.MustCompile(`<b>(METAR|SPECI)[\s\S]*?</b>`)
 
-func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+func GetHiddenHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	fmt.Println("in pull")
 	weatherInfo := types.WeatherPullInfo{
 		AirportCode: airportCode,
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("http://highways.glmobile.com/%s", airportName), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://highways.glmobile.com/%s", airportName), nil)
 	if err != nil {
 		globals.Logger.Printf("Failed to create request for highway page, airport code %s err: %v", airportName, err)
 		weatherInfo.Error = err
@@ -183,7 +186,40 @@ func getHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 		metarStrings = append(metarStrings, strings.TrimRight(strings.TrimLeft(match[0], "<br>"), "</br>"))
 	}
 
+	var imageSources []string
+	// NOTE: passing res.Body directly to html.Parse fails
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		globals.Logger.Printf("html parse: %v", err)
+	}
+
+	// visit all nodes and if it's an image tag add its src attribute
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n == nil {
+			return
+		}
+		if n.Type == html.ElementNode && n.Data == "img" {
+			for _, a := range n.Attr {
+				if a.Key == "src" {
+					imageSources = append(imageSources, a.Val)
+					break
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+
+	var wxCamUrls []string
+	for _, imageUrl := range imageSources {
+		wxCamUrls = append(wxCamUrls, "/"+imageUrl)
+	}
+
 	weatherInfo.Metar = metarStrings
+	weatherInfo.UpdatedImageUrls = &wxCamUrls
 	dataChan <- weatherInfo
 }
 
