@@ -113,25 +113,6 @@ var specialHighwayTestWarning = regexp.MustCompile(`<h2>(.*?)</h2>`)            
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	// NOTE: these are now using the hidden layout on the main page
-	//airportInfo := []string{"CZFD", "fonddulac", "CZWL", "wollaston"}
-	//for i := 0; i < len(airportInfo); i += 2 {
-	//	wg.Add(1)
-	//	go func(i int) {
-	//		getHighwayData(airportInfo[i+1], airportInfo[i], dataChan)
-	//		wg.Done()
-	//	}(i)
-	//}
-	//specialAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse"}
-	//for i := 0; i < len(specialAirportInfo); i += 2 {
-	//	wg.Add(1)
-	//	go func(i int) {
-	//		getSpecialHighwayData(specialAirportInfo[i+1], specialAirportInfo[i], dataChan)
-	//		wg.Done()
-	//	}(i)
-	//}
-
-	// hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse"}
 	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston"}
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
 		wg.Add(1)
@@ -459,6 +440,12 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 }
 
 func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	defer func() {
+		if r := recover(); r != nil {
+			globals.SendWebhook(fmt.Sprintf("MQTT pull: %v", r))
+		}
+	}()
+
 	weatherInfo := types.WeatherPullInfo{
 		AirportCode: airportCode,
 	}
@@ -476,11 +463,8 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 		return
 	}
 
-	// var wg sync.WaitGroup
-	// wg.Add(1)
 	if token := c.Subscribe("AWA/CET2/Archives/ReportLog", 0, func(client MQTT.Client, msg MQTT.Message) {
 		var dest *types.MQTTReportLogTopicMessage
-		// defer wg.Done()
 
 		err := json.NewDecoder(strings.NewReader(string(msg.Payload()))).Decode(&dest)
 		if err != nil {
@@ -492,13 +476,12 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 
 		weatherInfo.Metar = dest.History
 		weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
-		dataChan <- weatherInfo
+		dataChan <- weatherInfo // this panics sometimes
 
 	}); token.Wait() && token.Error() != nil {
 		globals.Logger.Printf("Failed to subscribe to MQTT ReportLog, err: %s", token.Error())
 		weatherInfo.Error = token.Error()
 		dataChan <- weatherInfo
-		// wg.Done()
 		return
 	}
 
@@ -510,14 +493,13 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 	}
 
 	c.Disconnect(250)
-	// wg.Wait()
 	globals.Logger.Printf("Finished MQTT Pull")
 }
 
 func GetAllMesotech(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
+	defer wg.Done()
 	getMesotechData("https://ccl3.azurewebsites.net/awa_web_export.xml", "CCL3", dataChan)
 	getMesotechMQTT("wss://mqtt.awos.live:8083/", "CET2", dataChan)
-	wg.Done()
 }
 
 func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullInfo) {
@@ -561,5 +543,4 @@ func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullI
 	weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
 
 	dataChan <- weatherInfo
-
 }

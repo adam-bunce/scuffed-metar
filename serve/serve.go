@@ -286,10 +286,8 @@ func TryUpdateMETARData() {
 
 	var wg sync.WaitGroup
 	wg.Add(3)
-	// go pull.GetAllCamecoData(dataChan, &wg)
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
-	// go pull.GetNavCanadaMetars(dataChan, &wg)
 	go pull.GetAllMesotech(dataChan, &wg)
 
 	// close chan so read loop doesn't hang
