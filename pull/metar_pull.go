@@ -128,7 +128,6 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 var hiddenHigwaysRegex = regexp.MustCompile(`<b>(METAR|SPECI)[\s\S]*?</b>`)
 
 func GetHiddenHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
-	fmt.Println("in pull")
 	weatherInfo := types.WeatherPullInfo{
 		AirportCode: airportCode,
 	}
@@ -543,4 +542,61 @@ func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullI
 	weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
 
 	dataChan <- weatherInfo
+}
+
+func GetEnvironmentCanada(airportCode string, dataChan chan<- types.WeatherPullInfo) {
+	info := types.WeatherPullInfo{
+		AirportCode: airportCode,
+	}
+	info.Error = fmt.Errorf("advisory only, environment canada wx station")
+
+	req, err := http.NewRequest("GET", "https://metar-taf.com/CWDC", nil)
+	req.Header.Set("Accept", "*/*")
+	req.Header.Set("User-Agent", "PostmanRuntime/7.42.0")
+
+	res, err := globals.Client.Do(req)
+	if err != nil {
+		globals.Logger.Printf("environment canada request %v", err)
+		info.Error = err
+		dataChan <- info
+		return
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		globals.Logger.Printf("io readall %v", err)
+		info.Error = err
+		dataChan <- info
+		return
+	}
+
+	doc, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		globals.Logger.Printf("html parse %v", err)
+		info.Error = err
+		dataChan <- info
+		return
+	}
+
+	var metars []string
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n == nil {
+			return
+		}
+		if n.Type == html.ElementNode && n.Data == "code" {
+			for c := n.FirstChild; c != nil; c = c.NextSibling {
+				if c.Type == html.TextNode {
+					metars = append(metars, c.Data)
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+
+	info.Metar = metars
+	dataChan <- info
 }

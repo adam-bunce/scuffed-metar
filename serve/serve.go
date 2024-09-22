@@ -89,7 +89,7 @@ var airportInfo = []types.AirportInfo{
 	{"Stony Rapids", "CYSF", Highways + "stonyrapids", hc(2), types.WeatherInfo{}, NavCanda, ""},
 	{"Sandy Bay", "CJY4", Highways + "sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}, Highways + "/sandybay", "122.550"},
 	{"Meadow Lake", "CYLJ", Highways + "meadowlake", hc(2), types.WeatherInfo{}, NavCanda, ""},
-	{"Uranium City", "CYBE", Highways + "uranium", hc(1), types.WeatherInfo{}, "", ""},
+	{"Uranium City", "CYBE", Highways + "uranium", hc(1), types.WeatherInfo{}, "https://metar-taf.com/CWDC", ""},
 
 	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, "", ""},
 
@@ -289,6 +289,12 @@ func TryUpdateMETARData() {
 	go pull.GetAllHighwayData(dataChan, &wg)
 	go pull.GetPointsNorthMetar(dataChan, &wg)
 	go pull.GetAllMesotech(dataChan, &wg)
+
+	go func(wg *sync.WaitGroup) {
+		wg.Add(1)
+		pull.GetEnvironmentCanada("CYBE", dataChan)
+		wg.Done()
+	}(&wg)
 
 	// close chan so read loop doesn't hang
 	go func() {
