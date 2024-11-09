@@ -128,6 +128,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	}
 
 	airportCodes := r.URL.Query()["airport"]
+	includeWinds := r.URL.Query()["winds"]
 
 	// remove sites sent by user that don't exist
 	var filteredValidAirports []string
@@ -139,10 +140,14 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 
 	// ik this is bad fyi
 	var notamActualData []types.NotamData
+	var data []types.WindsData
 	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
 		TryUpdateGFAData()
 		notamActualData = pull.GetAllNotams(filteredValidAirports)
+		if len(includeWinds) > 0 && includeWinds[0] == "true" {
+			data, windsData.Error = pull.GetWinds(windsData.WindsOptions)
+		}
 	}
 
 	if globals.Env == "local" {
@@ -163,6 +168,10 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		"RequestedAt": time.Now(),
 		"gfa":         &gfaData,
 		"notam":       &notamActualData,
+
+		// YIKES!
+		"data":  &data,
+		"winds": &windsData,
 	})
 
 }

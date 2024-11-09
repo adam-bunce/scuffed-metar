@@ -22,6 +22,10 @@ const Trip = {
         inputBox: document.getElementById('site-input'),
         submitButton: document.getElementById('submission-redirect-button'),
 
+        // include upper winds checkbox
+        upperwindsCheckbox: document.getElementById('winds-checkbox'),
+        upperwindsCheckboxSelected: "false",
+
         // dialog visibility
         printDialog: document.getElementById("print-dialog"),
         printDialogOpenTrigger: document.getElementById("print-dialog-open-trigger"),
@@ -36,6 +40,7 @@ const Trip = {
         selectedPrintItemIds: [],
 
         notamPrintCheckbox: null,
+        windPrintCheckbox: null,
     },
     bindInputEvent(element, func) {
         if (element) element.addEventListener('input', func)
@@ -51,6 +56,7 @@ const Trip = {
         let sites_array = sites.trim().split(" ")
         let baseUrl = window.location.href.split('?')[0] // domain to update
         let queryParams = sites_array.map(code => `airport=${code.toUpperCase()}`).join('&')
+        queryParams += `&winds=${Trip.$.upperwindsCheckboxSelected}`
 
         Trip.$.submitButton.href = `${baseUrl}?${queryParams}`
     },
@@ -62,6 +68,7 @@ const Trip = {
     setPrintCheckboxes() {
         Trip.$.printOptionCheckboxes = document.querySelectorAll("[id$='-print-checkbox']")
         Trip.$.notamPrintCheckbox = document.getElementById("notam-print-toggle")
+        Trip.$.windPrintCheckbox = document.getElementById("winds-print-toggle")
     },
     togglePrintOptionCheckbox(id) {
         if (Trip.$.selectedPrintItemIds.includes(id)) Trip.$.selectedPrintItemIds = Trip.$.selectedPrintItemIds.filter(itemId => itemId !== id)
@@ -72,6 +79,11 @@ const Trip = {
         if (Trip.$.notamPrintCheckbox.innerHTML === "x") {
             Trip.$.notamPrintCheckbox.innerHTML = ""
         } else Trip.$.notamPrintCheckbox.innerHTML = "x"
+    },
+    toggleWindCheckbox() {
+        if (Trip.$.windPrintCheckbox.innerHTML === "x") {
+            Trip.$.windPrintCheckbox.innerHTML = ""
+        } else Trip.$.windPrintCheckbox.innerHTML = "x"
     },
     updateSelectedItemsUI() {
         for (let item of Trip.$.printOptionCheckboxes) {
@@ -116,6 +128,7 @@ const Trip = {
     }
     
     ${Trip.$.notamPrintCheckbox.innerHTML !== 'x' ? "#notam-section{display: none}"  : ""}
+    ${Trip.$.windPrintCheckbox.innerHTML !== 'x' ? "#wind-section{display: none}"  : ""}
 }`
 
         let printStyleEl = document.createElement('style');
@@ -144,14 +157,44 @@ const Trip = {
         Trip.bindClickEvent(Trip.$.printDialogResetButton, () => Trip.clearPrintOptionsCheckboxes())
 
         Trip.bindClickEvent(Trip.$.notamPrintCheckbox, () => Trip.toggleNotamCheckbox())
+        Trip.bindClickEvent(Trip.$.windPrintCheckbox, () => Trip.toggleWindCheckbox())
     },
     resetPrintStyles() {
         let printStyleEl = document.getElementById("print-formatting")
         if (printStyleEl) printStyleEl.remove();
     },
+    getWindsCookie() {
+        const cookies = document.cookie.split(";")
+        let cookie_map = {}
+        cookies.forEach((cookie) => {
+            try {
+                cookie_map[cookie.split("=")[0].trim()] = cookie.split("=")[1].trim()
+            } catch (e) {
+                console.log("failed to parse cookies")
+            }
+        })
+
+        Trip.$.upperwindsCheckboxSelected = cookie_map['include_winds']
+        Trip.$.upperwindsCheckboxSelected === 'true' ? Trip.$.upperwindsCheckbox.innerHTML = 'x' : Trip.$.upperwindsCheckbox.innerHTML = ' '
+    },
     init() {
         Trip.setPrintCheckboxes()
         Trip.bindEvents()
+        Trip.getWindsCookie()
+
+        Trip.bindClickEvent(Trip.$.upperwindsCheckbox, () => {
+           console.log("bound event, runing now")
+            if (Trip.$.upperwindsCheckboxSelected === "false") {
+               Trip.$.upperwindsCheckbox.innerHTML = "x"
+                Trip.$.upperwindsCheckboxSelected = "true"
+            } else {
+                Trip.$.upperwindsCheckbox.innerHTML = ""
+                Trip.$.upperwindsCheckboxSelected = "false"
+            }
+
+            document.cookie = `include_winds=${Trip.$.upperwindsCheckboxSelected}; path=/; max-age=2630000`;
+            console.log("set winds cookie val:", Trip.$.upperwindsCheckboxSelected)
+        })
 
         window.onafterprint = () => Trip.resetPrintStyles()
         window.onload = () => {
