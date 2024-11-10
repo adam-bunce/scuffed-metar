@@ -357,6 +357,7 @@ var NavCanSites = []string{
 	"CYXH",
 	"CYTH",
 	"CYQV",
+	"CYOD",
 }
 
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
@@ -497,7 +498,6 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 
 func GetAllMesotech(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	defer wg.Done()
-	getMesotechData("https://ccl3.azurewebsites.net/awa_web_export.xml", "CCL3", dataChan)
 	getMesotechMQTT("wss://mqtt.awos.live:8083/", "CET2", dataChan)
 }
 

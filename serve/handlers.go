@@ -121,7 +121,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
-		"CET2", "CCL3", "CYQR",
+		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY",
 		"CYOD", "CYQD", "CYLL",
 		"CYYN", "CYXH", "CYTH", "CYQV",

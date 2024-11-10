@@ -97,7 +97,7 @@ var airportInfo = []types.AirportInfo{
 	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
 	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar", ""},
-	{"Christina Lake", "CCL3", "", nil, types.WeatherInfo{}, "https://ccl3.azurewebsites.net/", ""},
+	{"Cold Lake", "CYOD", "", nil, types.WeatherInfo{}, NavCanda, ""},
 
 	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda, ""},
 
@@ -133,7 +133,7 @@ var notamData = types.NotamPageData{
 		"CYPA", "CYVC", "CZFD", "CZWL", "CJF3", "CJT4",
 		"CJL4", "CKB2", "CJW4", "CZPO", "CYVT", "CYHB",
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
-		"CET2", "CCL3", "CYQR",
+		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY", "CYQD", "CYLL",
 		"CYYN", "CYXH", "CYTH", "CYQV",
 	},
