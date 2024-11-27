@@ -70,7 +70,7 @@ var airportInfo = []types.AirportInfo{
 	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/", ""},
 	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
-	{"Points North", "CYNL", "", nil, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", ""},
+	{"Points North", "CYNL", "https://pointsnorthgroup.ca/liveview", []string{"/Northview.jpg", "/Southview.jpg"}, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", ""},
 
 	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, ""},
 	{"Prince Albert (PA)", "CYPA", "", nil, types.WeatherInfo{}, NavCanda, ""},
