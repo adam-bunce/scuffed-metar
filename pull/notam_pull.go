@@ -89,7 +89,9 @@ func GetSingleNotam(airportCode string, dataChan chan<- types.NavCanadaResponse)
 	err = json.NewDecoder(response.Body).Decode(&bodyValue)
 	if err != nil {
 		globals.Logger.Printf("failed to decode response body %v", err)
-		globals.SendWebhook(fmt.Sprintf("[NOTAM] [types.NavCanadaResponse] failed to decode response body: err: %v, endpoint: %s ", err, endpoint))
+		bodyBytes := make([]byte, 1024)
+		response.Body.Read(bodyBytes)
+		globals.SendWebhook(fmt.Sprintf("[NOTAM] [types.NavCanadaResponse] failed to decode response body: err: %v, endpoint: %s, \\nbody:`%s`", err, endpoint, string(bodyBytes)))
 		dataChan <- types.NavCanadaResponse{}
 		return
 	}
