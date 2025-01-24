@@ -112,6 +112,8 @@ var airportInfo = []types.AirportInfo{
 	{"Medicine Hat", "CYXH", "", nil, types.WeatherInfo{}, NavCanda, ""},
 	{"Thompson", "CYTH", "", nil, types.WeatherInfo{}, NavCanda, ""},
 	{"Yorkton", "CYQV", MetCam + "CYQV", []string{"/CYQV_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+
+	{"Lynn Lake", "CYYL", MetCam + "CYYL", []string{"/CYYL_E-full-e.jpeg", "/CYYL_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 }
 var indexData = types.IndexData{
 	AirportInformation: airportInfo,

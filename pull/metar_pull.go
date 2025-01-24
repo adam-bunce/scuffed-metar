@@ -358,6 +358,7 @@ var NavCanSites = []string{
 	"CYTH",
 	"CYQV",
 	"CYOD",
+	"CYYL",
 }
 
 func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
