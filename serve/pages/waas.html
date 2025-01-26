@@ -34,59 +34,10 @@
         <a class="btn shadow" href="/winds">UPR WND</a>
         <a class="btn shadow" href="/trip">TRIP</a>
         <a class="btn shadow current-page" href="/waas">WAAS</a>
-<!--        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>-->
     </div>
     <br>
     <div class="site-nav-divider"></div>
     <br>
-
-    <!-- Print Settings-->
-    <dialog id="print-dialog" class="shadow">
-        <section>
-            <div class="dialog-meta">
-                <div>
-                    <h3>Print Settings</h3>
-                    <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
-                </div>
-                <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
-            </div> <br>
-
-            <div class="gfa-dialog-content">
-                <div>
-                    <h4>Clouds & Weather</h4>
-                    <blockquote>
-                        {{ range .CloudsWeather}}
-                        <div class="mono gfa-dialog-content-item">
-                            <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
-                            <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
-                        </div>
-                        {{ end }}
-                    </blockquote>
-                </div>
-
-                <div>
-                    <h4>Icing, Turbulence & Freezing level</h4>
-                    <blockquote>
-                        {{ range .IcingTurbFreezing }}
-                        <div class="mono gfa-dialog-content-item">
-                            <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
-                            <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
-                        </div>
-                        {{ end }}
-                    </blockquote>
-                </div>
-            </div>
-            <br>
-
-            <div class="mono">
-                <button class="btn shadow green" id="print-button" disabled>Print</button>
-                <button class="btn shadow red" id="reset-button">Reset</button>
-                <button class="btn shadow" id="select-all-button">Select All</button>
-                <br>
-            </div>
-        </section>
-    </dialog>
-    <!-- End Print Settings-->
 
     <!-- Clock -->
     <div>
@@ -114,6 +65,11 @@
 <section class="main">
     <h3 class="mono">WAAS
         <i class="text-smaller">(click for full size)</i>
+        <a href="https://www.nstb.tc.faa.gov/rt_verticalprotectionlevel.htm"
+           class="source-link text-smaller mono"
+           style="float:right; font-weight: lighter"
+           target="_blank"
+           referrerpolicy="no-referrer">src</a>
     </h3>
     <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
     <blockquote>

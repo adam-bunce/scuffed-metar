@@ -51,7 +51,7 @@ const Trip = {
     bindClickEvent(element, func) {
         if (element) element.addEventListener('click', func)
     },
-    updateSubmitUrl(event) {
+    updateSubmitUrlSites(event) {
         let sites = event.target.value
         let sites_array = sites.trim().split(" ")
         let baseUrl = window.location.href.split('?')[0] // domain to update
@@ -59,6 +59,15 @@ const Trip = {
         queryParams += `&winds=${Trip.$.upperwindsCheckboxSelected}`
 
         Trip.$.submitButton.href = `${baseUrl}?${queryParams}`
+    },
+    updateSubmitUrlQueryParams(include_bool) {
+        let url_with_sites = Trip.$.submitButton.href.split("&")
+        let base_url = url_with_sites[0]
+        if (base_url.length <= 0) {
+            base_url = window.location.href.split('?')[0] // domain to update
+        }
+        const new_url =  base_url + (include_bool === "true" ? "&winds=true" : "&winds=false")
+        Trip.$.submitButton.href = new_url
     },
     enterSubmit(event) {
         if (event.key === 'Enter') {
@@ -141,7 +150,7 @@ const Trip = {
     },
     bindEvents() {
         // search
-        Trip.bindInputEvent(Trip.$.inputBox, (event) => Trip.updateSubmitUrl(event))
+        Trip.bindInputEvent(Trip.$.inputBox, (event) => Trip.updateSubmitUrlSites(event))
         Trip.bindEnterEvent(Trip.$.inputBox, (event) => Trip.enterSubmit(event))
 
         // dialog visibility
@@ -163,37 +172,20 @@ const Trip = {
         let printStyleEl = document.getElementById("print-formatting")
         if (printStyleEl) printStyleEl.remove();
     },
-    getWindsCookie() {
-        const cookies = document.cookie.split(";")
-        let cookie_map = {}
-        cookies.forEach((cookie) => {
-            try {
-                cookie_map[cookie.split("=")[0].trim()] = cookie.split("=")[1].trim()
-            } catch (e) {
-                console.log("failed to parse cookies")
-            }
-        })
-
-        Trip.$.upperwindsCheckboxSelected = cookie_map['include_winds']
-        Trip.$.upperwindsCheckboxSelected === 'true' ? Trip.$.upperwindsCheckbox.innerHTML = 'x' : Trip.$.upperwindsCheckbox.innerHTML = ' '
-    },
     init() {
         Trip.setPrintCheckboxes()
         Trip.bindEvents()
-        Trip.getWindsCookie()
+        // Trip.getWindsCookie()
 
         Trip.bindClickEvent(Trip.$.upperwindsCheckbox, () => {
-           console.log("bound event, runing now")
             if (Trip.$.upperwindsCheckboxSelected === "false") {
                Trip.$.upperwindsCheckbox.innerHTML = "x"
                 Trip.$.upperwindsCheckboxSelected = "true"
             } else {
-                Trip.$.upperwindsCheckbox.innerHTML = ""
+                Trip.$.upperwindsCheckbox.innerHTML = " "
                 Trip.$.upperwindsCheckboxSelected = "false"
             }
-
-            document.cookie = `include_winds=${Trip.$.upperwindsCheckboxSelected}; path=/; max-age=2630000`;
-            console.log("set winds cookie val:", Trip.$.upperwindsCheckboxSelected)
+            Trip.updateSubmitUrlQueryParams(Trip.$.upperwindsCheckboxSelected)
         })
 
         window.onafterprint = () => Trip.resetPrintStyles()
