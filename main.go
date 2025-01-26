@@ -27,6 +27,7 @@ func main() {
 	mux.HandleFunc("/winds", serve.HandleWinds)
 	mux.HandleFunc("/info", serve.HandleInfo)
 	mux.HandleFunc("/trip", serve.HandleTrip)
+	mux.HandleFunc("/waas", serve.HandleWaas)
 	mux.HandleFunc("/", serve.HandleAll)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", globals.ServerPort), mux)

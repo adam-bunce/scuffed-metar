@@ -165,7 +165,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 	tripTemplate.Execute(w, map[string]any{
 		"airportInfo": selectedAirportsMetar,
 		"options":     notamData,
-		"RequestedAt": time.Now(),
+		"RequestedAt": time.Now().UTC(),
 		"gfa":         &gfaData,
 		"notam":       &notamActualData,
 
@@ -174,4 +174,17 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		"winds": &windsData,
 	})
 
+}
+
+func HandleWaas(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	if globals.Env == "local" {
+		waasTemplate = LoadTemplate("serve/pages/waas.html", "info")
+	}
+
+	waasTemplate.Execute(w, map[string]interface{}{
+		"LastUpdate": time.Now().UTC(),
+		"Version":    globals.Version,
+	})
 }

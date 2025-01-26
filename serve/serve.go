@@ -23,6 +23,10 @@ import (
 var files embed.FS
 var fileServer = http.FileServer(http.FS(files))
 
+//go:embed pages/waas.html
+var waasTemplateString string
+var waasTemplate = LoadTemplate("", "waas", waasTemplateString)
+
 //go:embed pages/index.html
 var indexTemplateString string
 var indexTemplate = LoadTemplate("", "index", indexTemplateString)

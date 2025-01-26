@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFA | Scuffed Metar</title>
+    <title>WAAS | Scuffed Metar</title>
     <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
     <link rel="stylesheet" href="../static/styles.css?v={{- .Version -}}">
     <script type="text/javascript" src="../static/script.js?v={{- .Version -}}" defer></script>
@@ -22,19 +22,19 @@
             <div>&nbsp;</div>
             <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .Version -}}</a>
         </div>
-        <div class="reload-info text-grey">Data is refreshed at 30-second intervals, reload page to see changes.</div>
+        <div class="reload-info text-grey">Data is updated every three minutes, reload page to see changes.</div>
     </div>
     <div class="header-divider"></div>
 
     <!-- Main Site Nav-->
     <div class="site-nav-links mono">
         <a class="btn shadow" href="/">METAR</a>
-        <a class="btn shadow current-page" href="/graphic-area-forecast">GFA</a>
+        <a class="btn shadow" href="/graphic-area-forecast">GFA</a>
         <a class="btn shadow" href="/notam">NOTAM</a>
         <a class="btn shadow" href="/winds">UPR WND</a>
         <a class="btn shadow" href="/trip">TRIP</a>
-        <a class="btn shadow" href="/waas">WAAS</a>
-        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
+        <a class="btn shadow current-page" href="/waas">WAAS</a>
+<!--        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>-->
     </div>
     <br>
     <div class="site-nav-divider"></div>
@@ -49,18 +49,17 @@
                     <div class="text-grey" id="print-dialog-info-text">Waiting for page load...</div>
                 </div>
                 <button id="print-dialog-close-trigger" class="btn shadow red dialog-close-btn">Close</button>
-            </div>
-            <br>
+            </div> <br>
 
             <div class="gfa-dialog-content">
                 <div>
                     <h4>Clouds & Weather</h4>
                     <blockquote>
                         {{ range .CloudsWeather}}
-                            <div class="mono gfa-dialog-content-item">
-                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
-                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
-                            </div>
+                        <div class="mono gfa-dialog-content-item">
+                            <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                            <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                        </div>
                         {{ end }}
                     </blockquote>
                 </div>
@@ -69,10 +68,10 @@
                     <h4>Icing, Turbulence & Freezing level</h4>
                     <blockquote>
                         {{ range .IcingTurbFreezing }}
-                            <div class="mono gfa-dialog-content-item">
-                                <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
-                                <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
-                            </div>
+                        <div class="mono gfa-dialog-content-item">
+                            <button class="checkbox mono" id="{{.Id}}-print-checkbox"></button>
+                            <div>&nbsp;{{ .StartValidity}}</div> <!-- .Format "15:04:05 GMT"-->
+                        </div>
                         {{ end }}
                     </blockquote>
                 </div>
@@ -99,7 +98,7 @@
                 <td id="zuluTime" class="text-grey"></td>
             </tr>
             <tr style="">
-                <td style="">Last Update:</td>
+                <td style="">Last Refresh:</td>
                 <td class="text-grey">
                     {{ .LastUpdate.Format "15:04:05 GMT" }}
                 </td>
@@ -113,29 +112,19 @@
 
 <!-- Forecasts -->
 <section class="main">
-    <h3 class="mono">Clouds and Weather Forecasts</h3>
+    <h3 class="mono">WAAS
+        <i class="text-smaller">(click for full size)</i>
+    </h3>
     <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
     <blockquote>
         <div class="camera-container">
-            {{ range .CloudsWeather }}
-                <img id="print-{{.Id}}" class="image shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
-                     alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
-            {{ end }}
+            <a href="https://www.nstb.tc.faa.gov/incoming/vplbig.png">
+            <img class="image shadow" src="https://www.nstb.tc.faa.gov/incoming/vplbig.png"
+                 alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
+            </a>
         </div>
     </blockquote>
 
-    <div class="spacing-div"></div>
-
-    <h3 class="mono"> Turbulence, Icing and Freezing Level Forecasts</h3>
-    <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
-    <blockquote>
-        <div class="camera-container">
-            {{ range .IcingTurbFreezing }}
-                <img id=print-{{.Id}} class="image shadow" src="https://plan.navcanada.ca/weather/images/{{.Id}}.image"
-                     alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
-            {{ end }}
-        </div>
-    </blockquote>
 </section>
 
 <footer id="footer" class="footer">
