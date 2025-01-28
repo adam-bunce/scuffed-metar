@@ -129,6 +129,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 
 	airportCodes := r.URL.Query()["airport"]
 	includeWinds := r.URL.Query()["winds"]
+	includeMets := r.URL.Query()["mets"]
 
 	// remove sites sent by user that don't exist
 	var filteredValidAirports []string
@@ -140,13 +141,19 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 
 	// ik this is bad fyi
 	var notamActualData []types.NotamData
+	var metsData map[string][]string
 	var data []types.WindsData
 	if globals.Env != "local" && len(filteredValidAirports) > 0 {
 		TryUpdateMETARData()
 		TryUpdateGFAData()
 		notamActualData = pull.GetAllNotams(filteredValidAirports)
+
 		if len(includeWinds) > 0 && includeWinds[0] == "true" {
 			data, windsData.Error = pull.GetWinds(windsData.WindsOptions)
+		}
+
+		if len(includeMets) > 0 && includeMets[0] == "true" {
+			metsData = pull.GetAllSigmetAirmet(pull.NavCanSites)
 		}
 	}
 
@@ -172,6 +179,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		// YIKES!
 		"data":  &data,
 		"winds": &windsData,
+		"mets":  &metsData,
 	})
 
 }

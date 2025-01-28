@@ -21,10 +21,16 @@ const Trip = {
         // search
         inputBox: document.getElementById('site-input'),
         submitButton: document.getElementById('submission-redirect-button'),
+        inputBoxContent: "",
+
 
         // include upper winds checkbox
         upperwindsCheckbox: document.getElementById('winds-checkbox'),
         upperwindsCheckboxSelected: "false",
+
+        // include mets checkbox
+        metsCheckbox: document.getElementById('mets-checkbox'),
+        metsCheckboxSelected: "false",
 
         // dialog visibility
         printDialog: document.getElementById("print-dialog"),
@@ -41,6 +47,7 @@ const Trip = {
 
         notamPrintCheckbox: null,
         windPrintCheckbox: null,
+        metsPrintCheckbox: null,
     },
     bindInputEvent(element, func) {
         if (element) element.addEventListener('input', func)
@@ -51,23 +58,18 @@ const Trip = {
     bindClickEvent(element, func) {
         if (element) element.addEventListener('click', func)
     },
-    updateSubmitUrlSites(event) {
-        let sites = event.target.value
-        let sites_array = sites.trim().split(" ")
-        let baseUrl = window.location.href.split('?')[0] // domain to update
-        let queryParams = sites_array.map(code => `airport=${code.toUpperCase()}`).join('&')
-        queryParams += `&winds=${Trip.$.upperwindsCheckboxSelected}`
+    buildSubmitUpdateUrl() {
+        const sites =  Trip.$.inputBoxContent.trim().split(" ")
+        const includeWinds =  Trip.$.upperwindsCheckboxSelected === "true"
+        const includeMets =  Trip.$.metsCheckboxSelected === "true"
 
-        Trip.$.submitButton.href = `${baseUrl}?${queryParams}`
-    },
-    updateSubmitUrlQueryParams(include_bool) {
-        let url_with_sites = Trip.$.submitButton.href.split("&")
-        let base_url = url_with_sites[0]
-        if (base_url.length <= 0) {
-            base_url = window.location.href.split('?')[0] // domain to update
-        }
-        const new_url =  base_url + (include_bool === "true" ? "&winds=true" : "&winds=false")
-        Trip.$.submitButton.href = new_url
+        let base_url = window.location.href.split('?')[0]
+
+        Trip.$.submitButton.href = base_url
+            + "?"
+            + sites.reduce((prev, curr, idx) => idx === 0 ? `airport=${curr.toUpperCase()}` : prev + `&airport=${curr.toUpperCase()}`, "")
+            + `&winds=${includeWinds}`
+            + `&mets=${includeMets}`
     },
     enterSubmit(event) {
         if (event.key === 'Enter') {
@@ -78,6 +80,7 @@ const Trip = {
         Trip.$.printOptionCheckboxes = document.querySelectorAll("[id$='-print-checkbox']")
         Trip.$.notamPrintCheckbox = document.getElementById("notam-print-toggle")
         Trip.$.windPrintCheckbox = document.getElementById("winds-print-toggle")
+        Trip.$.metsPrintCheckbox= document.getElementById("mets-print-toggle")
     },
     togglePrintOptionCheckbox(id) {
         if (Trip.$.selectedPrintItemIds.includes(id)) Trip.$.selectedPrintItemIds = Trip.$.selectedPrintItemIds.filter(itemId => itemId !== id)
@@ -93,6 +96,11 @@ const Trip = {
         if (Trip.$.windPrintCheckbox.innerHTML === "x") {
             Trip.$.windPrintCheckbox.innerHTML = ""
         } else Trip.$.windPrintCheckbox.innerHTML = "x"
+    },
+    toggleMetsCheckbox() {
+        if (Trip.$.metsPrintCheckbox.innerHTML === "x") {
+            Trip.$.metsPrintCheckbox.innerHTML = ""
+        } else Trip.$.metsPrintCheckbox.innerHTML = "x"
     },
     updateSelectedItemsUI() {
         for (let item of Trip.$.printOptionCheckboxes) {
@@ -138,6 +146,7 @@ const Trip = {
     
     ${Trip.$.notamPrintCheckbox.innerHTML !== 'x' ? "#notam-section{display: none}"  : ""}
     ${Trip.$.windPrintCheckbox.innerHTML !== 'x' ? "#wind-section{display: none}"  : ""}
+    ${Trip.$.metsPrintCheckbox.innerHTML !== 'x' ? "#mets-section{display: none}"  : ""}
 }`
 
         let printStyleEl = document.createElement('style');
@@ -149,8 +158,13 @@ const Trip = {
 
     },
     bindEvents() {
+        Trip.bindInputEvent(Trip.$.inputBox, () => Trip.$.inputBoxContent = event.target.value)
+        Trip.bindInputEvent(Trip.$.inputBox, () => Trip.buildSubmitUpdateUrl())
+        Trip.bindClickEvent(Trip.$.upperwindsCheckbox, () => Trip.buildSubmitUpdateUrl())
+        Trip.bindClickEvent(Trip.$.metsCheckbox, () => Trip.buildSubmitUpdateUrl())
+
         // search
-        Trip.bindInputEvent(Trip.$.inputBox, (event) => Trip.updateSubmitUrlSites(event))
+        // Trip.bindInputEvent(Trip.$.inputBox, (event) => Trip.updateSubmitUrlSites(event))
         Trip.bindEnterEvent(Trip.$.inputBox, (event) => Trip.enterSubmit(event))
 
         // dialog visibility
@@ -167,6 +181,7 @@ const Trip = {
 
         Trip.bindClickEvent(Trip.$.notamPrintCheckbox, () => Trip.toggleNotamCheckbox())
         Trip.bindClickEvent(Trip.$.windPrintCheckbox, () => Trip.toggleWindCheckbox())
+        Trip.bindClickEvent(Trip.$.metsPrintCheckbox, () => Trip.toggleMetsCheckbox())
     },
     resetPrintStyles() {
         let printStyleEl = document.getElementById("print-formatting")
@@ -174,7 +189,6 @@ const Trip = {
     },
     init() {
         Trip.setPrintCheckboxes()
-        Trip.bindEvents()
         // Trip.getWindsCookie()
 
         Trip.bindClickEvent(Trip.$.upperwindsCheckbox, () => {
@@ -185,8 +199,19 @@ const Trip = {
                 Trip.$.upperwindsCheckbox.innerHTML = " "
                 Trip.$.upperwindsCheckboxSelected = "false"
             }
-            Trip.updateSubmitUrlQueryParams(Trip.$.upperwindsCheckboxSelected)
         })
+
+        Trip.bindClickEvent(Trip.$.metsCheckbox, () => {
+            if (Trip.$.metsCheckboxSelected=== "false") {
+                Trip.$.metsCheckbox.innerHTML = "x"
+                Trip.$.metsCheckboxSelected= "true"
+            } else {
+                Trip.$.metsCheckbox.innerHTML = " "
+                Trip.$.metsCheckboxSelected = "false"
+            }
+        })
+
+        Trip.bindEvents()
 
         window.onafterprint = () => Trip.resetPrintStyles()
         window.onload = () => {

@@ -12,7 +12,7 @@ import (
 var ServerPort = 80
 var webhook = os.Getenv("WEBHOOK_URL")
 var Env = "prod"
-var Version = "1.13.2" // for cache busting
+var Version = "1.13.3" // for cache busting
 
 var MqttPass = os.Getenv("MQTT_PASS")
 var MqttUser = os.Getenv("MQTT_USER")
@@ -21,7 +21,8 @@ var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "add mets"},
+	{SemVer: "v" + Version, Change: "add mets option to trip page"},
+	{SemVer: "v1.13.2" + Version, Change: "add mets"},
 	{SemVer: "v1.13.1", Change: "fix buggy trip upper winds checkbox and inconsistent button heights"},
 	{SemVer: "v1.13.0", Change: "add WAAS section"},
 	{SemVer: "v1.12.4", Change: "add CYYL"},

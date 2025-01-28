@@ -93,6 +93,11 @@
                     <h4>Include Winds&emsp;</h4>
                     <button class="checkbox mono" id="winds-print-toggle"></button>
                 </div>
+
+                <div class="mono gfa-dialog-content-item">
+                    <h4>Include METS&emsp;</h4>
+                    <button class="checkbox mono" id="mets-print-toggle"></button>
+                </div>
             </div>
 
             <br>
@@ -142,10 +147,16 @@
             <div id="winds-checkbox"  class="checkbox mono" ></div>
         </div>
 
+    <div class="gfa-dialog-content-item">
+        <div class="mono">Include SIGMET/AIRMET&nbsp;</div>
+        <div id="mets-checkbox"  class="checkbox mono" ></div>
+    </div>
+
     <a class="jump-to-top" href="#top">
         <div>TOP</div>
     </a>
     <br>
+
 </section>
 
 <!--metar-->
@@ -232,6 +243,30 @@
     </section>
 {{ end }}
 
+{{ if len .mets }}
+<section class="trip-section" id="mets-section">
+<!--    <div class="divider"></div>-->
+    {{ if len .mets }}
+        {{ range $key, $value := .mets}}
+        <h3 class="mono">
+            {{ range sort $value }}
+            <span>{{ . }} </span>
+            {{ end }}
+        </h3>
+        <div>
+            <blockquote>
+                <p class="weatherInfo">
+                    {{ formatTaf $key }}
+                </p>
+            </blockquote>
+        </div>
+        {{ end }}
+    {{else}}
+    {{ end }}
+</section>
+{{ end }}
+
+{{ if len .data }}
 <section class="trip-section" id="wind-section">
     <br>
     {{ if .winds.Error }}
@@ -320,6 +355,7 @@
     </div>
     <br>
 </section>
+{{ end }}
 
 
 <!--notam-->
