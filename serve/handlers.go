@@ -188,3 +188,19 @@ func HandleWaas(w http.ResponseWriter, r *http.Request) {
 		"Version":    globals.Version,
 	})
 }
+
+func HandleMets(w http.ResponseWriter, r *http.Request) {
+	globals.Logger.Printf("%s %s %s", r.Proto, r.Method, r.RequestURI)
+
+	if globals.Env == "local" {
+		metsTemplate = LoadTemplate("serve/pages/mets.html", "met")
+	}
+
+	data := pull.GetAllSigmetAirmet(pull.NavCanSites)
+
+	metsTemplate.Execute(w, map[string]interface{}{
+		"LastUpdate": time.Now().UTC(),
+		"Version":    globals.Version,
+		"Data":       data,
+	})
+}

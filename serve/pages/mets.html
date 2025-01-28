@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WAAS | Scuffed Metar</title>
+    <title>METS | Scuffed Metar</title>
     <link rel="icon" type="image/x-icon" href="../static/favicon.svg">
-    <link rel="stylesheet" href="../static/styles.css?v={{- .Version -}}">
-    <script type="text/javascript" src="../static/script.js?v={{- .Version -}}" defer></script>
-    <script type="text/javascript" src="../static/js/darkmode.js?v={{- .Version -}}" defer></script>
-    <script type="text/javascript" src="../static/js/time.js?v={{- .Version -}}" defer></script>
+    <link rel="stylesheet" href="../static/styles.css?v={{- .notam.Version -}}">
+    <script type="text/javascript" src="../static/script.js?v={{- .notam.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/darkmode.js?v={{- .notam.Version -}}" defer></script>
+    <script type="text/javascript" src="../static/js/time.js?v={{- .notam.Version -}}" defer></script>
     <script type="text/javascript" src="../static/js/meat.js?v={{- .Version -}}" defer></script>
     <script data-goatcounter="https://scuffed-metar.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
@@ -22,8 +22,8 @@
             <div>&nbsp;</div>
             <a href="/info" class="mono version" style="font-family: GeistMono, Courier, serif;">v{{- .Version -}}</a>
         </div>
-        <div class="reload-info text-grey">Data is updated every three minutes, reload page to see changes.</div>
-    </div>
+
+        <div class="reload-info text-grey">Data is refreshed per-request, reload page to see changes.</div> </div>
     <div class="header-divider"></div>
 
     <!-- Main Site Nav-->
@@ -33,14 +33,17 @@
         <a class="btn shadow" href="/notam">NOTAM</a>
         <a class="btn shadow" href="/winds">UPR WND</a>
         <a class="btn shadow" href="/trip">TRIP</a>
-        <a class="btn shadow current-page" href="/waas">WAAS</a>
-        <a class="btn shadow" href="/mets">METS</a>
+        <a class="btn shadow" href="/waas">WAAS</a>
+        <a class="btn shadow current-page" href="/mets">METS</a>
+        <button id="print-dialog-open-trigger" class="btn shadow" style="grid-column-end: -1">Print</button>
     </div>
+
     <br>
     <div class="site-nav-divider"></div>
     <br>
 
     <!-- Clock -->
+
     <div>
         <table role="presentation" style="text-align: left;" class="time">
             <tr>
@@ -50,7 +53,7 @@
                 <td id="zuluTime" class="text-grey"></td>
             </tr>
             <tr style="">
-                <td style="">Last Refresh:</td>
+                <td style="">Last Update:</td>
                 <td class="text-grey">
                     {{ .LastUpdate.Format "15:04:05 GMT" }}
                 </td>
@@ -62,27 +65,34 @@
     <br>
 </section>
 
-<!-- Forecasts -->
 <section class="main">
-    <h3 class="mono">WAAS
-        <i class="text-smaller">(click for full size)</i>
-        <a href="https://www.nstb.tc.faa.gov/rt_verticalprotectionlevel.htm"
-           class="source-link text-smaller mono"
-           style="float:right; font-weight: lighter"
-           target="_blank"
-           referrerpolicy="no-referrer">src</a>
-    </h3>
-    <h3 class="error">{{ if .Error }} {{.Error}} {{ end}}</h3>
-    <blockquote>
-        <div class="camera-container">
-            <a href="https://www.nstb.tc.faa.gov/incoming/vplbig.png">
-            <img class="image shadow" src="https://www.nstb.tc.faa.gov/incoming/vplbig.png"
-                 alt="FAILED TO LOAD IMAGE" width="756" height="608" referrerpolicy="no-referrer">
-            </a>
+    {{ if len .Data }}
+        {{ range $key, $value := .Data }}
+        <h3 class="mono">
+            {{ range sort $value }}
+            <span>{{ . }} </span>
+            {{ end }}
+        </h3>
+        <div>
+            <blockquote>
+                <p class="weatherInfo">
+                    {{ formatTaf $key }}
+                </p>
+            </blockquote>
         </div>
-    </blockquote>
+        {{ end }}
+    {{else}}
+        <div>None ()</div>
+    {{ end }}
+
+
+    <a class="jump-to-top" href="#top">
+        <div>TOP</div>
+    </a>
+    <br>
 
 </section>
+
 
 <footer id="footer" class="footer">
     <div class="header-divider"></div>

@@ -11,6 +11,7 @@ import (
 	"math"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -26,6 +27,10 @@ var fileServer = http.FileServer(http.FS(files))
 //go:embed pages/waas.html
 var waasTemplateString string
 var waasTemplate = LoadTemplate("", "waas", waasTemplateString)
+
+//go:embed pages/mets.html
+var metsTemplateString string
+var metsTemplate = LoadTemplate("", "mets", metsTemplateString)
 
 //go:embed pages/index.html
 var indexTemplateString string
@@ -166,6 +171,12 @@ func LoadTemplate(templatePath string, templateName string, templateStr ...strin
 		res = strings.Replace(res, " ", "&nbsp;<wbr>", -1)
 		return template.HTML(res)
 	},
+		"sort": func(s []string) []string {
+			sorted := make([]string, len(s))
+			copy(sorted, s)
+			sort.Strings(sorted)
+			return sorted
+		},
 	}
 
 	globals.Logger.Printf("Loading %s Template", templateName)
