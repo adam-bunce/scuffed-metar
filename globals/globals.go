@@ -21,8 +21,9 @@ var VersionHistory = []struct {
 	SemVer string
 	Change string
 }{
-	{SemVer: "v" + Version, Change: "add mets option to trip page"},
-	{SemVer: "v1.13.2" + Version, Change: "add mets"},
+	{SemVer: "v1.13.4" + Version, Change: "add ccb2"},
+	{SemVer: "v1.13.3", Change: "add mets option to trip page"},
+	{SemVer: "v1.13.2", Change: "add mets"},
 	{SemVer: "v1.13.1", Change: "fix buggy trip upper winds checkbox and inconsistent button heights"},
 	{SemVer: "v1.13.0", Change: "add WAAS section"},
 	{SemVer: "v1.12.4", Change: "add CYYL"},

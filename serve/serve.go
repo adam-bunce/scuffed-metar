@@ -146,7 +146,7 @@ var notamData = types.NotamPageData{
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY", "CYQD", "CYLL",
-		"CYYN", "CYXH", "CYTH", "CYQV",
+		"CYYN", "CYXH", "CYTH", "CYQV", "CCB2",
 	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},

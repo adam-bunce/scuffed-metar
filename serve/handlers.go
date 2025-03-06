@@ -124,7 +124,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY",
 		"CYOD", "CYQD", "CYLL",
-		"CYYN", "CYXH", "CYTH", "CYQV", "CYYL",
+		"CYYN", "CYXH", "CYTH", "CYQV", "CYYL", "CCB2",
 	}
 
 	airportCodes := r.URL.Query()["airport"]
@@ -204,7 +204,7 @@ func HandleMets(w http.ResponseWriter, r *http.Request) {
 		metsTemplate = LoadTemplate("serve/pages/mets.html", "met")
 	}
 
-	data := pull.GetAllSigmetAirmet(pull.NavCanSites)
+	data := pull.GetAllSigmetAirmet(append(pull.NavCanSites, "CCB2"))
 
 	metsTemplate.Execute(w, map[string]interface{}{
 		"LastUpdate": time.Now().UTC(),
