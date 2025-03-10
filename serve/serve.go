@@ -115,7 +115,7 @@ var airportInfo = []types.AirportInfo{
 	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
 	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Lloydminster", "CYLL", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Lloydminster", "CYLL", MetCam + "CYLL", []string{"/CYLL_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 
 	{"Swift Current", "CYYN", MetCam + "CYYN", []string{"/CYYN_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
 	{"Medicine Hat", "CYXH", "", nil, types.WeatherInfo{}, NavCanda, ""},
