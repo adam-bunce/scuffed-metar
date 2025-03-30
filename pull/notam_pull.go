@@ -32,7 +32,7 @@ func GetAllNotams(airportCodes []string) []types.NotamData {
 			var parsedText types.NotamParsedText
 			err := json.NewDecoder(strings.NewReader(notam.Text)).Decode(&parsedText)
 			if err != nil {
-				globals.Logger.Printf("failed to decode response text field", err)
+				globals.Logger.Printf("failed to decode response text field, %v", err)
 			}
 
 			var startValidityTime time.Time
@@ -40,13 +40,13 @@ func GetAllNotams(airportCodes []string) []types.NotamData {
 			if notam.StartValidity != "" {
 				startValidityTime, err = time.Parse(types.NavCanadaTimeFormat, notam.StartValidity)
 				if err != nil {
-					globals.Logger.Printf("failed to parse start validity", err)
+					globals.Logger.Printf("failed to parse start validity, %v", err)
 				}
 			}
 			if notam.EndValidity != "" {
 				endValidityTime, err = time.Parse(types.NavCanadaTimeFormat, notam.EndValidity)
 				if err != nil {
-					globals.Logger.Printf("failed to parse end validity", err)
+					globals.Logger.Printf("failed to parse end validity, %v", err)
 				}
 			}
 
