@@ -25,7 +25,7 @@ func GetGFAImageIds() (types.GfaInfo, error) {
 	var bodyValue types.NavCanadaResponse
 	err = json.NewDecoder(response.Body).Decode(&bodyValue)
 	if err != nil {
-		return imageIds, fmt.Errorf("navcan server failed")
+		return imageIds, fmt.Errorf("navcan server failed to respond")
 	}
 
 	for _, item := range bodyValue.Data {

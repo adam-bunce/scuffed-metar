@@ -409,7 +409,7 @@ func GetNavCanadaMetars(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGrou
 		globals.Logger.Printf("Failed to unmarshall nav canada metar err: %v", err)
 		for k := range navCanadaMetars {
 			airport := navCanadaMetars[k]
-			airport.Error = errors.New("NavCan server failed")
+			airport.Error = errors.New("NavCan server sent unknown data structure")
 			navCanadaMetars[k] = airport
 			dataChan <- navCanadaMetars[k]
 		}

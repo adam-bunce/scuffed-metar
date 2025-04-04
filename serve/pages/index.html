@@ -133,6 +133,7 @@
 
             </h3>
             {{ if .Error }} <h4 class="error">{{ .Error }}</h4> {{ end }}
+            {{ if .Stale }} <h4 class="error" style="color: #FFA500">Data May Be Stale ({{ .Stale }}min)</h4>  {{ end }}
             <blockquote>
                 {{ range .WeatherInfo.Metar }}
                     <p class="weatherInfo">{{ . }}</p>

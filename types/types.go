@@ -118,6 +118,8 @@ type AirportInfo struct {
 
 	MetarSource   string
 	AwosFrequency string
+
+	Stale int
 }
 
 type WeatherPullInfo struct {

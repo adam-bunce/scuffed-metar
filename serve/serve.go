@@ -74,55 +74,55 @@ const (
 
 // this is the order displayed in the UI
 var airportInfo = []types.AirportInfo{
-	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/", ""},
-	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/", ""},
-	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/", ""},
-	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/", "", 0},
+	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/", "", 0},
+	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/", "", 0},
+	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Points North", "CYNL", "https://pointsnorthgroup.ca/liveview", []string{"/Northview.jpg", "/Southview.jpg"}, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", ""},
+	{"Points North", "CYNL", "https://pointsnorthgroup.ca/liveview", []string{"/Northview.jpg", "/Southview.jpg"}, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", "", 0},
 
-	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Prince Albert (PA)", "CYPA", "https://api.ghdcdn.com/princealbertairport-webcam/v1/GetImage?id=", []string{"c1", "c2", "c3"}, types.WeatherInfo{}, NavCanda, ""},
-	{"La Ronge", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Prince Albert (PA)", "CYPA", "https://api.ghdcdn.com/princealbertairport-webcam/v1/GetImage?id=", []string{"c1", "c2", "c3"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"La Ronge", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175"},
-	{"Wollaston", "CZWL", Highways + "wollaston", hc(2), types.WeatherInfo{}, Highways + "/wollaston", "122.075"},
-	{"Ile A La Crosse", "CJF3", Highways + "ilealacrosse", hc(2), types.WeatherInfo{}, Highways + "/ilealacrosse", "122.075"},
-	{"Cumberland House", "CJT4", Highways + "cumberlandhouse", hc(2), types.WeatherInfo{}, Highways + "/cumberlandhouse", "122.975"},
-	{"La Loche", "CJL4", Highways + "laloche", hc(2), types.WeatherInfo{}, Highways + "/laloche", "122.975"},
-	{"Patuanak", "CKB2", Highways + "patuanak", hc(1), types.WeatherInfo{}, "", ""},
-	{"Pelican Narrows", "CJW4", Highways + "pelican", hc(1), types.WeatherInfo{}, "", ""},
-	{"Pinehouse", "CZPO", Highways + "pinehouse", hc(2), types.WeatherInfo{}, Highways + "/pinehouse", "123.175"},
-	{"Buffalo Narrows", "CYVT", Highways + "buffalonarrows", hc(2), types.WeatherInfo{}, NavCanda, ""},
-	{"Hudson Bay", "CYHB", Highways + "hudsonbay", hc(2), types.WeatherInfo{}, "", ""},
-	{"Stony Rapids", "CYSF", Highways + "stonyrapids", hc(2), types.WeatherInfo{}, NavCanda, ""},
-	{"Sandy Bay", "CJY4", Highways + "sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}, Highways + "/sandybay", "122.550"},
-	{"Meadow Lake", "CYLJ", Highways + "meadowlake", hc(2), types.WeatherInfo{}, NavCanda, ""},
-	{"Uranium City", "CYBE", Highways + "uranium", hc(1), types.WeatherInfo{}, "https://metar-taf.com/CWDC", ""},
+	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175", 0},
+	{"Wollaston", "CZWL", Highways + "wollaston", hc(2), types.WeatherInfo{}, Highways + "/wollaston", "122.075", 0},
+	{"Ile A La Crosse", "CJF3", Highways + "ilealacrosse", hc(2), types.WeatherInfo{}, Highways + "/ilealacrosse", "122.075", 0},
+	{"Cumberland House", "CJT4", Highways + "cumberlandhouse", hc(2), types.WeatherInfo{}, Highways + "/cumberlandhouse", "122.975", 0},
+	{"La Loche", "CJL4", Highways + "laloche", hc(2), types.WeatherInfo{}, Highways + "/laloche", "122.975", 0},
+	{"Patuanak", "CKB2", Highways + "patuanak", hc(1), types.WeatherInfo{}, "", "", 0},
+	{"Pelican Narrows", "CJW4", Highways + "pelican", hc(1), types.WeatherInfo{}, "", "", 0},
+	{"Pinehouse", "CZPO", Highways + "pinehouse", hc(2), types.WeatherInfo{}, Highways + "/pinehouse", "123.175", 0},
+	{"Buffalo Narrows", "CYVT", Highways + "buffalonarrows", hc(2), types.WeatherInfo{}, NavCanda, "", 0},
+	{"Hudson Bay", "CYHB", Highways + "hudsonbay", hc(2), types.WeatherInfo{}, "", "", 0},
+	{"Stony Rapids", "CYSF", Highways + "stonyrapids", hc(2), types.WeatherInfo{}, NavCanda, "", 0},
+	{"Sandy Bay", "CJY4", Highways + "sandybay", []string{"/ptz.jpg", "/ptz2.jpg", "/ptz3.jpg"}, types.WeatherInfo{}, Highways + "/sandybay", "122.550", 0},
+	{"Meadow Lake", "CYLJ", Highways + "meadowlake", hc(2), types.WeatherInfo{}, NavCanda, "", 0},
+	{"Uranium City", "CYBE", Highways + "uranium", hc(1), types.WeatherInfo{}, "https://metar-taf.com/CWDC", "", 0},
 
-	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, "", ""},
+	{"Charlot River", "CJP9", "http://saskpower.glmobile.com/charlot", []string{"/runway.jpg", "/hill.jpg"}, types.WeatherInfo{}, "", "", 0},
 
-	{"Flin Flon", "CYFO", MetCam + "CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
-	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Flin Flon", "CYFO", MetCam + "CYFO", []string{"/CYFO_SW-full-e.jpeg", "/CYFO_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"North Battleford", "CYQW", MetCam + "CYQW", []string{"/CYQW_S-full-e.jpeg", "/CYQW_W-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar", ""},
-	{"Cold Lake", "CYOD", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Leismer", "CET2", "", nil, types.WeatherInfo{}, "https://cet2.ca/CET2_metar", "", 0},
+	{"Cold Lake", "CYOD", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda, ""},
+	{"Regina", "CYQR", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
-	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Fort Mac", "CYMM", MetCam + "CYMM", []string{"/CYMM_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Lloydminster", "CYLL", MetCam + "CYLL", []string{"/CYLL_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Lloydminster", "CYLL", MetCam + "CYLL", []string{"/CYLL_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Swift Current", "CYYN", MetCam + "CYYN", []string{"/CYYN_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
-	{"Medicine Hat", "CYXH", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Thompson", "CYTH", "", nil, types.WeatherInfo{}, NavCanda, ""},
-	{"Yorkton", "CYQV", MetCam + "CYQV", []string{"/CYQV_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Swift Current", "CYYN", MetCam + "CYYN", []string{"/CYYN_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Medicine Hat", "CYXH", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Thompson", "CYTH", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Yorkton", "CYQV", MetCam + "CYQV", []string{"/CYQV_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	{"Lynn Lake", "CYYL", MetCam + "CYYL", []string{"/CYYL_E-full-e.jpeg", "/CYYL_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, ""},
+	{"Lynn Lake", "CYYL", MetCam + "CYYL", []string{"/CYYL_E-full-e.jpeg", "/CYYL_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 }
 var indexData = types.IndexData{
 	AirportInformation: airportInfo,
@@ -244,9 +244,17 @@ func TryCamecoUpdate() {
 	for _, pulledAirport := range metarData {
 		for j, currentDataAirports := range indexData.AirportInformation {
 			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+				indexData.AirportInformation[j].Error = pulledAirport.Error
+
+				if pulledAirport.Error != nil {
+					indexData.AirportInformation[j].Stale += 2
+					continue
+				} else {
+					indexData.AirportInformation[j].Stale = 0
+				}
+
 				indexData.AirportInformation[j].Metar = pulledAirport.Metar
 				indexData.AirportInformation[j].Taf = pulledAirport.Taf
-				indexData.AirportInformation[j].Error = pulledAirport.Error
 			}
 		}
 	}
@@ -280,9 +288,18 @@ func TryNavCanUpdate() {
 	for _, pulledAirport := range metarData {
 		for j, currentDataAirports := range indexData.AirportInformation {
 			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+				indexData.AirportInformation[j].Error = pulledAirport.Error
+
+				if pulledAirport.Error != nil {
+					// magic numbers ill fix once i rewrite everything, 2 b/c cycles are every 2min
+					indexData.AirportInformation[j].Stale += 2
+					continue
+				} else {
+					indexData.AirportInformation[j].Stale = 0
+				}
+
 				indexData.AirportInformation[j].Metar = pulledAirport.Metar
 				indexData.AirportInformation[j].Taf = pulledAirport.Taf
-				indexData.AirportInformation[j].Error = pulledAirport.Error
 			}
 		}
 	}
