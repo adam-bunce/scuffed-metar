@@ -113,7 +113,7 @@ var specialHighwayTestWarning = regexp.MustCompile(`<h2>(.*?)</h2>`)            
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston"}
+	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston", "CCB2", "seabee"}
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
 		wg.Add(1)
 		go func(i int) {

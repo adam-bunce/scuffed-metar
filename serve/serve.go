@@ -123,6 +123,8 @@ var airportInfo = []types.AirportInfo{
 	{"Yorkton", "CYQV", MetCam + "CYQV", []string{"/CYQV_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
 	{"Lynn Lake", "CYYL", MetCam + "CYYL", []string{"/CYYL_E-full-e.jpeg", "/CYYL_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
+
+	{"Seabee Mine", "CCB2", "http://ssrmining.glmobile.com/" + "seabee", []string{"/ptz1.jpg"}, types.WeatherInfo{}, "http://ssrmining.glmobile.com/seabee/", "", 0},
 }
 var indexData = types.IndexData{
 	AirportInformation: airportInfo,
