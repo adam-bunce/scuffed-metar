@@ -2,6 +2,7 @@ package pull
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -451,7 +452,8 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 		AirportCode: airportCode,
 	}
 	opts := MQTT.NewClientOptions().AddBroker(url)
-	opts.SetClientID("hunter2")
+	opts.SetTLSConfig(&tls.Config{InsecureSkipVerify: true})
+	opts.SetClientID("$54a3d43a-4adc-418b-8d56-3785c96c3a16")
 	opts.SetUsername(globals.MqttUser)
 	opts.SetPassword(globals.MqttPass)
 	opts.SetConnectTimeout(3 * time.Second)
