@@ -126,7 +126,7 @@ func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup
 }
 
 // when i rewrite this parse and walk the DOM using regexes for this is crazy
-var hiddenHigwaysRegex = regexp.MustCompile(`<b>(METAR|SPECI)[\s\S]*?</b>`)
+var hiddenHigwaysRegex = regexp.MustCompile(`<b>(METAR|SPECI|LWIS)[\s\S]*?</b>`)
 
 func GetHiddenHighwayData(airportName, airportCode string, dataChan chan<- types.WeatherPullInfo) {
 	weatherInfo := types.WeatherPullInfo{
