@@ -124,7 +124,7 @@ func HandleTrip(w http.ResponseWriter, r *http.Request) {
 		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY",
 		"CYOD", "CYQD", "CYLL",
-		"CYYN", "CYXH", "CYTH", "CYQV", "CYYL", "CCB2",
+		"CYYN", "CYXH", "CYTH", "CYQV", "CYYL", "CCB2", "CJR3",
 	}
 
 	airportCodes := r.URL.Query()["airport"]

@@ -114,6 +114,7 @@ var airportInfo = []types.AirportInfo{
 	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
+	// note: new req for v2: map single source to multiple airports
 	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 	{"Lloydminster", "CYLL", MetCam + "CYLL", []string{"/CYLL_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
@@ -125,6 +126,8 @@ var airportInfo = []types.AirportInfo{
 	{"Lynn Lake", "CYYL", MetCam + "CYYL", []string{"/CYYL_E-full-e.jpeg", "/CYYL_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
 	{"Seabee Mine", "CCB2", "http://ssrmining.glmobile.com/" + "seabee", []string{"/ptz1.jpg"}, types.WeatherInfo{}, "http://ssrmining.glmobile.com/seabee/", "", 0},
+
+	{"Grace Lake", "CJR3", "", nil, types.WeatherInfo{}, "https://metar-taf.com/CJR3", "", 0},
 }
 var indexData = types.IndexData{
 	AirportInformation: airportInfo,
@@ -148,7 +151,7 @@ var notamData = types.NotamPageData{
 		"CYSF", "CJY4", "CYLJ", "CYBE", "CJP9", "CYFO", "CYQW",
 		"CET2", "CYOD", "CYQR",
 		"CYMM", "CYSM", "CYPY", "CYQD", "CYLL",
-		"CYYN", "CYXH", "CYTH", "CYQV", "CCB2",
+		"CYYN", "CYXH", "CYTH", "CYQV", "CCB2", "CJR3",
 	},
 	GenericPageData: types.GenericPageData{
 		LastUpdate: time.Time{},
@@ -289,7 +292,8 @@ func TryNavCanUpdate() {
 	// Update current data w/ new pulled data
 	for _, pulledAirport := range metarData {
 		for j, currentDataAirports := range indexData.AirportInformation {
-			if currentDataAirports.AirportCode == pulledAirport.AirportCode {
+			if currentDataAirports.AirportCode == pulledAirport.AirportCode ||
+				currentDataAirports.AirportCode == "CJR3" && pulledAirport.AirportCode == "CYOD" {
 				indexData.AirportInformation[j].Error = pulledAirport.Error
 
 				if pulledAirport.Error != nil {
