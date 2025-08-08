@@ -113,6 +113,7 @@ var specialHighwayTestWarning = regexp.MustCompile(`<h2>(.*?)</h2>`)            
 
 var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
+// NOTE(adam): i was never refreshing the cams for other hardcoded highways sites if they went down
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
 	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston", "CCB2", "seabee"}
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
@@ -199,7 +200,7 @@ func GetHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 		wxCamUrls = append(wxCamUrls, "/"+imageUrl)
 	}
 
-	weatherInfo.Metar = metarStrings
+	weatherInfo.Metar = metarStrings[:int(math.Min(float64(len(metarStrings)), 10))]
 	weatherInfo.UpdatedImageUrls = &wxCamUrls
 	dataChan <- weatherInfo
 }
@@ -478,7 +479,7 @@ func getMesotechMQTT(url, airportCode string, dataChan chan<- types.WeatherPullI
 		}
 
 		weatherInfo.Metar = dest.History
-		weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
+		weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 10))]
 		dataChan <- weatherInfo // this panics sometimes
 
 	}); token.Wait() && token.Error() != nil {
@@ -542,7 +543,7 @@ func getMesotechData(url, airportCode string, dataChan chan<- types.WeatherPullI
 		weatherInfo.Metar = append(weatherInfo.Metar, report.Report)
 	}
 
-	weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 5))]
+	weatherInfo.Metar = weatherInfo.Metar[:int(math.Min(float64(len(weatherInfo.Metar)), 10))]
 
 	dataChan <- weatherInfo
 }
