@@ -82,7 +82,7 @@ var airportInfo = []types.AirportInfo{
 	{"Points North", "CYNL", "https://pointsnorthgroup.ca/liveview", []string{"/Northview.jpg", "/Southview.jpg"}, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", "", 0},
 
 	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
-	{"Prince Albert (PA)", "CYPA", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYPA", []string{"/CYPA_E-full-e.jpeg", "/CYPA_N-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Prince Albert (PA)", "CYPA", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYPA", []string{"/CYPA_N-full-e.jpeg", "/CYPA_E-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 	{"La Ronge", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 
 	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175", 0},
