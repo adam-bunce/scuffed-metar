@@ -82,7 +82,7 @@ var airportInfo = []types.AirportInfo{
 	{"Points North", "CYNL", "https://pointsnorthgroup.ca/liveview", []string{"/Northview.jpg", "/Southview.jpg"}, types.WeatherInfo{}, PointsNorth + "CYNL_metar.html", "", 0},
 
 	{"Saskatoon (Stoon)", "CYXE", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
-	{"Prince Albert (PA)", "CYPA", "https://api.ghdcdn.com/princealbertairport-webcam/v1/GetImage?id=", []string{"c1", "c2", "c3"}, types.WeatherInfo{}, NavCanda, "", 0},
+	{"Prince Albert (PA)", "CYPA", "https://www.metcam.navcanada.ca/dawc_images/wxcam/CYPA", []string{"/CYPA_E-full-e.jpeg", "/CYPA_S-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 	{"La Ronge", "CYVC", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 
 	{"Fond du Lac", "CZFD", Highways + "fonddulac", hc(2), types.WeatherInfo{}, Highways + "/fonddulac", "122.175", 0},
@@ -114,7 +114,7 @@ var airportInfo = []types.AirportInfo{
 	{"Fort Smith", "CYSM", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 	{"Fort Chip", "CYPY", MetCam + "CYPY", []string{"/CYPY_NW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
-	// note: new req for v2: map single source to multiple airports
+	// note: new req for v2: map single source to multiple airports (cold lake and grace lake are the same, CYOD)
 	{"The Pas", "CYQD", "", nil, types.WeatherInfo{}, NavCanda, "", 0},
 	{"Lloydminster", "CYLL", MetCam + "CYLL", []string{"/CYLL_SE-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
