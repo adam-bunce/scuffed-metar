@@ -31,7 +31,7 @@ func setError(err error) error {
 }
 
 func GetAllCamecoData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	for _, airportCode := range []string{"CJW7", "CYKC", "CKQ8"} {
+	for _, airportCode := range []string{"CJW7", "CYKC"} {
 		wg.Add(1)
 		go func(ac string) { getCamecoData(ac, dataChan); wg.Done() }(airportCode)
 	}
@@ -115,7 +115,7 @@ var highwayMetarPattern = regexp.MustCompile(`(?s)</h1>\s*(.*?)\s*<b>`)
 
 // NOTE(adam): i was never refreshing the cams for other hardcoded highways sites if they went down
 func GetAllHighwayData(dataChan chan<- types.WeatherPullInfo, wg *sync.WaitGroup) {
-	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston", "CCB2", "seabee"}
+	hiddenAirportInfo := []string{"CJY4", "sandybay", "CJL4", "laloche", "CJF3", "ilealacrosse", "CJT4", "cumberlandhouse", "CZPO", "pinehouse", "CZFD", "fonddulac", "CZWL", "wollaston", "CCB2", "seabee", "CKQ8", "mcarthurriver"}
 	for i := 0; i < len(hiddenAirportInfo); i += 2 {
 		wg.Add(1)
 		go func(i int) {
@@ -183,7 +183,7 @@ func GetHiddenHighwayData(airportName, airportCode string, dataChan chan<- types
 		}
 		if n.Type == html.ElementNode && n.Data == "img" {
 			for _, a := range n.Attr {
-				if a.Key == "src" {
+				if a.Key == "src" && a.Val != "logo.png" {
 					imageSources = append(imageSources, a.Val)
 					break
 				}

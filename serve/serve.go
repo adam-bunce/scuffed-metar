@@ -75,7 +75,7 @@ const (
 // this is the order displayed in the UI
 var airportInfo = []types.AirportInfo{
 	{"Cigar Lake", "CJW7", "", nil, types.WeatherInfo{}, Cameco + "CJW7/", "", 0},
-	{"McArthur River", "CKQ8", "", nil, types.WeatherInfo{}, Cameco + "CKQ8/", "", 0},
+	{"McArthur River", "CKQ8", Highways + "mcarthurriver", hc(2), types.WeatherInfo{}, Cameco + "CKQ8/", "", 0},
 	{"Collins Bay / Rabbit Lake", "CYKC", "", nil, types.WeatherInfo{}, Cameco + "CYKC/", "", 0},
 	{"Key Lake", "CYKJ", MetCam + "CYKJ", []string{"/CYKJ_SW-full-e.jpeg"}, types.WeatherInfo{}, NavCanda, "", 0},
 
